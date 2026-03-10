@@ -1,5 +1,3 @@
 # Cloudflare Pages routing
-# Rewrite /course and /course/* to the React SPA without changing the URL
-
-/course       /course.html    200
-/course/*     /course.html    200
+/course       /course.html    301
+/course/*     /course.html    301
