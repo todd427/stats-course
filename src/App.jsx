@@ -1274,8 +1274,17 @@ export default function App() {
             </button>
           ))}
         </nav>
-        <div style={{ padding: '12px 16px', borderTop: `1px solid ${C.border}`, color: C.muted, fontSize: 11 }}>
-          stats.ucahub.ie
+        <div style={{ padding: '12px 16px', borderTop: `1px solid ${C.border}` }}>
+          <a href="/book.html" target="_blank" rel="noopener"
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 8, background: C.teal + '14', border: `1px solid ${C.teal}33`, textDecoration: 'none', marginBottom: 10 }}>
+            <span style={{ fontSize: 15 }}>📖</span>
+            <div>
+              <div style={{ color: C.teal, fontSize: 12, fontWeight: 700 }}>Read the Textbook</div>
+              <div style={{ color: C.muted, fontSize: 10 }}>Reference & deeper reading</div>
+            </div>
+            <span style={{ color: C.teal, fontSize: 12, marginLeft: 'auto' }}>↗</span>
+          </a>
+          <div style={{ color: C.muted, fontSize: 11, ...mono }}>stats.ucahub.ie</div>
         </div>
       </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px 32px', display: 'flex', flexDirection: 'column' }}>
