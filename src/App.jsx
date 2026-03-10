@@ -688,15 +688,559 @@ const Mod7 = ({ onPass }) => {
   );
 };
 
+/* ── MODULE 8: Hierarchical Regression ──────────────────────── */
+const Mod8 = ({ onPass }) => {
+  // Simulated dissertation-style data: 3 blocks
+  // Block 1: demographics (age, gender) → R²=.04
+  // Block 2: + moral disengagement → R²=.38, ΔR²=.34
+  // Block 3: + AI trust, AI use → R²=.39, ΔR²=.01
+  const blocks = [
+    { name: "Block 1: Demographics", vars: ["Age", "Gender"], r2: 0.04, f: 3.41, p: 0.036, df1: 2, df2: 164 },
+    { name: "Block 2: + Moral Disengagement", vars: ["Age", "Gender", "Moral Disengagement"], r2: 0.38, f: 33.21, p: 0.000, df1: 1, df2: 163 },
+    { name: "Block 3: + AI Factors", vars: ["Age", "Gender", "Moral Disengagement", "AI Trust", "AI Use"], r2: 0.39, f: 1.34, p: 0.430, df1: 2, df2: 161 },
+  ];
+  const [activeBlock, setActiveBlock] = useState(0);
+  const deltaR2 = activeBlock === 0 ? blocks[0].r2 : blocks[activeBlock].r2 - blocks[activeBlock - 1].r2;
+  const b = blocks[activeBlock];
+  const isSignificant = b.p < 0.05;
+  return (
+    <div>
+      <div style={card}>
+        <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
+          Hierarchical regression adds predictors in theory-driven <strong style={{ color: C.teal }}>blocks</strong>. Each block's ΔR² tells you how much additional variance it explains beyond everything already in the model.
+        </p>
+        <div style={{ background: C.bg, borderRadius: 8, padding: '8px 0', marginBottom: 8 }}>
+          <Eq block tex={String.raw`\Delta R^2 = R^2_{\text{step}_k} - R^2_{\text{step}_{k-1}} \qquad F_{\text{change}} = \frac{\Delta R^2 / \Delta df_1}{(1 - R^2_k) / df_2}`} />
+        </div>
+        <Explainer
+          symbols={[
+            [String.raw`\Delta R^2`, "Delta R-squared", "The increase in explained variance when a new block of predictors is added. This is your key question: does this block add anything?"],
+            [String.raw`R^2_{\text{step}_k}`, "R² at step k", "The cumulative R² after adding the k-th block of predictors."],
+            [String.raw`F_{\text{change}}`, "F-change statistic", "Tests whether ΔR² is significantly greater than zero. Has its own degrees of freedom."],
+            [String.raw`\Delta df_1`, "Change in df", "The number of new predictors added in this block."],
+            [String.raw`df_2`, "Residual df", "n minus total number of predictors minus 1. Leftover degrees of freedom."],
+          ]}
+          worked={[
+            { text: "Block 1: Demographics only (age, gender). R²=.04 — 4% of variance explained. F(2,164)=3.41, p=.036. Significant but weak.", eq: String.raw`R^2_1 = .04` },
+            { text: "Block 2: Add moral disengagement. R² jumps to .38.", eq: String.raw`\Delta R^2 = .38 - .04 = .34` },
+            { text: "F-change for Block 2:", eq: String.raw`F_{\text{change}}(1, 163) = \frac{.34/1}{(1-.38)/163} = \frac{.34}{.0038} = 89.5,\quad p < .001` },
+            { text: "Block 3: Add AI trust and AI use. R² barely moves.", eq: String.raw`\Delta R^2 = .39 - .38 = .01` },
+            { text: "F-change for Block 3: F(2,161)=1.34, p=.43. Not significant. AI factors add nothing above moral disengagement. This is your null finding — and it's theoretically meaningful.", eq: null },
+          ]}
+        />
+        {/* Block selector */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+          {blocks.map((bl, i) => (
+            <button key={i} onClick={() => setActiveBlock(i)}
+              style={{ textAlign: 'left', padding: '12px 16px', borderRadius: 8, border: `1px solid ${activeBlock === i ? C.teal : C.border}`, background: activeBlock === i ? C.teal + '18' : C.bg, cursor: 'pointer', transition: 'all 0.2s' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ color: activeBlock === i ? C.teal : C.text, fontWeight: 600, fontSize: 14 }}>{bl.name}</div>
+                  <div style={{ color: C.muted, fontSize: 12, marginTop: 2 }}>{bl.vars.join(', ')}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ color: C.amber, ...mono, fontWeight: 700, fontSize: 16 }}>R²={bl.r2.toFixed(2)}</div>
+                  {i > 0 && <div style={{ color: bl.p < 0.05 ? C.green : C.red, fontSize: 12, ...mono }}>ΔR²={(bl.r2 - blocks[i-1].r2).toFixed(2)}</div>}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+        {/* R² bar */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+            <span style={{ color: C.muted, fontSize: 12 }}>Variance explained (R²)</span>
+            <span style={{ color: C.amber, ...mono, fontWeight: 700 }}>{(b.r2 * 100).toFixed(0)}%</span>
+          </div>
+          <div style={{ height: 20, background: C.bg, borderRadius: 4, border: `1px solid ${C.border}`, overflow: 'hidden', display: 'flex' }}>
+            <div style={{ width: `${blocks[0].r2 * 100}%`, background: C.muted, transition: 'width 0.4s ease' }} title="Demographics" />
+            {activeBlock >= 1 && <div style={{ width: `${(blocks[1].r2 - blocks[0].r2) * 100}%`, background: C.teal, transition: 'width 0.4s ease' }} title="Moral Disengagement" />}
+            {activeBlock >= 2 && <div style={{ width: `${(blocks[2].r2 - blocks[1].r2) * 100}%`, background: C.amber, transition: 'width 0.4s ease' }} title="AI Factors" />}
+          </div>
+          <div style={{ display: 'flex', gap: 16, marginTop: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.muted, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>Demographics</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.teal, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>Moral Disengagement</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.amber, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>AI Factors</span></div>
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
+          <StatBox label="R²" value={b.r2} dec={3} color={C.amber} />
+          <StatBox label="ΔR²" value={deltaR2} dec={3} color={isSignificant ? C.green : C.red} />
+          <StatBox label="F-change" value={b.f} dec={2} color={C.teal} />
+          <StatBox label="p (change)" value={b.p < 0.001 ? '< .001' : b.p} dec={3} color={isSignificant ? C.green : C.red} />
+        </div>
+        <div style={{ marginTop: 12, padding: '10px 14px', background: C.bg, borderRadius: 8, fontSize: 14, color: C.text, borderLeft: `3px solid ${isSignificant ? C.green : C.amber}` }}>
+          {activeBlock === 0 && "Demographics explain 4% of variance — small but significant baseline."}
+          {activeBlock === 1 && "Moral disengagement adds ΔR²=.34 — a massive, highly significant contribution. This is your headline finding."}
+          {activeBlock === 2 && "AI factors add ΔR²=.01, p=.43 — not significant. The null finding: AI-related variables explain negligible variance above moral disengagement."}
+        </div>
+      </div>
+      <Quiz question="In your dissertation, Block 3 (AI factors) gave ΔR²=.01, p=.43. What is the correct interpretation?"
+        options={[
+          "AI factors are important predictors of cyber-aggression",
+          "The model is only 1% accurate",
+          "AI factors explain negligible additional variance once moral disengagement is controlled — a meaningful null finding",
+          "You need more participants to confirm this result"
+        ]}
+        correct={2}
+        explanation="ΔR²=.01, p=.43: AI trust and AI use add almost nothing to the model once moral disengagement is included. This IS a finding — it tells you where cyber-aggression comes from (moral psychology) and where it doesn't (AI-related attitudes)."
+        onPass={onPass} />
+    </div>
+  );
+};
+
+/* ── MODULE 9: PLS-SEM ───────────────────────────────────────── */
+const Mod9 = ({ onPass }) => {
+  const [view, setView] = useState('measurement');
+  // Dissertation measurement model values
+  const constructs = [
+    { name: "Moral Disengagement", items: 8, loadings: [.81,.84,.79,.86,.83,.77,.85,.82], ave: .67, cr: .93, abbr: "MD" },
+    { name: "Cyber-Aggression", items: 6, loadings: [.78,.82,.80,.75,.83,.79], ave: .63, cr: .91, abbr: "CA" },
+    { name: "AI Trust", items: 5, loadings: [.76,.80,.74,.78,.77], ave: .59, cr: .88, abbr: "AIT" },
+    { name: "AI Use", items: 4, loadings: [.72,.75,.70,.73], ave: .53, cr: .82, abbr: "AIU" },
+  ];
+  // Structural model: path coefficients
+  const paths = [
+    { from: "MD", to: "CA", beta: .61, t: 8.94, p: "<.001", sig: true },
+    { from: "AIT", to: "CA", beta: .08, t: 1.12, p: ".263", sig: false },
+    { from: "AIU", to: "CA", beta: .05, t: 0.79, p: ".431", sig: false },
+  ];
+  // HTMT matrix (upper triangle)
+  const htmt = [
+    ["—", ".48", ".31", ".29"],
+    ["", "—", ".35", ".33"],
+    ["", "", "—", ".44"],
+    ["", "", "", "—"],
+  ];
+  const labels = ["MD", "CA", "AIT", "AIU"];
+  return (
+    <div>
+      <div style={card}>
+        <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
+          PLS-SEM (Partial Least Squares Structural Equation Modelling) has two parts: the <strong style={{ color: C.teal }}>measurement model</strong> (are your scales valid?) and the <strong style={{ color: C.amber }}>structural model</strong> (do the constructs predict each other?).
+        </p>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+          {['measurement', 'structural'].map(v => (
+            <button key={v} onClick={() => setView(v)}
+              style={{ padding: '8px 20px', borderRadius: 8, border: `1px solid ${view === v ? C.teal : C.border}`, background: view === v ? C.teal + '22' : 'transparent', color: view === v ? C.teal : C.muted, cursor: 'pointer', fontWeight: view === v ? 700 : 400, fontSize: 14 }}>
+              {v === 'measurement' ? '📐 Measurement Model' : '🔗 Structural Model'}
+            </button>
+          ))}
+        </div>
+
+        {view === 'measurement' && (
+          <>
+            <div style={{ background: C.bg, borderRadius: 8, padding: '8px 0', marginBottom: 8 }}>
+              <Eq block tex={String.raw`AVE = \frac{\sum \lambda_i^2}{k} \qquad CR = \frac{(\sum \lambda_i)^2}{(\sum \lambda_i)^2 + \sum(1-\lambda_i^2)} \qquad HTMT < .85`} />
+            </div>
+            <Explainer
+              symbols={[
+                [String.raw`\lambda_i`, "Factor loading", "How strongly each item correlates with its latent construct. Target: ≥ .70."],
+                [String.raw`AVE`, "Average Variance Extracted", "Average proportion of item variance explained by the construct. AVE ≥ .50 = convergent validity."],
+                [String.raw`CR`, "Composite Reliability", "Like Cronbach's α but accounts for unequal loadings. CR ≥ .70 required; ≥ .80 good."],
+                [String.raw`HTMT`, "Heterotrait-Monotrait ratio", "Discriminant validity test. Compares correlations between constructs vs. within constructs. HTMT < .85 means constructs are distinct."],
+              ]}
+              worked={[
+                { text: "Moral Disengagement: 8 items, loadings ranging .77–.86. Calculate AVE:", eq: String.raw`AVE_{MD} = \frac{.81^2+.84^2+.79^2+.86^2+.83^2+.77^2+.85^2+.82^2}{8} = \frac{5.35}{8} = .67` },
+                { text: "AVE=.67 > .50 ✓ — convergent validity confirmed. The construct captures more than half the variance in its items.", eq: null },
+                { text: "HTMT between MD and CA = .48 < .85 ✓ — discriminant validity confirmed. These are distinct constructs, not measuring the same thing.", eq: null },
+                { text: "All four constructs meet AVE ≥ .50, CR ≥ .80, HTMT < .85. Measurement model is sound — you can trust your structural results.", eq: null },
+              ]}
+            />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+              {constructs.map((c, i) => (
+                <div key={i} style={{ background: C.bg, borderRadius: 8, padding: '12px 14px', border: `1px solid ${C.border}` }}>
+                  <div style={{ color: C.teal, fontWeight: 700, fontSize: 13, marginBottom: 8 }}>{c.abbr}: {c.name}</div>
+                  <div style={{ marginBottom: 8 }}>
+                    {c.loadings.map((l, j) => (
+                      <div key={j} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                        <span style={{ color: C.muted, fontSize: 11, width: 20 }}>λ{j+1}</span>
+                        <div style={{ flex: 1, height: 6, background: C.surface, borderRadius: 3, overflow: 'hidden' }}>
+                          <div style={{ width: `${l * 100}%`, height: '100%', background: l >= 0.7 ? C.teal : C.amber, borderRadius: 3 }} />
+                        </div>
+                        <span style={{ color: l >= 0.7 ? C.teal : C.amber, ...mono, fontSize: 12, width: 28 }}>{l.toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <div style={{ flex: 1, textAlign: 'center', background: C.surface, borderRadius: 6, padding: '4px 0' }}>
+                      <div style={{ color: C.muted, fontSize: 10 }}>AVE</div>
+                      <div style={{ color: c.ave >= 0.5 ? C.green : C.red, ...mono, fontWeight: 700, fontSize: 14 }}>{c.ave.toFixed(2)}</div>
+                    </div>
+                    <div style={{ flex: 1, textAlign: 'center', background: C.surface, borderRadius: 6, padding: '4px 0' }}>
+                      <div style={{ color: C.muted, fontSize: 10 }}>CR</div>
+                      <div style={{ color: c.cr >= 0.8 ? C.green : C.amber, ...mono, fontWeight: 700, fontSize: 14 }}>{c.cr.toFixed(2)}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: C.bg, borderRadius: 8, padding: '12px 14px', border: `1px solid ${C.border}` }}>
+              <div style={{ color: C.amber, fontSize: 12, fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>HTMT Matrix (discriminant validity)</div>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr>{['', ...labels].map((l, i) => <th key={i} style={{ color: C.muted, fontSize: 12, padding: '4px 8px', textAlign: 'center' }}>{l}</th>)}</tr>
+                </thead>
+                <tbody>
+                  {htmt.map((row, i) => (
+                    <tr key={i}>
+                      <td style={{ color: C.teal, fontSize: 12, fontWeight: 700, padding: '4px 8px' }}>{labels[i]}</td>
+                      {row.map((v, j) => (
+                        <td key={j} style={{ textAlign: 'center', padding: '4px 8px', color: v === '—' || v === '' ? C.border : parseFloat(v) < 0.85 ? C.green : C.red, ...mono, fontSize: 13 }}>{v}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div style={{ color: C.muted, fontSize: 12, marginTop: 8 }}>All off-diagonal values &lt; .85 ✓ — discriminant validity confirmed.</div>
+            </div>
+          </>
+        )}
+
+        {view === 'structural' && (
+          <>
+            <div style={{ background: C.bg, borderRadius: 8, padding: '8px 0', marginBottom: 8 }}>
+              <Eq block tex={String.raw`f^2 = \frac{R^2_{\text{included}} - R^2_{\text{excluded}}}{1 - R^2_{\text{included}}} \qquad Q^2 > 0 \Rightarrow \text{predictive relevance}`} />
+            </div>
+            <Explainer
+              symbols={[
+                [String.raw`\beta`, "Path coefficient", "Standardised regression coefficient for the relationship between two constructs. Like a correlation, ranges −1 to +1."],
+                [String.raw`R^2`, "R-squared", "Variance in the endogenous (outcome) construct explained by all its predictors combined."],
+                [String.raw`f^2`, "Effect size f²", "How much R² drops when a predictor is removed. Small=.02, Medium=.15, Large=.35."],
+                [String.raw`Q^2`, "Predictive relevance", "Stone-Geisser Q². Positive value = the model has predictive relevance beyond chance. Q² > 0 is the threshold."],
+                [String.raw`t`, "Bootstrap t-value", "PLS-SEM uses bootstrapping (resampling) rather than assumptions about normal distributions to test significance."],
+              ]}
+              worked={[
+                { text: "Moral disengagement → cyber-aggression: β=.61, t=8.94, p<.001. Large, significant path.", eq: String.raw`f^2_{MD} = \frac{.39 - .05}{1 - .39} = \frac{.34}{.61} = .56 \text{ — large effect}` },
+                { text: "AI trust → cyber-aggression: β=.08, t=1.12, p=.263. Not significant.", eq: String.raw`f^2_{AIT} = \frac{.39 - .38}{1 - .39} = \frac{.01}{.61} = .016 \text{ — negligible}` },
+                { text: "AI use → cyber-aggression: β=.05, t=0.79, p=.431. Not significant.", eq: null },
+                { text: "R²=.39 for cyber-aggression. Q²=.24 > 0 — model has predictive relevance.", eq: null },
+              ]}
+            />
+            <div style={{ marginBottom: 16 }}>
+              {paths.map((p, i) => (
+                <div key={i} style={{ padding: '12px 16px', marginBottom: 8, background: C.bg, borderRadius: 8, border: `1px solid ${p.sig ? C.teal + '44' : C.border}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <span style={{ color: C.teal, fontWeight: 700, fontSize: 14 }}>{p.from}</span>
+                    <span style={{ color: C.muted, fontSize: 18 }}>→</span>
+                    <span style={{ color: C.amber, fontWeight: 700, fontSize: 14 }}>{p.to}</span>
+                    <span style={{ marginLeft: 'auto' }}>
+                      <Badge color={p.sig ? C.green : C.red}>{p.sig ? 'SIGNIFICANT' : 'n.s.'}</Badge>
+                    </span>
+                  </div>
+                  <div style={{ height: 8, background: C.surface, borderRadius: 4, overflow: 'hidden', marginBottom: 8 }}>
+                    <div style={{ width: `${Math.abs(p.beta) * 100}%`, height: '100%', background: p.sig ? C.teal : C.muted, borderRadius: 4 }} />
+                  </div>
+                  <div style={{ display: 'flex', gap: 16 }}>
+                    <span style={{ color: C.muted, fontSize: 13 }}>β = <span style={{ color: p.sig ? C.teal : C.muted, ...mono, fontWeight: 700 }}>{p.beta.toFixed(2)}</span></span>
+                    <span style={{ color: C.muted, fontSize: 13 }}>t = <span style={{ ...mono }}>{p.t.toFixed(2)}</span></span>
+                    <span style={{ color: C.muted, fontSize: 13 }}>p = <span style={{ color: p.sig ? C.green : C.red, ...mono }}>{p.p}</span></span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+              <StatBox label="R² (CA)" value={0.39} dec={2} color={C.amber} />
+              <StatBox label="Q²" value={0.24} dec={2} color={C.teal} />
+              <StatBox label="Significant paths" value="1 / 3" dec={0} color={C.green} />
+            </div>
+          </>
+        )}
+      </div>
+      <Quiz question="Your AVE for moral disengagement is .67. What does this tell you?"
+        options={[
+          "67% of participants scored high on moral disengagement",
+          "The construct explains 67% of the variance in its items — convergent validity confirmed",
+          "The scale has 67% reliability",
+          "You need to remove items until AVE reaches .85"
+        ]}
+        correct={1}
+        explanation="AVE=.67 means the moral disengagement construct accounts for 67% of the variance in its 8 items on average. Since .67 > .50, convergent validity is confirmed — the items are mostly measuring the construct rather than random error."
+        onPass={onPass} />
+    </div>
+  );
+};
+
+/* ── MODULE 10: Multiple Imputation ─────────────────────────── */
+const Mod10 = ({ onPass }) => {
+  const [revealed, setRevealed] = useState(false);
+  const [mech, setMech] = useState('MAR');
+  // Simulated dataset: 10 participants, 4 variables, some missing
+  const rawData = [
+    { id:1, age:22, md:3.2, ca:3.8, ai:4.1, mdMiss:false, caMiss:false, aiMiss:false },
+    { id:2, age:19, md:null, ca:2.1, ai:3.3, mdMiss:true, caMiss:false, aiMiss:false },
+    { id:3, age:34, md:4.5, ca:null, ai:null, mdMiss:false, caMiss:true, aiMiss:true },
+    { id:4, age:28, md:2.1, ca:2.9, ai:3.8, mdMiss:false, caMiss:false, aiMiss:false },
+    { id:5, age:23, md:3.8, ca:4.2, ai:null, mdMiss:false, caMiss:false, aiMiss:true },
+    { id:6, age:41, md:null, ca:3.1, ai:2.9, mdMiss:true, caMiss:false, aiMiss:false },
+    { id:7, age:25, md:2.9, ca:null, ai:3.5, mdMiss:false, caMiss:true, aiMiss:false },
+    { id:8, age:31, md:4.1, ca:4.4, ai:4.2, mdMiss:false, caMiss:false, aiMiss:false },
+    { id:9, age:20, md:null, ca:1.9, ai:null, mdMiss:true, caMiss:false, aiMiss:true },
+    { id:10, age:27, md:3.5, ca:3.7, ai:3.9, mdMiss:false, caMiss:false, aiMiss:false },
+  ];
+  // Imputed values (plausible replacements)
+  const imputed = { '2-md':3.1, '3-ca':4.3, '3-ai':3.7, '5-ai':3.6, '6-md':2.8, '7-ca':3.0, '9-md':2.5, '9-ai':2.8 };
+  const mechDesc = {
+    MCAR: { label: "MCAR — Missing Completely At Random", color: C.green, desc: "Missingness has no relationship to any variable in the dataset — it's pure random chance (e.g., a survey glitch). Safe to delete cases, but you lose power. Rare in practice." },
+    MAR: { label: "MAR — Missing At Random", color: C.amber, desc: "Missingness depends on observed variables but not on the missing value itself (e.g., younger participants skip the AI questions). Multiple imputation works well here. This was your dissertation scenario." },
+    MNAR: { label: "MNAR — Missing Not At Random", color: C.red, desc: "Missingness depends on the value that's missing (e.g., high cyber-aggressors refuse to answer cyber-aggression items). The hardest case — imputation may introduce bias. Requires sensitivity analysis." },
+  };
+  return (
+    <div>
+      <div style={card}>
+        <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
+          Real datasets have missing values. How you handle them matters. <strong style={{ color: C.teal }}>Multiple imputation</strong> creates several plausible complete datasets, analyses each, then combines results using Rubin's Rules.
+        </p>
+        <div style={{ background: C.bg, borderRadius: 8, padding: '8px 0', marginBottom: 8 }}>
+          <Eq block tex={String.raw`\bar{Q} = \frac{1}{m}\sum_{i=1}^m \hat{Q}_i \qquad T = \bar{U} + \left(1+\frac{1}{m}\right)B`} />
+        </div>
+        <Explainer
+          symbols={[
+            [String.raw`m`, "Number of imputations", "How many complete datasets you create. Your dissertation used m=5. More is better but diminishing returns past m=20."],
+            [String.raw`\bar{Q}`, "Pooled estimate", "The average of the statistic (e.g., regression coefficient) across all m imputed datasets."],
+            [String.raw`\hat{Q}_i`, "Estimate from imputation i", "The statistic computed on the i-th imputed dataset."],
+            [String.raw`T`, "Total variance", "Combined uncertainty from within-imputation variance (Ū) and between-imputation variance (B)."],
+            [String.raw`\bar{U}`, "Within-imputation variance", "Average sampling error across the m datasets — what you'd have even with complete data."],
+            [String.raw`B`, "Between-imputation variance", "Extra uncertainty due to not knowing the missing values. If B is large relative to Ū, you have a lot of missingness-related uncertainty."],
+          ]}
+          worked={[
+            { text: "Your dissertation: n=167 responses with ~8% missing data across variables. Little's MCAR test: χ²=14.3, p=.21 — consistent with MAR.", eq: null },
+            { text: "You created m=5 imputed datasets using predictive mean matching (PMM). Each dataset has a slightly different plausible value where data were missing.", eq: null },
+            { text: "You ran your hierarchical regression on all 5 datasets, getting 5 slightly different β coefficients for moral disengagement, e.g.:", eq: String.raw`\hat{\beta}_1=.60,\; \hat{\beta}_2=.62,\; \hat{\beta}_3=.61,\; \hat{\beta}_4=.59,\; \hat{\beta}_5=.63` },
+            { text: "Rubin's Rules pool these into one estimate:", eq: String.raw`\bar{\beta} = \frac{.60+.62+.61+.59+.63}{5} = .61` },
+            { text: "The pooled SE accounts for both sampling error and imputation uncertainty. Your final result: β=.61, p<.001 — robust to the missing data.", eq: null },
+          ]}
+        />
+        {/* Missing data mechanism selector */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ color: C.muted, fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>Missing data mechanism</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {Object.keys(mechDesc).map(k => (
+              <button key={k} onClick={() => setMech(k)}
+                style={{ flex: 1, padding: '8px 0', borderRadius: 8, border: `1px solid ${mech === k ? mechDesc[k].color : C.border}`, background: mech === k ? mechDesc[k].color + '22' : 'transparent', color: mech === k ? mechDesc[k].color : C.muted, cursor: 'pointer', fontWeight: mech === k ? 700 : 400, fontSize: 13 }}>
+                {k}
+              </button>
+            ))}
+          </div>
+          <div style={{ marginTop: 8, padding: '10px 14px', background: C.bg, borderRadius: 8, fontSize: 14, color: C.text, borderLeft: `3px solid ${mechDesc[mech].color}` }}>
+            <strong style={{ color: mechDesc[mech].color }}>{mechDesc[mech].label}</strong><br />
+            <span style={{ color: C.muted, fontSize: 13 }}>{mechDesc[mech].desc}</span>
+          </div>
+        </div>
+        {/* Dataset visualisation */}
+        <div style={{ marginBottom: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <div style={{ color: C.muted, fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>Sample dataset (n=10)</div>
+            <button onClick={() => setRevealed(r => !r)}
+              style={{ background: revealed ? C.teal + '33' : C.bg, border: `1px solid ${revealed ? C.teal : C.border}`, color: revealed ? C.teal : C.muted, borderRadius: 6, padding: '4px 12px', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
+              {revealed ? '▾ Hide imputed values' : '▸ Reveal imputed values'}
+            </button>
+          </div>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                {['ID', 'Age', 'Moral Dis.', 'Cyber-Agg.', 'AI Trust'].map(h => (
+                  <th key={h} style={{ color: C.muted, fontSize: 12, padding: '6px 8px', textAlign: 'center', borderBottom: `1px solid ${C.border}` }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rawData.map(row => (
+                <tr key={row.id} style={{ background: (row.mdMiss || row.caMiss || row.aiMiss) ? C.amber + '0a' : 'transparent' }}>
+                  <td style={{ color: C.muted, ...mono, fontSize: 13, padding: '5px 8px', textAlign: 'center' }}>{row.id}</td>
+                  <td style={{ color: C.text, ...mono, fontSize: 13, padding: '5px 8px', textAlign: 'center' }}>{row.age}</td>
+                  {[['md', 'mdMiss'], ['ca', 'caMiss'], ['ai', 'aiMiss']].map(([key, missKey]) => {
+                    const isMissing = row[missKey];
+                    const imputedVal = imputed[`${row.id}-${key}`];
+                    return (
+                      <td key={key} style={{ padding: '5px 8px', textAlign: 'center' }}>
+                        {isMissing ? (
+                          revealed ? (
+                            <span style={{ color: C.teal, ...mono, fontSize: 13, fontWeight: 700, background: C.teal + '22', borderRadius: 4, padding: '1px 6px' }}>{imputedVal?.toFixed(1)}</span>
+                          ) : (
+                            <span style={{ color: C.amber, ...mono, fontSize: 13 }}>—</span>
+                          )
+                        ) : (
+                          <span style={{ color: C.text, ...mono, fontSize: 13 }}>{row[key]?.toFixed(1)}</span>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={{ marginTop: 6, display: 'flex', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ color: C.amber, fontSize: 16 }}>—</span><span style={{ color: C.muted, fontSize: 12 }}>Missing</span></div>
+            {revealed && <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ color: C.teal, fontSize: 13, background: C.teal+'22', borderRadius:4, padding:'0 4px' }}>x.x</span><span style={{ color: C.muted, fontSize: 12 }}>Imputed</span></div>}
+          </div>
+        </div>
+      </div>
+      <Quiz question="You have 8% missing data. Little's MCAR test gives p=.21. What does this mean and what should you do?"
+        options={[
+          "p=.21 proves data is MCAR — delete missing cases",
+          "p=.21 is consistent with MCAR/MAR — use multiple imputation to preserve all 167 cases and account for uncertainty",
+          "p=.21 means MNAR — the data is biased",
+          "8% missing is too much — collect more data"
+        ]}
+        correct={1}
+        explanation="p=.21 on Little's MCAR test: we fail to reject the null of MCAR, which is consistent with MAR. Multiple imputation (m=5) is the principled approach — it preserves all 167 cases, propagates uncertainty through Rubin's Rules, and is far better than listwise deletion which would bias your results."
+        onPass={onPass} />
+    </div>
+  );
+};
+
+/* ── MODULE 11: Capstone ─────────────────────────────────────── */
+const Mod11 = ({ onPass }) => {
+  const questions = [
+    {
+      q: "Your moral disengagement scale: 8 items, α=.87, AVE=.67, CR=.93, all HTMT < .85. A reviewer asks for evidence of construct validity. What do you cite?",
+      options: [
+        "α=.87 alone — that's excellent reliability",
+        "AVE=.67 ≥ .50 (convergent validity) + all HTMT < .85 (discriminant validity) + CR=.93 ≥ .80. α supports internal consistency but isn't validity evidence.",
+        "The p-values from the structural model",
+        "The sample size of 167"
+      ],
+      correct: 1,
+      explanation: "Construct validity = convergent (AVE ≥ .50) + discriminant (HTMT < .85) + reliable measurement (CR ≥ .80). α is not validity evidence — it's consistency evidence. Different thing."
+    },
+    {
+      q: "Block 1 R²=.04, Block 2 R²=.38, Block 3 R²=.39. ΔR² for Block 3 = .01, p=.43. Your supervisor says 'AI factors don't matter, drop them.' Is this the right conclusion?",
+      options: [
+        "Yes — non-significant means irrelevant, remove them",
+        "No — retain them and report the null finding. ΔR²=.01 is a theoretically meaningful result: it tells you cyber-aggression is driven by moral psychology, not AI attitudes.",
+        "Yes — but only if you run the analysis again with a larger sample",
+        "No — increase α to .10 to make the result significant"
+      ],
+      correct: 1,
+      explanation: "Null findings are findings. ΔR²=.01 answers a real question: do AI-related factors explain cyber-aggression above moral disengagement? Answer: no. That contributes to theory. Dropping them hides the answer."
+    },
+    {
+      q: "You report: t(163) = 8.94, p < .001, β = .61, f² = .56 for the moral disengagement → cyber-aggression path. What does f² = .56 tell you?",
+      options: [
+        "56% of the sample are cyber-aggressors",
+        "The effect size is large — removing moral disengagement from the model would reduce R² by a substantial amount",
+        "The t-statistic is reliable",
+        "The model explains 56% of variance"
+      ],
+      correct: 1,
+      explanation: "f² = .56 is a large effect (threshold: small=.02, medium=.15, large=.35). It means moral disengagement is not just statistically significant — its contribution to the model is substantial. If you removed it, R² would drop considerably."
+    },
+    {
+      q: "You used multiple imputation with m=5 on 8% missing data. A classmate says 'just delete the incomplete cases — it's only 8%.' What's wrong with this?",
+      options: [
+        "Nothing — 8% listwise deletion is always acceptable",
+        "Listwise deletion assumes MCAR, reduces n, and loses statistical power. MI preserves all 167 cases, produces unbiased estimates under MAR, and correctly propagates uncertainty via Rubin's Rules.",
+        "You should use mean substitution instead",
+        "8% is below the 10% threshold so either method works"
+      ],
+      correct: 1,
+      explanation: "Listwise deletion: (a) assumes MCAR — which you can't verify, (b) reduces your n below 167, costing power, (c) may introduce bias. MI with m=5 is the principled solution — it uses all available information and Rubin's Rules correctly account for imputation uncertainty in all your standard errors."
+    },
+    {
+      q: "Moral disengagement: M=2.8, SD=0.6, n=167. A participant scores 4.6. What z-score is this, and what does it mean?",
+      options: [
+        "z=1.6 — above average",
+        "z=3.0 — this participant is 3 SDs above the mean, placing them in the top ~0.1% of your sample. An extreme outlier worth examining.",
+        "z=0.6 — slightly above average",
+        "z=2.4 — moderately elevated"
+      ],
+      correct: 1,
+      explanation: "z = (4.6−2.8)/0.6 = 1.8/0.6 = 3.0. Three SDs above the mean. Under normality, ~99.7% of scores fall within ±3 SDs. This participant is in the extreme tail — worth checking for data entry error or genuine extreme case, and noting in your outlier analysis."
+    },
+    {
+      q: "Your PLS-SEM model: R²=.39 for cyber-aggression, Q²=.24. What do these together tell you?",
+      options: [
+        "The model explains 39% of variance and has predictive relevance beyond chance (Q²>0). Both are required for a credible structural model.",
+        "39% is too low — the model needs more predictors",
+        "Q²=.24 means 24% accuracy",
+        "R² and Q² measure the same thing"
+      ],
+      correct: 0,
+      explanation: "R²=.39: the model explains 39% of variance in cyber-aggression — good for social science. Q²=.24 > 0: the model has out-of-sample predictive relevance (estimated via blindfolding). You need both: R² shows in-sample fit, Q² shows the model isn't just overfitting."
+    },
+  ];
+  const [answers, setAnswers] = useState({});
+  const [showResults, setShowResults] = useState(false);
+  const allAnswered = Object.keys(answers).length === questions.length;
+  const score = Object.entries(answers).filter(([i, a]) => questions[i].correct === a).length;
+  useEffect(() => { if (allAnswered && !showResults) { setShowResults(true); if (score >= 4 && onPass) onPass(); } }, [answers]);
+  return (
+    <div>
+      <div style={{ ...card, borderColor: C.amber + '44' }}>
+        <div style={{ color: C.amber, fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>🎓 Capstone Assessment</div>
+        <p style={{ color: C.text, fontSize: 16, margin: 0 }}>
+          Six integrative questions using your actual dissertation data. These cross module boundaries — the goal is to connect the concepts, not just recall them. Pass mark: 4/6.
+        </p>
+      </div>
+      {questions.map((q, qi) => {
+        const answered = answers[qi] !== undefined;
+        const isCorrect = answered && answers[qi] === q.correct;
+        return (
+          <div key={qi} style={{ ...card, borderColor: answered ? (isCorrect ? C.green + '44' : C.red + '44') : C.border }}>
+            <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: answered ? (isCorrect ? C.green + '33' : C.red + '33') : C.border + '55', border: `1px solid ${answered ? (isCorrect ? C.green : C.red) : C.border}`, color: answered ? (isCorrect ? C.green : C.red) : C.muted, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, flexShrink: 0 }}>
+                {answered ? (isCorrect ? '✓' : '✗') : qi + 1}
+              </div>
+              <div style={{ color: C.heading, fontSize: 15, fontWeight: 500 }}>{q.q}</div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {q.options.map((opt, oi) => {
+                let bg = C.bg, border = C.border, color = C.text;
+                if (answered) {
+                  if (oi === q.correct) { bg = C.green + '22'; border = C.green; color = C.green; }
+                  else if (oi === answers[qi]) { bg = C.red + '22'; border = C.red; color = C.red; }
+                }
+                return (
+                  <button key={oi} onClick={() => { if (!answered) setAnswers(a => ({...a, [qi]: oi})); }}
+                    style={{ background: bg, border: `1px solid ${border}`, borderRadius: 8, padding: '9px 14px', color, textAlign: 'left', cursor: answered ? 'default' : 'pointer', fontSize: 14, transition: 'all 0.2s' }}>
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+            {answered && (
+              <div style={{ marginTop: 10, padding: '8px 12px', background: C.surface, borderRadius: 8, fontSize: 13, color: C.muted, borderLeft: `3px solid ${isCorrect ? C.green : C.amber}` }}>
+                {q.explanation}
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {showResults && (
+        <div style={{ ...card, borderColor: score >= 4 ? C.green + '66' : C.amber + '66', background: score >= 4 ? C.green + '0a' : C.amber + '0a' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 48, marginBottom: 8 }}>{score >= 5 ? '🏆' : score >= 4 ? '✅' : '📖'}</div>
+            <div style={{ color: score >= 4 ? C.green : C.amber, fontSize: 28, fontWeight: 800, ...mono, marginBottom: 4 }}>{score} / {questions.length}</div>
+            <div style={{ color: C.text, fontSize: 16, marginBottom: 8 }}>
+              {score === 6 && "Perfect. You understand your own dissertation better than most examiners will."}
+              {score === 5 && "Excellent. One slip but you've got the full picture."}
+              {score === 4 && "Pass. Solid understanding — review the ones you missed."}
+              {score < 4 && "Not there yet. Go back through the modules, then try again."}
+            </div>
+            {score < 4 && (
+              <div style={{ color: C.muted, fontSize: 13 }}>Module complete when you score 4/6 or above.</div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 /* ── MODULES CONFIG ──────────────────────────────────────────── */
 const MODULES = [
-  { id: 0, title: "Descriptive Statistics", icon: "📊", subtitle: "Mean, median, SD, variance", Component: Mod1 },
-  { id: 1, title: "Normal Distribution", icon: "🔔", subtitle: "Bell curves & z-scores", Component: Mod2 },
-  { id: 2, title: "p-values & Inference", icon: "⚖️", subtitle: "The signal/noise test", Component: Mod3 },
-  { id: 3, title: "The t-test", icon: "🔬", subtitle: "Comparing two groups", Component: Mod4 },
-  { id: 4, title: "Correlation & Regression", icon: "📈", subtitle: "Build your own model", Component: Mod5 },
-  { id: 5, title: "Cronbach's Alpha", icon: "🔗", subtitle: "Internal consistency", Component: Mod6 },
-  { id: 6, title: "K-means Clustering", icon: "🎯", subtitle: "Finding natural groups", Component: Mod7 },
+  { id: 0,  title: "Descriptive Statistics",   icon: "📊", subtitle: "Mean, median, SD, variance",        Component: Mod1  },
+  { id: 1,  title: "Normal Distribution",       icon: "🔔", subtitle: "Bell curves & z-scores",           Component: Mod2  },
+  { id: 2,  title: "p-values & Inference",      icon: "⚖️", subtitle: "The signal/noise test",            Component: Mod3  },
+  { id: 3,  title: "The t-test",                icon: "🔬", subtitle: "Comparing two groups",             Component: Mod4  },
+  { id: 4,  title: "Correlation & Regression",  icon: "📈", subtitle: "Build your own model",             Component: Mod5  },
+  { id: 5,  title: "Cronbach's Alpha",          icon: "🔗", subtitle: "Internal consistency",             Component: Mod6  },
+  { id: 6,  title: "K-means Clustering",        icon: "🎯", subtitle: "Finding natural groups",           Component: Mod7  },
+  { id: 7,  title: "Hierarchical Regression",   icon: "🧱", subtitle: "Blocks, ΔR², your dissertation",   Component: Mod8  },
+  { id: 8,  title: "PLS-SEM",                   icon: "🕸️", subtitle: "Measurement & structural models", Component: Mod9  },
+  { id: 9,  title: "Multiple Imputation",       icon: "🔧", subtitle: "Handling missing data",            Component: Mod10 },
+  { id: 10, title: "Capstone",                  icon: "🎓", subtitle: "Integrative assessment",           Component: Mod11 },
 ];
 
 /* ── MAIN APP ────────────────────────────────────────────────── */
