@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistics 101 for Cyberpsychologists</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root {
+    --bg:       #060d18;
+    --surface:  #0c1929;
+    --surface2: #0f2035;
+    --border:   #1a3050;
+    --teal:     #0dcfb2;
+    --teal-dim: #08a08a;
+    --amber:    #f59e0b;
+    --purple:   #a78bfa;
+    --green:    #22c55e;
+    --red:      #ef4444;
+    --text:     #c8d8eb;
+    --muted:    #4a6a88;
+    --heading:  #e8f0fa;
+    --sidebar-w: 280px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.75;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-label {
+    color: var(--teal);
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-title {
+    color: var(--heading);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .sidebar-sub {
+    color: var(--muted);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+  }
+
+  #toc {
+    padding: 12px 0;
+    flex: 1;
+  }
+
+  .toc-section {
+    display: block;
+    padding: 7px 20px;
+    color: var(--text);
+    text-decoration: none;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+  }
+
+  .toc-section:hover {
+    color: var(--teal);
+    border-left-color: var(--teal);
+    background: rgba(13,207,178,0.06);
+  }
+
+  .toc-section.active {
+    color: var(--teal);
+    border-left-color: var(--teal);
+    background: rgba(13,207,178,0.1);
+    font-weight: 600;
+  }
+
+  .toc-section .num {
+    color: var(--muted);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+
+  .toc-sub {
+    display: block;
+    padding: 4px 20px 4px 38px;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    transition: color 0.15s;
+  }
+
+  .toc-sub:hover { color: var(--teal); }
+  .toc-sub.active { color: var(--teal); }
+
+  .sidebar-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+  }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    flex: 1;
+    max-width: 820px;
+    padding: 60px 60px 120px;
+    margin: 0 auto;
+  }
+
+  /* ── TITLE BLOCK ── */
+  .book-title {
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .book-eyebrow {
+    color: var(--teal);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+
+  .book-title h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--heading);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .book-title .subtitle {
+    color: var(--amber);
+    font-style: italic;
+    font-size: 19px;
+    margin-bottom: 20px;
+  }
+
+  .book-title .tagline {
+    color: var(--muted);
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+  }
+
+  /* ── SECTIONS ── */
+  .chapter {
+    margin-bottom: 72px;
+    scroll-margin-top: 32px;
+  }
+
+  .chapter-header {
+    margin-bottom: 28px;
+  }
+
+  .chapter-num {
+    color: var(--teal);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-size: 28px;
+    color: var(--heading);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  h3 {
+    font-size: 18px;
+    color: var(--heading);
+    font-weight: 700;
+    margin: 32px 0 12px;
+    scroll-margin-top: 32px;
+  }
+
+  h3::before {
+    content: '§ ';
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  p { margin-bottom: 16px; }
+
+  a { color: var(--teal); }
+
+  strong { color: var(--heading); font-weight: 700; }
+
+  em { color: var(--amber); font-style: italic; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 24px 0;
+    font-family: system-ui, sans-serif;
+    font-size: 15px;
+  }
+
+  .callout.amber { border-left-color: var(--amber); }
+  .callout.purple { border-left-color: var(--purple); }
+  .callout.green { border-left-color: var(--green); }
+
+  .callout-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .callout .callout-label { color: var(--teal); }
+  .callout.amber .callout-label { color: var(--amber); }
+  .callout.purple .callout-label { color: var(--purple); }
+  .callout.green .callout-label { color: var(--green); }
+
+  /* ── EQUATION BLOCK ── */
+  .eq-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin: 20px 0;
+    text-align: center;
+    overflow-x: auto;
+  }
+
+  /* ── DEFINITION TABLE ── */
+  .def-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+  }
+
+  .def-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .def-table td:first-child {
+    color: var(--teal);
+    font-weight: 700;
+    white-space: nowrap;
+    width: 160px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+  }
+
+  .def-table tr:last-child td { border-bottom: none; }
+  .def-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── REFERENCE TABLE ── */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+  }
+
+  .ref-table th {
+    color: var(--teal);
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+    text-align: left;
+    background: var(--surface);
+  }
+
+  .ref-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+
+  /* ── INLINE CODE ── */
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--teal);
+    background: rgba(13,207,178,0.1);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ── ALPHA BANDS ── */
+  .alpha-band {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 6px 0;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+  }
+
+  .alpha-band .badge {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 56px 0;
+  }
+
+  /* ── PROGRESS BAR (decorative) ── */
+  .reading-bar {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    height: 2px;
+    background: var(--border);
+    z-index: 100;
+  }
+
+  .reading-bar-fill {
+    height: 100%;
+    background: var(--teal);
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 0px; }
+    #sidebar { display: none; }
+    #main { padding: 32px 24px 80px; }
+    .reading-bar { left: 0; }
+  }
+
+  /* ── KaTeX overrides ── */
+  .katex { color: var(--heading); }
+  .katex-display { margin: 0; }
+
+  /* ── FINAL WORD ── */
+  .final-word {
+    background: linear-gradient(135deg, rgba(13,207,178,0.08) 0%, rgba(245,158,11,0.06) 100%);
+    border: 1px solid var(--teal);
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin-top: 40px;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .final-word p:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+
+<div class="reading-bar"><div class="reading-bar-fill" id="readingBar"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-label">Textbook</div>
+    <div class="sidebar-title">Statistics 101</div>
+    <div class="sidebar-sub">for Cyberpsychologists</div>
+  </div>
+  <div id="toc">
+    <a href="#intro" class="toc-section"><span class="num">00</span>What Statistics Actually Is</a>
+    <a href="#ch1" class="toc-section"><span class="num">01</span>Describing Your Data</a>
+    <a href="#ch1-1" class="toc-sub">1.1 The Three Averages</a>
+    <a href="#ch1-2" class="toc-sub">1.2 Spread: SD &amp; Variance</a>
+    <a href="#ch1-3" class="toc-sub">1.3 Normal Distribution</a>
+    <a href="#ch2" class="toc-section"><span class="num">02</span>Inference</a>
+    <a href="#ch2-1" class="toc-sub">2.1 The Sampling Problem</a>
+    <a href="#ch2-2" class="toc-sub">2.2 Effect Size</a>
+    <a href="#ch2-3" class="toc-sub">2.3 Confidence Intervals</a>
+    <a href="#ch3" class="toc-section"><span class="num">03</span>The t-test</a>
+    <a href="#ch3-1" class="toc-sub">3.1 The Mechanics</a>
+    <a href="#ch3-2" class="toc-sub">3.2 Three Flavours</a>
+    <a href="#ch4" class="toc-section"><span class="num">04</span>Correlation &amp; Regression</a>
+    <a href="#ch4-1" class="toc-sub">4.1 Correlation</a>
+    <a href="#ch4-2" class="toc-sub">4.2 Simple Regression</a>
+    <a href="#ch4-3" class="toc-sub">4.3 Multiple Regression</a>
+    <a href="#ch4-4" class="toc-sub">4.4 Hierarchical Regression</a>
+    <a href="#ch5" class="toc-section"><span class="num">05</span>Cronbach's Alpha</a>
+    <a href="#ch6" class="toc-section"><span class="num">06</span>Factor Analysis</a>
+    <a href="#ch7" class="toc-section"><span class="num">07</span>PLS-SEM</a>
+    <a href="#ch7-1" class="toc-sub">7.1 What It Is</a>
+    <a href="#ch7-2" class="toc-sub">7.2 CB-SEM vs PLS-SEM</a>
+    <a href="#ch7-3" class="toc-sub">7.3 Key Statistics</a>
+    <a href="#ch8" class="toc-section"><span class="num">08</span>K-Means Clustering</a>
+    <a href="#ch9" class="toc-section"><span class="num">09</span>Multiple Imputation</a>
+    <a href="#ch10" class="toc-section"><span class="num">10</span>Quick Reference</a>
+  </div>
+  <div class="sidebar-footer">stats.ucahub.ie</div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- TITLE -->
+  <div class="book-title">
+    <div class="book-eyebrow">UCА · Research Methods</div>
+    <h1>Statistics 101<br>for Cyberpsychologists</h1>
+    <div class="subtitle">The concepts behind your data — in plain language</div>
+    <div class="tagline">Todd McCaffrey · MSc Cyberpsychology · ATU Letterkenny</div>
+  </div>
+
+  <!-- CH 0 -->
+  <section class="chapter" id="intro">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 00</div>
+      <h2>What Statistics Actually Is</h2>
+    </div>
+
+    <p><strong>One sentence:</strong> Statistics is the art of drawing defensible conclusions from imperfect data.</p>
+
+    <p>You cannot directly measure 'moral disengagement' or 'cyber-aggression'. You can only measure <em>proxies</em> — questionnaire responses, behavioural traces, self-reports. Statistics is the formal machinery for reasoning about the gap between your proxies and the real thing.</p>
+
+    <p>Think of it like a compiler. You write code in a high-level language (your theory). The compiler <strong>translates</strong> it into something the machine can execute (your data). Statistics is that compiler. It tells you whether your high-level ideas actually run — and how well.</p>
+
+    <div class="callout">
+      <div class="callout-label">The Fundamental Problem</div>
+      You have a <strong>SAMPLE</strong> (the 167 people who filled in your survey). You want to say something about a <strong>POPULATION</strong> (all people who might cyber-aggress). Every statistical technique is answering: <em>how confident can I be that what I found in my sample is actually true in the population?</em>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 1 -->
+  <section class="chapter" id="ch1">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 01</div>
+      <h2>Describing Your Data</h2>
+    </div>
+
+    <p>Before you can analyse anything, you need to describe what you have. These are the fundamental descriptive statistics — the vocabulary of any results section.</p>
+
+    <h3 id="ch1-1">1.1 The Three Averages</h3>
+
+    <table class="def-table">
+      <tr><td>Mean</td><td>The arithmetic average. Sum all values, divide by n. Sensitive to outliers — one extreme score drags it.</td></tr>
+      <tr><td>Median</td><td>The middle value when sorted. Robust to outliers. If your data is skewed, the median tells a more honest story.</td></tr>
+      <tr><td>Mode</td><td>The most frequent value. Mainly useful for categorical data. ('Most participants reported Strongly Agree.')</td></tr>
+    </table>
+
+    <div class="eq-block">
+      \(\displaystyle \bar{x} = \frac{\sum x_i}{n} \qquad \tilde{x} = \begin{cases} x_{(n+1)/2} & n \text{ odd} \\ \frac{x_{(n/2)} + x_{(n/2)+1}}{2} & n \text{ even} \end{cases}\)
+    </div>
+
+    <div class="callout amber">
+      <div class="callout-label">Example</div>
+      Cyber-aggression scores of [1, 2, 2, 3, 50]. Mean = 11.6. Median = 2. The outlier (50) makes the mean misleading — the median better represents the group.
+    </div>
+
+    <h3 id="ch1-2">1.2 Spread: Standard Deviation and Variance</h3>
+
+    <p>Knowing the average is half the story. You also need to know how spread out the scores are.</p>
+
+    <table class="def-table">
+      <tr><td>Variance (s²)</td><td>The average squared distance from the mean. Squaring makes all distances positive and penalises large deviations more.</td></tr>
+      <tr><td>Std Dev (s)</td><td>The square root of variance. Back in the original units. 'On average, scores deviate from the mean by this much.'</td></tr>
+    </table>
+
+    <div class="eq-block">
+      \(\displaystyle s = \sqrt{\frac{\sum(x_i - \bar{x})^2}{n-1}}\)
+    </div>
+
+    <div class="callout purple">
+      <div class="callout-label">The Engineering Analogy</div>
+      SD is like manufacturing tolerance. A mean score of 3.5 on a 5-point scale tells you where the centre is. An SD of 0.4 means almost everyone is bunched near 3.5 (tight tolerance). An SD of 1.8 means scores are scattered across the whole scale (sloppy tolerance). Both have the same mean — only the SD reveals they're completely different distributions.
+    </div>
+
+    <h3 id="ch1-3">1.3 The Normal Distribution</h3>
+
+    <p>Many psychological variables, when sampled sufficiently, produce a bell-shaped curve: lots of people in the middle, fewer at the extremes. This is the normal (Gaussian) distribution. Most statistical tests assume or approximate normality.</p>
+
+    <table class="def-table">
+      <tr><td>68-95-99.7 Rule</td><td>68% of scores fall within 1 SD of the mean. 95% within 2 SD. 99.7% within 3 SD.</td></tr>
+      <tr><td>Z-score</td><td>How many SDs above or below the mean a score is. Converts any scale to a common currency.</td></tr>
+    </table>
+
+    <div class="eq-block">
+      \(\displaystyle z = \frac{x - \mu}{\sigma} \qquad f(x) = \frac{1}{\sigma\sqrt{2\pi}}\,e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}\)
+    </div>
+
+    <p>If moral disengagement has mean 2.8 and SD 0.6, a score of 4.0 is <strong>2 SDs above the mean</strong> — in the top 2.5% of respondents. That's your z-score interpretation.</p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 2 -->
+  <section class="chapter" id="ch2">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 02</div>
+      <h2>The Core Engine: Inference</h2>
+    </div>
+
+    <h3 id="ch2-1">2.1 The Sampling Problem</h3>
+
+    <p>Your 167 participants are one possible sample from a vast population. If you ran the study again with 167 different people, you'd get slightly different numbers. The question is: is the pattern you found real, or just noise from this particular sample?</p>
+
+    <table class="def-table">
+      <tr><td>H₀ (Null)</td><td>There is no effect in the real population. What you observed happened by chance.</td></tr>
+      <tr><td>H₁ (Alternative)</td><td>There IS a real effect. Your sample is giving you a genuine signal.</td></tr>
+      <tr><td>p-value</td><td>The probability of getting your results (or more extreme) <em>if H₀ is true</em>. p &lt; .05 is the conventional threshold. It is <strong>not</strong> the probability that H₀ is true.</td></tr>
+    </table>
+
+    <div class="eq-block">
+      \(\displaystyle p = P\!\left(|T| \geq |t_{\text{obs}}| \mid H_0\right) \qquad \text{reject } H_0 \text{ if } p < \alpha\)
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">The Courtroom Analogy</div>
+      The null hypothesis is 'innocent until proven guilty'. You assume there's no effect. The p-value is the probability of seeing evidence this strong <em>if the defendant is truly innocent</em>. A small p-value means: 'this evidence would be very unlikely if there were no real effect.' But it does not prove guilt — it just makes innocence implausible.
+    </div>
+
+    <div class="callout green">
+      <div class="callout-label">Your Dissertation</div>
+      p &gt; .05 does not mean 'no effect exists'. It means 'insufficient evidence to reject H₀'. This is exactly why your null finding — AI factors not predicting cyber-aggression — is not a failure. It's a finding. It says: whatever effect exists, it's too small to detect as distinct from noise at n = 167.
+    </div>
+
+    <h3 id="ch2-2">2.2 Effect Size: The Number That Actually Matters</h3>
+
+    <p>p-values are contaminated by sample size. With 10,000 participants, a trivially tiny effect becomes statistically significant. Effect size is the clean measure of 'how big is this, really?'</p>
+
+    <table class="def-table">
+      <tr><td>Cohen's d</td><td>For comparing two means. d = 0.2 small, 0.5 medium, 0.8 large. Standardised distance between two group averages.</td></tr>
+      <tr><td>r (Pearson)</td><td>−1 to +1. How closely two variables move together. r² = proportion of shared variance.</td></tr>
+      <tr><td>f² (Cohen's)</td><td>Effect size for regression. f² = R² / (1 − R²). Small .02, medium .15, large .35.</td></tr>
+      <tr><td>η² / ω²</td><td>Effect size for ANOVA. How much variance does group membership explain?</td></tr>
+    </table>
+
+    <h3 id="ch2-3">2.3 Confidence Intervals</h3>
+
+    <p>A 95% CI tells you: if you repeated this study 100 times, 95 of those intervals would contain the true population parameter. In practice: it's a range of plausible values for your effect.</p>
+
+    <p>Always more informative than a p-value alone. A CI of [0.32, 0.48] for a correlation tells you something very different from [0.01, 0.79], even if both are 'significant'.</p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 3 -->
+  <section class="chapter" id="ch3">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 03</div>
+      <h2>The t-test</h2>
+    </div>
+
+    <p>The t-test is the simplest inferential workhorse. It answers one question: are these two means significantly different from each other?</p>
+
+    <h3 id="ch3-1">3.1 The Mechanics</h3>
+
+    <p>The t-statistic is a signal-to-noise ratio. The numerator is the signal (how different are the means?). The denominator is the noise (how much sampling variability is there?).</p>
+
+    <div class="eq-block">
+      \(\displaystyle t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}}} \qquad d = \frac{\bar{x}_1 - \bar{x}_2}{s_{\text{pooled}}}\)
+    </div>
+
+    <p>The Welch-Satterthwaite equation adjusts degrees of freedom for unequal group variances:</p>
+
+    <div class="eq-block">
+      \(\displaystyle df = \frac{\left(\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}\right)^2}{\dfrac{(s_1^2/n_1)^2}{n_1-1}+\dfrac{(s_2^2/n_2)^2}{n_2-1}}\)
+    </div>
+
+    <div class="callout amber">
+      <div class="callout-label">Key Assumption</div>
+      t-tests assume roughly normally distributed data — or large enough n that the Central Limit Theorem helps (typically n &gt; 30 per group). They also assume similar variance in both groups (homoscedasticity). Levene's test checks the variance assumption; SPSS/R report it automatically.
+    </div>
+
+    <h3 id="ch3-2">3.2 Three Flavours</h3>
+
+    <table class="def-table">
+      <tr><td>One-sample t</td><td>Is my sample mean different from a known value? 'Is the average cyber-aggression score different from the population average of 2.5?'</td></tr>
+      <tr><td>Independent t</td><td>Are two separate groups different? 'Do high AI-trust scorers have higher cyber-aggression than low AI-trust scorers?'</td></tr>
+      <tr><td>Paired t</td><td>Are the same people different at two time points? 'Did cyber-aggression scores change after an intervention?' Each person is their own control.</td></tr>
+    </table>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 4 -->
+  <section class="chapter" id="ch4">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 04</div>
+      <h2>Correlation and Regression</h2>
+    </div>
+
+    <h3 id="ch4-1">4.1 Correlation: Do These Variables Move Together?</h3>
+
+    <p>Pearson's r measures the linear relationship between two continuous variables. It ranges from −1 (perfect negative) to +1 (perfect positive). Zero means no linear relationship.</p>
+
+    <div class="eq-block">
+      \(\displaystyle r = \frac{\sum(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum(x_i-\bar{x})^2 \cdot \sum(y_i-\bar{y})^2}}\)
+    </div>
+
+    <div class="callout amber">
+      <div class="callout-label">Critical Point</div>
+      Correlation is not causation. Moral disengagement and cyber-aggression correlate strongly in your data. That tells you they move together. It does not tell you that disengagement <em>causes</em> aggression — though theory does.
+    </div>
+
+    <h3 id="ch4-2">4.2 Simple Linear Regression: Prediction</h3>
+
+    <p>Regression fits a line through your data to predict one variable from another.</p>
+
+    <div class="eq-block">
+      \(\displaystyle \hat{Y} = a + bX \qquad R^2 = r^2\)
+    </div>
+
+    <table class="def-table">
+      <tr><td>a (intercept)</td><td>Predicted Y when X = 0. Often not directly interpretable if X = 0 is outside your data range.</td></tr>
+      <tr><td>b (slope)</td><td>How much Y changes for each one-unit increase in X.</td></tr>
+      <tr><td>R²</td><td>Proportion of variance in Y explained by your predictor(s). R² = .40 → 40% of variation in cyber-aggression explained.</td></tr>
+    </table>
+
+    <h3 id="ch4-3">4.3 Multiple Regression: Several Predictors</h3>
+
+    <p>Multiple regression estimates the unique contribution of each predictor, controlling for all the others.</p>
+
+    <div class="eq-block">
+      \(\displaystyle Y = a + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \varepsilon\)
+    </div>
+
+    <table class="def-table">
+      <tr><td>β (beta)</td><td>Standardised coefficient. Same units as a z-score. Directly comparable across predictors on different scales.</td></tr>
+      <tr><td>b (unstandardised)</td><td>Raw slope in original units. 'Each 1-point increase in moral disengagement predicts a 0.79-point increase in cyber-aggression.'</td></tr>
+    </table>
+
+    <h3 id="ch4-4">4.4 Hierarchical Regression: Your Method</h3>
+
+    <p>Hierarchical regression enters predictors in theoretically-motivated blocks. The key statistic is ΔR² — how much additional variance the new block explains above and beyond what came before.</p>
+
+    <div class="eq-block">
+      \(\displaystyle \Delta R^2 = R^2_{\text{step}_k} - R^2_{\text{step}_{k-1}} \qquad F_{\text{change}} = \frac{\Delta R^2 / \Delta df_1}{(1 - R^2_k) / df_2}\)
+    </div>
+
+    <div class="callout green">
+      <div class="callout-label">Your Dissertation Example</div>
+      <strong>Block 1:</strong> Moral disengagement → R² = .38 (38% of cyber-aggression variance)<br>
+      <strong>Block 2:</strong> + AI trust, AI use → R² = .39 (ΔR² = .01, p = .43)<br><br>
+      Interpretation: AI factors add essentially nothing. Moral disengagement is doing the work. ΔR² ≈ 0 is the finding — a precise partitioning of variance.
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 5 -->
+  <section class="chapter" id="ch5">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 05</div>
+      <h2>Cronbach's Alpha</h2>
+    </div>
+
+    <p>Before you can trust your regression results, you need to know your scales are reliable. Cronbach's alpha (α) measures internal consistency: how correlated are the items within a scale?</p>
+
+    <p>The underlying logic: if five items all measure 'moral disengagement', they should all correlate positively. A person high on disengagement should score high on all five. If items don't correlate, they're measuring different things.</p>
+
+    <div class="eq-block">
+      \(\displaystyle \alpha = \frac{k}{k-1}\!\left(1 - \frac{\sum \sigma_i^2}{\sigma_t^2}\right)\)
+    </div>
+
+    <p>Where k = number of items, Σσᵢ² = sum of item variances, σₜ² = variance of the total score.</p>
+
+    <div style="margin: 20px 0;">
+      <div class="alpha-band" style="background: rgba(239,68,68,0.08);">
+        <span class="badge" style="background:rgba(239,68,68,0.2);color:#ef4444;">α &lt; .60</span>
+        <span style="font-family:system-ui;font-size:14px;color:var(--text);">Poor reliability. Items are not measuring the same construct. Revise before use.</span>
+      </div>
+      <div class="alpha-band" style="background: rgba(245,158,11,0.06);">
+        <span class="badge" style="background:rgba(245,158,11,0.2);color:#f59e0b;">α .60–.70</span>
+        <span style="font-family:system-ui;font-size:14px;color:var(--text);">Acceptable for exploratory research. Treat with caution.</span>
+      </div>
+      <div class="alpha-band" style="background: rgba(34,197,94,0.06);">
+        <span class="badge" style="background:rgba(34,197,94,0.2);color:#22c55e;">α .70–.90</span>
+        <span style="font-family:system-ui;font-size:14px;color:var(--text);">Good ✓ — target range for most psychometric scales.</span>
+      </div>
+      <div class="alpha-band" style="background: rgba(13,207,178,0.06);">
+        <span class="badge" style="background:rgba(13,207,178,0.2);color:#0dcfb2;">α &gt; .90</span>
+        <span style="font-family:system-ui;font-size:14px;color:var(--text);">Excellent — but potentially item redundancy. Items may be near-identical.</span>
+      </div>
+    </div>
+
+    <div class="callout amber">
+      <div class="callout-label">Important Caveat</div>
+      Alpha is not validity. A scale can have α = .92 and still not measure what you think it measures. High internal consistency means the items hang together — it says nothing about whether the construct maps to the real world. Validity requires Confirmatory Factor Analysis (CFA), convergent validity (AVE ≥ .50), and discriminant validity (HTMT &lt; .85).
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 6 -->
+  <section class="chapter" id="ch6">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 06</div>
+      <h2>Factor Analysis</h2>
+    </div>
+
+    <p>Factor analysis is the conceptual parent of PLS-SEM. Imagine you gave 20 questions to 200 people. Questions 1–5 all correlate with each other, 6–12 all correlate with each other, 13–20 all correlate — but the three groups don't correlate across groups. Factor analysis formalises this: there are probably three underlying latent variables driving each cluster.</p>
+
+    <table class="def-table">
+      <tr><td>Latent variable</td><td>A construct you can't measure directly (moral disengagement, trust, aggression). Inferred from observable indicators.</td></tr>
+      <tr><td>Manifest variable</td><td>The actual measured item (question responses, behaviours). Your observables.</td></tr>
+      <tr><td>Factor loading</td><td>How strongly an item loads onto a factor. Like a correlation. Loadings &gt; .70 are considered good; &gt; .40 meaningful.</td></tr>
+    </table>
+
+    <table class="def-table">
+      <tr><td>EFA</td><td><strong>Exploratory Factor Analysis.</strong> 'I don't know how many factors there are — show me the structure.' Used in scale development. Let the data reveal which items cluster.</td></tr>
+      <tr><td>CFA</td><td><strong>Confirmatory Factor Analysis.</strong> 'I have a theoretical model — does the data fit it?' Tests established scales. More rigorous. Used inside SEM.</td></tr>
+    </table>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 7 -->
+  <section class="chapter" id="ch7">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 07</div>
+      <h2>PLS-SEM</h2>
+    </div>
+
+    <h3 id="ch7-1">7.1 What It Is</h3>
+
+    <p>Structural Equation Modelling (SEM) is regression on steroids. It lets you test a whole theoretical model simultaneously: multiple predictors, multiple outcomes, indirect effects (mediation), and latent variables — all in one analysis. A SEM has two layers:</p>
+
+    <table class="def-table">
+      <tr><td>Measurement model</td><td>The CFA part. Confirms that your latent variables are well-measured by their items. Cronbach's α, factor loadings, convergent/discriminant validity.</td></tr>
+      <tr><td>Structural model</td><td>The regression part. Tests the paths between latent constructs. 'Moral disengagement → cyber-aggression.' Estimates β and R².</td></tr>
+    </table>
+
+    <h3 id="ch7-2">7.2 CB-SEM vs PLS-SEM</h3>
+
+    <table class="def-table">
+      <tr><td>CB-SEM</td><td>e.g. AMOS, lavaan. Fits the model by minimising the difference between the observed covariance matrix and the model-implied one. Gold standard for confirmatory theory testing. Needs larger samples, multivariate normality, established scales.</td></tr>
+      <tr><td>PLS-SEM</td><td>e.g. SmartPLS. Maximises explained variance in outcomes (prediction-oriented). Better for exploratory/complex models, smaller samples, non-normal data. <strong>Your dissertation choice.</strong></td></tr>
+    </table>
+
+    <div class="callout">
+      <div class="callout-label">The Key Trade-off</div>
+      CB-SEM is the gold standard for theory testing. PLS-SEM is more lenient — it will almost always find some variance explained. Using PLS-SEM alongside hierarchical regression (CB-SEM's simpler cousin) strengthens your triangulation. Two different approaches, same substantive finding: AI factors don't add to the model.
+    </div>
+
+    <h3 id="ch7-3">7.3 Key PLS-SEM Statistics</h3>
+
+    <div class="eq-block">
+      \(\displaystyle AVE = \frac{\sum \lambda_i^2}{k} \qquad CR = \frac{(\sum \lambda_i)^2}{(\sum \lambda_i)^2 + \sum(1-\lambda_i^2)} \qquad HTMT < .85\)
+    </div>
+
+    <div class="eq-block">
+      \(\displaystyle f^2 = \frac{R^2_{\text{included}} - R^2_{\text{excluded}}}{1 - R^2_{\text{included}}} \qquad Q^2 > 0 \Rightarrow \text{predictive relevance}\)
+    </div>
+
+    <table class="def-table">
+      <tr><td>AVE</td><td>Average Variance Extracted. Convergent validity. AVE &gt; .50 means the construct explains more than half of item variance. Good.</td></tr>
+      <tr><td>CR</td><td>Composite Reliability. Like α but weighted by loadings. CR &gt; .70 acceptable, &gt; .80 good.</td></tr>
+      <tr><td>HTMT</td><td>Heterotrait-Monotrait Ratio. Discriminant validity. HTMT &lt; .85 = constructs are sufficiently distinct.</td></tr>
+      <tr><td>R² (endogenous)</td><td>Variance in outcome variable explained by structural model predictors. Same interpretation as regression R².</td></tr>
+      <tr><td>β (path coeff.)</td><td>Standardised structural paths between constructs. Direction and magnitude of relationships.</td></tr>
+      <tr><td>f²</td><td>Effect size for each path. How much does removing a predictor reduce R²? &lt;.02 negligible, .02–.15 small, .15–.35 medium, &gt;.35 large.</td></tr>
+      <tr><td>Q²</td><td>Stone-Geisser test. Q² &gt; 0 = model has better-than-chance predictive power. Estimated via blindfolding.</td></tr>
+    </table>
+
+    <p>Bootstrapping is the standard approach for significance testing in PLS-SEM — it resamples your data thousands of times to estimate standard errors empirically, without assuming normality.</p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 8 -->
+  <section class="chapter" id="ch8">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 08</div>
+      <h2>K-Means Clustering</h2>
+    </div>
+
+    <p>Clustering is fundamentally different from everything above. Regression and SEM are about relationships between variables. Clustering is about finding natural groups of participants.</p>
+
+    <div class="eq-block">
+      \(\displaystyle \underset{S}{\arg\min} \sum_{i=1}^{k} \sum_{x \in S_i} \|x - \mu_i\|^2\)
+    </div>
+
+    <p><strong>The algorithm:</strong> Place K random centroids in the data space. Assign each participant to their nearest centroid. Recalculate each centroid as the mean of assigned points. Repeat until assignments stop changing.</p>
+
+    <div class="callout purple">
+      <div class="callout-label">The GPS Analogy</div>
+      Imagine plotting every participant as a point in 3D space where X = moral disengagement, Y = AI trust, Z = cyber-aggression. K-means finds the K 'towns' in this landscape where most people cluster. It doesn't know what the towns represent — you have to interpret the cluster characteristics after the fact.
+    </div>
+
+    <h3>Choosing K</h3>
+
+    <table class="def-table">
+      <tr><td>Elbow method</td><td>Plot within-cluster variance for K = 1, 2, 3, 4… The 'elbow' is where adding more clusters stops dramatically reducing variance.</td></tr>
+      <tr><td>Silhouette score</td><td>For each point: how similar is it to its own cluster vs. the nearest other cluster? Average silhouette width of 1.0 = perfect clusters. 0 = ambiguous.</td></tr>
+    </table>
+
+    <h3>Limitations</h3>
+
+    <p>K-means assumes clusters are spherical and similarly sized. Results are sensitive to initial random centroid placement — run multiple times. Outliers distort centroids. Cluster labels are <em>your</em> interpretation — the algorithm gives you groups; theory gives them names.</p>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 9 -->
+  <section class="chapter" id="ch9">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 09</div>
+      <h2>Multiple Imputation</h2>
+    </div>
+
+    <p>Your 167 responses had some missing values. How you handle them matters enormously.</p>
+
+    <table class="def-table">
+      <tr><td>Listwise deletion</td><td>Drop any participant with any missing value. Simple but wasteful and potentially biased — what if people who skipped items are systematically different?</td></tr>
+      <tr><td>Mean imputation</td><td>Replace missing values with the variable mean. Artificially reduces variance and distorts correlations. Generally bad practice.</td></tr>
+      <tr><td>Multiple Imputation</td><td>Create m complete datasets by estimating plausible missing values from other variables, run your analysis on each, then pool the results using Rubin's Rules. What you used. Best practice.</td></tr>
+    </table>
+
+    <div class="eq-block">
+      \(\displaystyle \bar{Q} = \frac{1}{m}\sum_{i=1}^m \hat{Q}_i \qquad T = \bar{U} + \left(1+\frac{1}{m}\right)B\)
+    </div>
+
+    <h3>The Missing Data Taxonomy</h3>
+
+    <table class="def-table">
+      <tr><td>MCAR</td><td><strong>Missing Completely At Random.</strong> No relationship to any variable. Rare. Listwise deletion is valid here.</td></tr>
+      <tr><td>MAR</td><td><strong>Missing At Random.</strong> Missingness depends on other observed variables but not the missing value itself. MI handles this correctly. <em>Your dissertation scenario.</em></td></tr>
+      <tr><td>MNAR</td><td><strong>Missing Not At Random.</strong> Missingness depends on the unobserved value (e.g. high aggressors don't disclose aggression). Most dangerous. MI doesn't fully solve this — requires sensitivity analysis.</td></tr>
+    </table>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CH 10: Quick Reference -->
+  <section class="chapter" id="ch10">
+    <div class="chapter-header">
+      <div class="chapter-num">Chapter 10</div>
+      <h2>Quick Reference</h2>
+    </div>
+
+    <p>What technique for what question?</p>
+
+    <table class="ref-table">
+      <thead>
+        <tr><th>Question</th><th>Technique</th><th>Key Output</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Are two group means different?</td><td>Independent t-test</td><td>t, p, Cohen's d</td></tr>
+        <tr><td>Do these items measure the same thing?</td><td>Cronbach's alpha / CR</td><td>α, CR (&gt;.70 good)</td></tr>
+        <tr><td>How are two variables related?</td><td>Pearson correlation</td><td>r, r², p-value</td></tr>
+        <tr><td>Predict Y from one X</td><td>Simple regression</td><td>β, R², F, p</td></tr>
+        <tr><td>Predict Y from multiple X, control covariates</td><td>Multiple regression</td><td>β, R², ΔR²</td></tr>
+        <tr><td>Test blocks of predictors sequentially</td><td>Hierarchical regression</td><td>ΔR², F-change, p</td></tr>
+        <tr><td>Test whole theoretical model with latent variables</td><td>PLS-SEM</td><td>β, R², AVE, HTMT, f²</td></tr>
+        <tr><td>Confirm scale factor structure</td><td>CFA</td><td>Factor loadings, fit indices</td></tr>
+        <tr><td>Find natural groups of participants</td><td>K-means clustering</td><td>Cluster membership, silhouette</td></tr>
+        <tr><td>Handle missing data properly</td><td>Multiple imputation</td><td>Pooled estimates, Rubin's Rules</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- FINAL WORD -->
+  <section class="chapter">
+    <div class="final-word">
+      <p>Statistics is not mathematics. It's an argument structure. Every number — an R², a p-value, a path coefficient — is a move in a rhetorical game you're playing with your reader: convincing them that your conclusions follow defensibly from your data.</p>
+      <p>The mastery isn't in computing the numbers. It's in knowing which argument you're trying to make, choosing the technique that makes that argument honestly, and being clear about what you can and cannot conclude.</p>
+      <p>You already have that understanding. This document just gives you the vocabulary to express it precisely.</p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // KaTeX auto-render
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "\\(", right: "\\)", display: false},
+        {left: "\\[", right: "\\]", display: true},
+        {left: "\\displaystyle", right: "", display: true}
+      ],
+      throwOnError: false
+    });
+  });
+
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const scrolled = el.scrollTop / (el.scrollHeight - el.clientHeight) * 100;
+    document.getElementById('readingBar').style.width = scrolled + '%';
+  });
+
+  // TOC active state via IntersectionObserver
+  const sections = document.querySelectorAll('section[id], h3[id]');
+  const tocLinks = document.querySelectorAll('#toc a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === '#' + entry.target.id) {
+            link.classList.add('active');
+            // Scroll TOC to keep active item visible
+            link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }
+        });
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
