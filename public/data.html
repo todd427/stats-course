@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dataset Guide — Statistics 101 for Cyberpsychologists</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root {
+    --bg:       #060d18;
+    --surface:  #0c1929;
+    --surface2: #0f2035;
+    --border:   #1a3050;
+    --teal:     #0dcfb2;
+    --teal-dim: #08a08a;
+    --amber:    #f59e0b;
+    --purple:   #a78bfa;
+    --green:    #22c55e;
+    --red:      #ef4444;
+    --text:     #c8d8eb;
+    --muted:    #4a6a88;
+    --heading:  #e8f0fa;
+    --sidebar-w: 260px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-header {
+    padding: 20px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-label {
+    color: var(--teal);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .sidebar-title { color: var(--heading); font-size: 14px; font-weight: 700; }
+  .sidebar-sub { color: var(--muted); font-size: 11px; font-family: 'Courier New', monospace; }
+
+  .toc-link {
+    display: block;
+    padding: 7px 18px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .toc-link:hover, .toc-link.active {
+    color: var(--teal);
+    border-left-color: var(--teal);
+    background: rgba(13,207,178,0.07);
+  }
+
+  .toc-link .num {
+    color: var(--muted);
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    margin-right: 6px;
+  }
+
+  .nav-links {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: background 0.15s;
+  }
+
+  .nav-link.teal { color: var(--teal); border-color: rgba(13,207,178,0.25); background: rgba(13,207,178,0.08); }
+  .nav-link.amber { color: var(--amber); border-color: rgba(245,158,11,0.25); background: rgba(245,158,11,0.08); }
+  .nav-link.purple { color: var(--purple); border-color: rgba(167,139,250,0.25); background: rgba(167,139,250,0.08); }
+
+  .nav-link:hover { filter: brightness(1.15); }
+
+  /* ── MAIN ── */
+  #main {
+    flex: 1;
+    max-width: 820px;
+    padding: 52px 56px 100px;
+  }
+
+  .page-title {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-eyebrow {
+    color: var(--teal);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .page-title h1 {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--heading);
+    font-family: Georgia, serif;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .page-title p {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 520px;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-bottom: 60px;
+    scroll-margin-top: 28px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  h2 {
+    font-size: 22px;
+    color: var(--heading);
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 15px;
+    color: var(--amber);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 28px 0 10px;
+    font-family: 'Courier New', monospace;
+  }
+
+  p { margin-bottom: 14px; color: var(--text); }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: #020810;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 4px;
+    padding: 2px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { color: var(--teal); border-color: var(--teal); }
+  .copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+  pre {
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  /* Syntax colouring */
+  .r-comment { color: var(--muted); font-style: italic; }
+  .r-string  { color: var(--green); }
+  .r-func    { color: var(--teal); }
+  .r-keyword { color: var(--purple); }
+  .r-number  { color: var(--amber); }
+  .r-assign  { color: var(--text); }
+
+  /* ── VARIABLE TABLE ── */
+  .var-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+
+  .var-table th {
+    color: var(--teal);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+    text-align: left;
+    background: var(--surface);
+    font-family: 'Courier New', monospace;
+  }
+
+  .var-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .var-table td:first-child {
+    color: var(--teal);
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .var-table td:nth-child(2) {
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .var-table tr:last-child td { border-bottom: none; }
+  .var-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--surface2);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .callout.amber { border-left-color: var(--amber); }
+  .callout.green { border-left-color: var(--green); }
+  .callout.purple { border-left-color: var(--purple); }
+
+  .callout-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+    font-family: 'Courier New', monospace;
+    color: var(--teal);
+  }
+
+  .callout.amber .callout-label { color: var(--amber); }
+  .callout.green .callout-label { color: var(--green); }
+  .callout.purple .callout-label { color: var(--purple); }
+
+  /* ── STEP LIST ── */
+  .steps { list-style: none; padding: 0; margin: 16px 0; }
+
+  .steps li {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(13,207,178,0.15);
+    border: 1px solid rgba(13,207,178,0.4);
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .step-content { flex: 1; }
+  .step-content strong { color: var(--heading); }
+
+  /* ── STAT PREVIEW ── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .stat-label {
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    color: var(--teal);
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+  }
+
+  .stat-sub {
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 2px;
+  }
+
+  /* ── HR ── */
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--teal);
+    background: rgba(13,207,178,0.1);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .reading-bar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 2px; background: var(--border); z-index: 100; }
+  .reading-bar-fill { height: 100%; background: var(--teal); width: 0%; transition: width 0.1s; }
+
+  @media (max-width: 860px) {
+    :root { --sidebar-w: 0px; }
+    #sidebar { display: none; }
+    #main { padding: 28px 20px 60px; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .reading-bar { left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="reading-bar"><div class="reading-bar-fill" id="readingBar"></div></div>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-label">Data Guide</div>
+    <div class="sidebar-title">UCA Dataset</div>
+    <div class="sidebar-sub">stats.ucahub.ie</div>
+  </div>
+
+  <div style="padding: 10px 0; flex: 1;">
+    <a href="#overview"   class="toc-link"><span class="num">01</span>Overview</a>
+    <a href="#variables"  class="toc-link"><span class="num">02</span>Variables</a>
+    <a href="#download"   class="toc-link"><span class="num">03</span>Download</a>
+    <a href="#setup"      class="toc-link"><span class="num">04</span>R Setup</a>
+    <a href="#load"       class="toc-link"><span class="num">05</span>Load &amp; Explore</a>
+    <a href="#imputation" class="toc-link"><span class="num">06</span>Multiple Imputation</a>
+    <a href="#regression" class="toc-link"><span class="num">07</span>Hierarchical Regression</a>
+    <a href="#ttest"      class="toc-link"><span class="num">08</span>t-test</a>
+    <a href="#correlation" class="toc-link"><span class="num">09</span>Correlation</a>
+    <a href="#full"       class="toc-link"><span class="num">10</span>Full Script</a>
+  </div>
+
+  <div class="nav-links">
+    <a href="/" class="nav-link teal"><span>⚡</span> Interactive Course</a>
+    <a href="/book" class="nav-link teal"><span>📖</span> Textbook</a>
+    <a href="/data/uca_synthetic.csv" download class="nav-link amber"><span>⬇</span> Download CSV</a>
+    <a href="/data/uca_analysis.R" download class="nav-link purple"><span>R</span> Download R Script</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <div class="page-title">
+    <div class="page-eyebrow">UCA · Research Methods</div>
+    <h1>Using the Dataset</h1>
+    <p>A synthetic dataset and R analysis script to accompany every worked example in the course and textbook.</p>
+  </div>
+
+  <!-- OVERVIEW -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(13,207,178,0.12);">📋</div>
+      <h2>Overview</h2>
+    </div>
+
+    <p>The dataset is <strong>synthetic</strong> — it was generated to match the descriptive statistics, correlation structure, and missing data pattern of the original UCA dissertation (Todd McCaffrey, ATU Letterkenny, 2025). It is not the real survey data, but it behaves statistically the same way. Every result you reproduce here will mirror the dissertation findings.</p>
+
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-label">Participants</div><div class="stat-value">167</div><div class="stat-sub">n = 167</div></div>
+      <div class="stat-box"><div class="stat-label">Variables</div><div class="stat-value">7</div><div class="stat-sub">4 scale + 3 demo</div></div>
+      <div class="stat-box"><div class="stat-label">Missing</div><div class="stat-value">~8%</div><div class="stat-sub">per scale variable</div></div>
+      <div class="stat-box"><div class="stat-label">MD–CA r</div><div class="stat-value">.61</div><div class="stat-sub">key correlation</div></div>
+    </div>
+
+    <div class="callout green">
+      <div class="callout-label">Key Finding</div>
+      Moral disengagement is the dominant predictor of cyber-aggression (β = .61, p &lt; .001, ΔR² = .34). AI trust and AI use add negligible incremental variance (ΔR² = .01, p = .43). This null finding is theoretically meaningful.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- VARIABLES -->
+  <section class="section" id="variables">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.12);">🗂</div>
+      <h2>Variables</h2>
+    </div>
+
+    <table class="var-table">
+      <thead>
+        <tr>
+          <th>Column name</th>
+          <th>Type</th>
+          <th>Range</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>participant_id</td>
+          <td>integer</td>
+          <td>1 – 167</td>
+          <td>Unique participant identifier</td>
+        </tr>
+        <tr>
+          <td>age</td>
+          <td>integer</td>
+          <td>17 – 65</td>
+          <td>Participant age in years. Mean ≈ 24.3, SD ≈ 6.1</td>
+        </tr>
+        <tr>
+          <td>gender</td>
+          <td>integer</td>
+          <td>1, 2, 3</td>
+          <td>1 = Female (58%), 2 = Male (39%), 3 = Non-binary / Other (3%)</td>
+        </tr>
+        <tr>
+          <td>moral_disengagement</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Composite scale score. Bandura's Mechanisms of Moral Disengagement Scale (8 items). Higher = greater disengagement. M = 2.81, SD = 0.60</td>
+        </tr>
+        <tr>
+          <td>cyber_aggression</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Composite scale score. Cyber-Aggression Typology Questionnaire. Higher = greater aggression. M = 3.08, SD = 0.65</td>
+        </tr>
+        <tr>
+          <td>ai_trust</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Composite scale score. AI Trust Scale (5 items). Higher = greater trust in AI systems. M = 3.37, SD = 0.68</td>
+        </tr>
+        <tr>
+          <td>ai_use</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Composite scale score. AI Use Frequency Scale (4 items). Higher = more frequent AI use. M = 3.19, SD = 0.71</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout amber">
+      <div class="callout-label">Missing Data</div>
+      Approximately 8–10% of values are missing per scale variable, consistent with a Missing At Random (MAR) mechanism. Little's MCAR test on the original data: χ² = 14.3, p = .21 — consistent with MAR. Use multiple imputation, not listwise deletion.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- DOWNLOAD -->
+  <section class="section" id="download">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(34,197,94,0.12);">⬇</div>
+      <h2>Download</h2>
+    </div>
+
+    <p>Two files. Put them in the same folder on your machine.</p>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;">
+      <a href="/data/uca_synthetic.csv" download
+        style="display:inline-flex;align-items:center;gap:10px;padding:14px 20px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:10px;text-decoration:none;color:var(--green);font-weight:700;font-size:14px;">
+        <span style="font-size:22px;">📄</span>
+        <div>
+          <div>uca_synthetic.csv</div>
+          <div style="color:var(--muted);font-size:12px;font-weight:400;">167 rows × 7 columns</div>
+        </div>
+      </a>
+      <a href="/data/uca_analysis.R" download
+        style="display:inline-flex;align-items:center;gap:10px;padding:14px 20px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.3);border-radius:10px;text-decoration:none;color:var(--purple);font-weight:700;font-size:14px;">
+        <span style="font-size:22px;">📊</span>
+        <div>
+          <div>uca_analysis.R</div>
+          <div style="color:var(--muted);font-size:12px;font-weight:400;">Fully annotated R script</div>
+        </div>
+      </a>
+    </div>
+
+    <p>Place both in the same working directory in R, or set your working directory to wherever you saved the CSV.</p>
+  </section>
+
+  <hr>
+
+  <!-- R SETUP -->
+  <section class="section" id="setup">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,0.12);">⚙️</div>
+      <h2>R Setup</h2>
+    </div>
+
+    <p>If you haven't used R before, install <a href="https://cran.r-project.org" target="_blank">R</a> and <a href="https://posit.co/download/rstudio-desktop/" target="_blank">RStudio</a> first. Then install the required packages — you only need to do this once.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Install required packages (run once)</span>
+<span class="r-func">install.packages</span>(<span class="r-func">c</span>(
+  <span class="r-string">"mice"</span>,      <span class="r-comment"># multiple imputation</span>
+  <span class="r-string">"psych"</span>,     <span class="r-comment"># descriptive stats, alpha</span>
+  <span class="r-string">"ggplot2"</span>,   <span class="r-comment"># visualisation</span>
+  <span class="r-string">"dplyr"</span>      <span class="r-comment"># data wrangling</span>
+))</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Load packages at the start of every session</span>
+<span class="r-func">library</span>(mice)
+<span class="r-func">library</span>(psych)
+<span class="r-func">library</span>(ggplot2)
+<span class="r-func">library</span>(dplyr)</pre>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Set Your Working Directory</div>
+      In RStudio: <strong>Session → Set Working Directory → To Source File Location</strong>. This tells R where to find the CSV file. Alternatively use <code>setwd("/path/to/your/folder")</code>.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- LOAD & EXPLORE -->
+  <section class="section" id="load">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(13,207,178,0.12);">🔍</div>
+      <h2>Load &amp; Explore</h2>
+    </div>
+
+    <p>First steps: load the data and get a feel for it.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Load the dataset</span>
+df <span class="r-assign">&lt;-</span> <span class="r-func">read.csv</span>(<span class="r-string">"uca_synthetic.csv"</span>)
+
+<span class="r-comment"># First look</span>
+<span class="r-func">head</span>(df)          <span class="r-comment"># first 6 rows</span>
+<span class="r-func">str</span>(df)           <span class="r-comment"># structure: variable types</span>
+<span class="r-func">dim</span>(df)           <span class="r-comment"># rows × columns: should be 167 × 7</span></pre>
+    </div>
+
+    <h3>Descriptive Statistics</h3>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Full descriptives: mean, SD, median, skew, kurtosis</span>
+<span class="r-func">describe</span>(df[, <span class="r-func">c</span>(<span class="r-string">"moral_disengagement"</span>, <span class="r-string">"cyber_aggression"</span>,
+               <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_use"</span>)])
+
+<span class="r-comment"># Check missing values</span>
+<span class="r-func">colSums</span>(<span class="r-func">is.na</span>(df))
+
+<span class="r-comment"># Visualise missing data pattern</span>
+<span class="r-func">md.pattern</span>(df[, <span class="r-func">c</span>(<span class="r-string">"moral_disengagement"</span>, <span class="r-string">"cyber_aggression"</span>,
+                  <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_use"</span>)])</pre>
+    </div>
+
+    <p>You should see means close to: MD = 2.81, CA = 3.08, AIT = 3.37, AIU = 3.19. The missing data pattern will show which combinations of variables have missing values simultaneously.</p>
+  </section>
+
+  <hr>
+
+  <!-- MULTIPLE IMPUTATION -->
+  <section class="section" id="imputation">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(245,158,11,0.12);">🔧</div>
+      <h2>Multiple Imputation</h2>
+    </div>
+
+    <p>Before running any analysis, handle the missing data properly using multiple imputation with the <code>mice</code> package. This creates m = 5 complete datasets and any analysis you run will be pooled across all five using Rubin's Rules.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-content"><strong>Create imputed datasets.</strong> The <code>mice()</code> function runs the imputation. <code>method = "pmm"</code> is predictive mean matching — it replaces missing values with plausible observed values from similar participants.</div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-content"><strong>Run your analysis on each dataset.</strong> Use <code>with(imp, ...)</code> to apply a model to all 5 imputed datasets automatically.</div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-content"><strong>Pool the results.</strong> <code>pool()</code> combines the 5 sets of estimates using Rubin's Rules, producing a single set of coefficients with correctly inflated standard errors.</div>
+      </li>
+    </ol>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Step 1: Create 5 imputed datasets</span>
+<span class="r-func">set.seed</span>(<span class="r-number">42</span>)   <span class="r-comment"># for reproducibility</span>
+
+imp <span class="r-assign">&lt;-</span> <span class="r-func">mice</span>(
+  df[, <span class="r-func">c</span>(<span class="r-string">"moral_disengagement"</span>, <span class="r-string">"cyber_aggression"</span>,
+         <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_use"</span>, <span class="r-string">"age"</span>, <span class="r-string">"gender"</span>)],
+  m          = <span class="r-number">5</span>,        <span class="r-comment"># number of imputed datasets</span>
+  method     = <span class="r-string">"pmm"</span>,    <span class="r-comment"># predictive mean matching</span>
+  printFlag  = <span class="r-number">FALSE</span>    <span class="r-comment"># suppress iteration output</span>
+)
+
+<span class="r-comment"># Check imputation looks reasonable</span>
+<span class="r-func">densityplot</span>(imp)   <span class="r-comment"># imputed values should overlap observed</span>
+
+<span class="r-comment"># Get one complete dataset for exploration</span>
+df_complete <span class="r-assign">&lt;-</span> <span class="r-func">complete</span>(imp, <span class="r-number">1</span>)</pre>
+    </div>
+
+    <div class="callout amber">
+      <div class="callout-label">What to Check</div>
+      The <code>densityplot()</code> shows the distribution of imputed values (magenta) overlaid on observed values (blue) for each variable. They should look similar — if imputed values are in a completely different range, something is wrong with the imputation model.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- HIERARCHICAL REGRESSION -->
+  <section class="section" id="regression">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(13,207,178,0.12);">🧱</div>
+      <h2>Hierarchical Regression</h2>
+    </div>
+
+    <p>The key analysis. Three blocks entered sequentially. The critical question is whether Block 3 (AI factors) adds significant incremental variance above Block 2.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Run each block on all 5 imputed datasets</span>
+
+<span class="r-comment"># Block 1: Demographics only</span>
+fit1 <span class="r-assign">&lt;-</span> <span class="r-func">with</span>(imp,
+  <span class="r-func">lm</span>(cyber_aggression ~ age + gender))
+
+<span class="r-comment"># Block 2: + Moral Disengagement</span>
+fit2 <span class="r-assign">&lt;-</span> <span class="r-func">with</span>(imp,
+  <span class="r-func">lm</span>(cyber_aggression ~ age + gender + moral_disengagement))
+
+<span class="r-comment"># Block 3: + AI Trust and AI Use</span>
+fit3 <span class="r-assign">&lt;-</span> <span class="r-func">with</span>(imp,
+  <span class="r-func">lm</span>(cyber_aggression ~ age + gender + moral_disengagement +
+       ai_trust + ai_use))
+
+<span class="r-comment"># Pool results using Rubin's Rules</span>
+<span class="r-func">summary</span>(<span class="r-func">pool</span>(fit1))
+<span class="r-func">summary</span>(<span class="r-func">pool</span>(fit2))
+<span class="r-func">summary</span>(<span class="r-func">pool</span>(fit3))</pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># R² and ΔR² using one complete dataset</span>
+m1 <span class="r-assign">&lt;-</span> <span class="r-func">lm</span>(cyber_aggression ~ age + gender,
+        data = df_complete)
+m2 <span class="r-assign">&lt;-</span> <span class="r-func">lm</span>(cyber_aggression ~ age + gender + moral_disengagement,
+        data = df_complete)
+m3 <span class="r-assign">&lt;-</span> <span class="r-func">lm</span>(cyber_aggression ~ age + gender + moral_disengagement +
+           ai_trust + ai_use, data = df_complete)
+
+<span class="r-func">cat</span>(<span class="r-string">"Block 1 R²:"</span>,  <span class="r-func">round</span>(<span class="r-func">summary</span>(m1)$r.squared, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)
+<span class="r-func">cat</span>(<span class="r-string">"Block 2 R²:"</span>,  <span class="r-func">round</span>(<span class="r-func">summary</span>(m2)$r.squared, <span class="r-number">3</span>),
+    <span class="r-string">" ΔR²:"</span>, <span class="r-func">round</span>(<span class="r-func">summary</span>(m2)$r.squared -
+                    <span class="r-func">summary</span>(m1)$r.squared, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)
+<span class="r-func">cat</span>(<span class="r-string">"Block 3 R²:"</span>,  <span class="r-func">round</span>(<span class="r-func">summary</span>(m3)$r.squared, <span class="r-number">3</span>),
+    <span class="r-string">" ΔR²:"</span>, <span class="r-func">round</span>(<span class="r-func">summary</span>(m3)$r.squared -
+                    <span class="r-func">summary</span>(m2)$r.squared, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)
+
+<span class="r-comment"># F-change test: does Block 3 add significantly?</span>
+<span class="r-func">anova</span>(m2, m3)</pre>
+    </div>
+
+    <div class="callout green">
+      <div class="callout-label">Expected Output</div>
+      Block 1 R² ≈ .04 · Block 2 R² ≈ .38 (ΔR² ≈ .34, p &lt; .001) · Block 3 R² ≈ .39 (ΔR² ≈ .01, p ≈ .43). The F-change for Block 3 will be non-significant — that is the finding.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- T-TEST -->
+  <section class="section" id="ttest">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,0.12);">🔬</div>
+      <h2>t-test</h2>
+    </div>
+
+    <p>Compare two groups on cyber-aggression. Here: male vs. female participants.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Independent samples t-test: gender × cyber-aggression</span>
+<span class="r-comment"># Filter to male (2) and female (1) only</span>
+df_gender <span class="r-assign">&lt;-</span> df_complete[df_complete$gender <span class="r-func">%in%</span> <span class="r-func">c</span>(<span class="r-number">1</span>, <span class="r-number">2</span>), ]
+
+t_result <span class="r-assign">&lt;-</span> <span class="r-func">t.test</span>(cyber_aggression ~ gender, data = df_gender)
+<span class="r-func">print</span>(t_result)
+
+<span class="r-comment"># Cohen's d (effect size)</span>
+male   <span class="r-assign">&lt;-</span> df_gender$cyber_aggression[df_gender$gender == <span class="r-number">2</span>]
+female <span class="r-assign">&lt;-</span> df_gender$cyber_aggression[df_gender$gender == <span class="r-number">1</span>]
+
+cohens_d <span class="r-assign">&lt;-</span> (<span class="r-func">mean</span>(male) - <span class="r-func">mean</span>(female)) /
+  <span class="r-func">sqrt</span>((<span class="r-func">sd</span>(male)^<span class="r-number">2</span> + <span class="r-func">sd</span>(female)^<span class="r-number">2</span>) / <span class="r-number">2</span>)
+
+<span class="r-func">cat</span>(<span class="r-string">"Cohen's d ="</span>, <span class="r-func">round</span>(cohens_d, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)</pre>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Remember</div>
+      Always report t, df, p, <em>and</em> Cohen's d. The p-value tells you if the difference is unlikely by chance. Cohen's d tells you how big the difference actually is. You need both.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- CORRELATION -->
+  <section class="section" id="correlation">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(34,197,94,0.12);">📈</div>
+      <h2>Correlation</h2>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Correlation matrix with p-values</span>
+<span class="r-func">corr.test</span>(df_complete[, <span class="r-func">c</span>(<span class="r-string">"moral_disengagement"</span>,
+                          <span class="r-string">"cyber_aggression"</span>,
+                          <span class="r-string">"ai_trust"</span>,
+                          <span class="r-string">"ai_use"</span>)])
+
+<span class="r-comment"># Scatter plot: MD vs CA with regression line</span>
+<span class="r-func">ggplot</span>(df_complete,
+       <span class="r-func">aes</span>(x = moral_disengagement, y = cyber_aggression)) +
+  <span class="r-func">geom_point</span>(alpha = <span class="r-number">0.5</span>, colour = <span class="r-string">"#0dcfb2"</span>) +
+  <span class="r-func">geom_smooth</span>(method = <span class="r-string">"lm"</span>, colour = <span class="r-string">"#f59e0b"</span>) +
+  <span class="r-func">labs</span>(x = <span class="r-string">"Moral Disengagement"</span>,
+       y = <span class="r-string">"Cyber-Aggression"</span>,
+       title = <span class="r-string">"Moral Disengagement → Cyber-Aggression"</span>) +
+  <span class="r-func">theme_minimal</span>()</pre>
+    </div>
+
+    <p>Expected: r(MD, CA) ≈ .61 — a large positive correlation. r(AIT, CA) ≈ .15, r(AIU, CA) ≈ .19 — small, and likely non-significant at n = 167 after accounting for other variables.</p>
+  </section>
+
+  <hr>
+
+  <!-- FULL SCRIPT -->
+  <section class="section" id="full">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,0.12);">📜</div>
+      <h2>Full Script</h2>
+    </div>
+
+    <p>The complete annotated R script runs all of the above in sequence. Download it and open it in RStudio — it's designed to be read top-to-bottom alongside the textbook.</p>
+
+    <a href="/data/uca_analysis.R" download
+      style="display:inline-flex;align-items:center;gap:12px;padding:16px 22px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.35);border-radius:10px;text-decoration:none;color:var(--purple);font-weight:700;font-size:15px;margin-top:8px;">
+      <span style="font-size:24px;">📊</span>
+      <div>
+        <div>uca_analysis.R</div>
+        <div style="color:var(--muted);font-size:12px;font-weight:400;margin-top:2px;">Descriptives · Imputation · Hierarchical Regression · t-test · Correlation · ggplot</div>
+      </div>
+    </a>
+
+    <div class="callout purple" style="margin-top:24px;">
+      <div class="callout-label">Tip</div>
+      In RStudio, use <strong>Ctrl+Enter</strong> (Cmd+Enter on Mac) to run one line at a time. Work through the script section by section alongside the relevant module in the interactive course — the numbers will match.
+    </div>
+  </section>
+
+</main>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      delimiters: [{ left: "\\(", right: "\\)", display: false }],
+      throwOnError: false
+    });
+  });
+
+  // Reading bar
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const pct = el.scrollTop / (el.scrollHeight - el.clientHeight) * 100;
+    document.getElementById('readingBar').style.width = pct + '%';
+  });
+
+  // TOC active state
+  const sections = document.querySelectorAll('.section[id]');
+  const links = document.querySelectorAll('.toc-link');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => {
+          l.classList.remove('active');
+          if (l.getAttribute('href') === '#' + e.target.id) l.classList.add('active');
+        });
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+  sections.forEach(s => obs.observe(s));
+
+  // Copy buttons
+  function copyCode(btn) {
+    const pre = btn.closest('.code-block').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
