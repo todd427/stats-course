@@ -167,10 +167,13 @@ const Mod1 = ({ onPass }) => {
         </p>
         <div style={{ background: C.bg, borderRadius: 8, padding: '8px 0', marginBottom: 8 }}>
           <Eq block tex={String.raw`\bar{x} = \frac{\sum x_i}{n} \qquad s = \sqrt{\frac{\sum(x_i - \bar{x})^2}{n-1}}`} />
+          <Eq block tex={String.raw`\tilde{x} = \begin{cases} x_{(n+1)/2} & \text{if } n \text{ is odd} \\[6pt] \dfrac{x_{(n/2)} + x_{(n/2)+1}}{2} & \text{if } n \text{ is even} \end{cases}`} />
         </div>
         <Explainer
           symbols={[
             [String.raw`\bar{x}`, "Sample mean", "Pronounced 'x-bar'. The arithmetic average of your scores."],
+            [String.raw`\tilde{x}`, "Median", "Pronounced 'x-tilde'. The middle value of the sorted dataset. Defined by position, not arithmetic."],
+            [String.raw`x_{(k)}`, "Order statistic", "The value at position k in the sorted list. x₍₁₎ is the minimum, x₍ₙ₎ is the maximum."],
             [String.raw`\sum`, "Sum of", "Greek capital sigma — add up everything that follows."],
             [String.raw`x_i`, "Each score", "Subscript i means each individual value in your dataset."],
             [String.raw`n`, "Sample size", "How many scores you have. Here n=5; your dissertation had n=167."],
@@ -182,7 +185,8 @@ const Mod1 = ({ onPass }) => {
             { text: "Divide by n=5.", eq: String.raw`\bar{x} = \frac{60}{5} = 12.0` },
             { text: "Subtract mean from each score, square, sum.", eq: String.raw`(2{-}12)^2+(3{-}12)^2+(4{-}12)^2+(4{-}12)^2+(47{-}12)^2 = 100+81+64+64+1225 = 1534` },
             { text: "Divide by n−1=4, take square root.", eq: String.raw`s = \sqrt{\frac{1534}{4}} = \sqrt{383.5} \approx 19.58` },
-            { text: "Median = middle value of sorted [2,3,4,4,47] = 4. Mean (12) ≫ Median (4) — the outlier 47 is inflating the mean.", eq: null },
+            { text: "Median: n=5 is odd, so take position (5+1)/2 = 3. Sorted list: [2, 3, 4, 4, 47]. The value at position 3 is:", eq: String.raw`\tilde{x} = x_{(3)} = 4` },
+            { text: "Mean (12) ≫ Median (4). The outlier 47 inflates the mean but cannot move the median — it only affects rank, not arithmetic.", eq: null },
           ]}
         />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
@@ -368,6 +372,7 @@ const Mod4 = ({ onPass }) => {
             [String.raw`\bar{x}_1, \bar{x}_2`, "Group means", "The average score in each group. Numerator = difference between them."],
             [String.raw`s_1^2, s_2^2`, "Group variances", "Spread within each group. Larger variance = noisier data = harder to detect real differences."],
             [String.raw`n_1, n_2`, "Group sizes", "More participants = smaller denominator = larger t = easier to detect effects. This is power."],
+            [String.raw`df`, "Degrees of freedom", "How much independent information your data contains. Determines the shape of the t-distribution. Lower df = fatter tails = need a larger t to reach p<.05."],
             [String.raw`s_{\text{pooled}}`, "Pooled SD", "Weighted average of both groups' SDs. Used for Cohen's d only."],
             [String.raw`d`, "Cohen's d", "Effect size. SDs between the two means. Small=0.2, Medium=0.5, Large=0.8."],
           ]}
@@ -375,6 +380,7 @@ const Mod4 = ({ onPass }) => {
             { text: "Group A (low disengagement, n=8): M=2.38, SD=0.44. Group B (high, n=8): M=4.04, SD=0.38.", eq: null },
             { text: "Standard error of the difference:", eq: String.raw`SE = \sqrt{\frac{0.44^2}{8} + \frac{0.38^2}{8}} = \sqrt{0.0242+0.018} \approx 0.205` },
             { text: "t-statistic:", eq: String.raw`t = \frac{2.38-4.04}{0.205} = \frac{-1.66}{0.205} \approx -8.10` },
+            { text: "df via the Welch-Satterthwaite equation — it adjusts for unequal variances between groups. Maximum possible would be (n₁−1)+(n₂−1) = 14. Welch may reduce this if variances differ:", eq: String.raw`df = \frac{\left(\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}\right)^2}{\dfrac{(s_1^2/n_1)^2}{n_1-1}+\dfrac{(s_2^2/n_2)^2}{n_2-1}} = \frac{(0.0242+0.018)^2}{\dfrac{0.0242^2}{7}+\dfrac{0.018^2}{7}} \approx 14` },
             { text: "t=−8.10, df≈14, p<.001. Groups are clearly different.", eq: null },
             { text: "Cohen's d (pooled SD≈0.41):", eq: String.raw`d = \frac{|2.38-4.04|}{0.41} = \frac{1.66}{0.41} \approx 4.05 \text{ — very large effect}` },
           ]}
@@ -398,11 +404,11 @@ const Mod4 = ({ onPass }) => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
               <StatBox label="t-statistic" value={res.t} dec={3} />
               <StatBox label="df" value={res.df} dec={0} color={C.muted} />
-              <StatBox label="p-value" value={res.p} dec={4} color={res.p < 0.05 ? C.green : C.red} />
+              <StatBox label="p-value" value={res.p < 0.0001 ? '< .0001' : res.p} dec={4} color={res.p < 0.05 ? C.green : C.red} />
               <StatBox label="Cohen's d" value={res.d} dec={3} color={C.amber} />
             </div>
             <div style={{ marginTop: 12, padding: '10px 14px', background: C.bg, borderRadius: 8, fontSize: 14, color: C.text, borderLeft: `3px solid ${res.p < 0.05 ? C.green : C.amber}` }}>
-              t({res.df})={res.t.toFixed(3)}, p={res.p.toFixed(4)}, d={res.d.toFixed(3)} ({dLabel}).{' '}
+              t({res.df})={res.t.toFixed(3)}, p={res.p < 0.0001 ? '< .0001' : res.p.toFixed(4)}, d={res.d.toFixed(3)} ({dLabel}).{' '}
               {res.p < 0.05 ? `Significant. High-disengagement group scores ${(res.mb - res.ma).toFixed(2)} pts higher.` : "Not significant — insufficient evidence to reject H₀."}
             </div>
           </>
@@ -526,7 +532,7 @@ const Mod6 = ({ onPass }) => {
             { text: "Mechanically: the 8 items share a lot of variance. High on one → high on all.", eq: null },
             { text: "Simplified calculation for 3 items (σ₁²=0.62, σ₂²=0.58, σ₃²=0.71, σₜ²=3.94):", eq: String.raw`\alpha = \frac{3}{2}\!\left(1 - \frac{0.62+0.58+0.71}{3.94}\right) = 1.5 \times 0.515 = .87` },
             { text: "α=.87 is Good. Above .90 would be Excellent, but can indicate redundancy — items too similar to add distinct information.", eq: null },
-            { text: "α=.87 proves internal consistency, NOT construct validity. Items could consistently measure something other than moral disengagement and still give α=.87.", eq: null },
+            { text: "α=.87 proves internal consistency, NOT construct validity. To establish validity you need Confirmatory Factor Analysis (CFA) — which tests whether items load onto the factor structure your theory predicts — plus convergent validity (AVE ≥ .50) and discriminant validity (HTMT < .85). In your dissertation you did exactly this via the PLS-SEM measurement model — that's the structural equation equivalent of running CFA.", eq: null },
           ]}
         />
         <div style={{ overflowX: 'auto' }}>
@@ -572,7 +578,7 @@ const Mod6 = ({ onPass }) => {
       </div>
       <Quiz question="α=.87. A reviewer says 'high α proves the scale is valid.' Your response?"
         options={["Agree — .87 is excellent", "α only measures internal consistency, not construct validity", "Add more items to improve validity", "Report composite reliability instead"]}
-        correct={1} explanation="α=.87: items hang together. But validity requires CFA, convergent and discriminant validity evidence. α is necessary but not sufficient."
+        correct={1} explanation="α=.87: items hang together. But validity requires more — specifically Confirmatory Factor Analysis (CFA), which tests whether items load onto the factor structure your theory predicts, plus convergent validity (AVE ≥ .50) and discriminant validity (HTMT < .85). You actually did all of this in your dissertation via the PLS-SEM measurement model — AVE, composite reliability, and HTMT ratios are the PLS equivalent of CFA. α is necessary but not sufficient."
         onPass={onPass} />
     </div>
   );
