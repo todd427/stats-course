@@ -767,7 +767,7 @@
       <h1 class="fade-up fade-up-2">Statistics 101<br>for <em>Cyberpsychologists</em></h1>
       <div class="hero-sub fade-up fade-up-2">The concepts behind your data — in plain language</div>
       <p class="hero-desc fade-up fade-up-3">
-        An interactive course, reference textbook, and real dataset — all built around one dissertation's worth of data. Learn hierarchical regression, PLS-SEM, multiple imputation, and more. Then reproduce every example yourself in R.
+        An interactive course, reference textbook, and real dataset — all built around one dissertation's worth of data. Learn hierarchical regression, suppression effects, PLS-SEM, multiple imputation, and more. Then reproduce every example yourself in R.
       </p>
       <div class="hero-actions fade-up fade-up-4">
         <a href="/course.html" class="btn-primary">⚡ Start the Course</a>
@@ -780,7 +780,7 @@
         <div class="stat-icon">📐</div>
         <div class="stat-body">
           <div class="stat-label">Key Finding</div>
-          <div class="stat-value">Moral Disengagement → CA <span>β = .61</span></div>
+          <div class="stat-value">Moral Disengagement → HRL <span>β = .47</span></div>
         </div>
         <div class="stat-pill" style="background:rgba(13,207,178,0.12);color:var(--teal);">p &lt; .001</div>
       </div>
@@ -788,25 +788,25 @@
         <div class="stat-icon">🔬</div>
         <div class="stat-body">
           <div class="stat-label">AI Factors Block</div>
-          <div class="stat-value">ΔR² = .01 — <span style="color:var(--amber);">null finding</span></div>
+          <div class="stat-value">ΔR² = .02 — <span style="color:var(--amber);">null finding</span></div>
         </div>
-        <div class="stat-pill" style="background:rgba(245,158,11,0.12);color:var(--amber);">p = .43</div>
+        <div class="stat-pill" style="background:rgba(245,158,11,0.12);color:var(--amber);">p = .27</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🪤</div>
+        <div class="stat-body">
+          <div class="stat-label">Suppression Effect</div>
+          <div class="stat-value">Anonymity: null alone → <span style="color:var(--purple);">β = −.21</span></div>
+        </div>
+        <div class="stat-pill" style="background:rgba(167,139,250,0.12);color:var(--purple);">p = .015</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon">👥</div>
         <div class="stat-body">
           <div class="stat-label">Dataset</div>
-          <div class="stat-value"><span>n = 167</span> · 4 scale variables · ~8% missing</div>
+          <div class="stat-value"><span>N = 164</span> · 7 scales + Big Five · skip-branch n = 142</div>
         </div>
         <div class="stat-pill" style="background:rgba(34,197,94,0.12);color:var(--green);">Synthetic</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🧩</div>
-        <div class="stat-body">
-          <div class="stat-label">Methods Covered</div>
-          <div class="stat-value">11 modules · <span>PLS-SEM, MI, HReg</span></div>
-        </div>
-        <div class="stat-pill" style="background:rgba(167,139,250,0.12);color:var(--purple);">Interactive</div>
       </div>
     </div>
   </section>
@@ -824,12 +824,12 @@
         <span class="card-icon">⚡</span>
         <div class="card-type">Interactive Course</div>
         <div class="card-title">Learn by Doing</div>
-        <p class="card-desc">11 modules. Sliders, scatter plots, clickable regression blocks. Every concept animated with your dissertation's actual numbers.</p>
+        <p class="card-desc">12 modules. Sliders, scatter plots, clickable regression blocks. Every concept animated with the dissertation's actual numbers.</p>
         <div class="card-tags">
           <span class="tag">Descriptives</span>
           <span class="tag">Regression</span>
+          <span class="tag">Suppression</span>
           <span class="tag">PLS-SEM</span>
-          <span class="tag">KaTeX</span>
           <span class="tag">Quizzes</span>
         </div>
         <div class="card-cta">
@@ -859,7 +859,7 @@
         <span class="card-icon">📊</span>
         <div class="card-type">Dataset &amp; Guide</div>
         <div class="card-title">Run it Yourself</div>
-        <p class="card-desc">Synthetic n=167 dataset matching the dissertation's correlation structure. Step-by-step R guide: imputation, hierarchical regression, t-tests, visualisation.</p>
+        <p class="card-desc">Synthetic N=164 dataset matching the dissertation's correlation structure — Hostile Response Likelihood, 7 scales, Big Five. Step-by-step R guide: imputation, hierarchical regression, suppression, t-tests.</p>
         <div class="card-tags">
           <span class="tag">CSV</span>
           <span class="tag">R Script</span>
@@ -878,7 +878,7 @@
         <div class="dl-icon">📄</div>
         <div>
           <div class="dl-name">uca_synthetic.csv</div>
-          <div class="dl-meta">167 rows × 7 columns · MAR missingness · r(MD,CA) = .61</div>
+          <div class="dl-meta">164 rows × 18 columns · skip-branch missingness · r(MD,HRL) ≈ .38</div>
         </div>
         <div class="dl-badge">⬇ CSV</div>
       </a>
@@ -886,7 +886,7 @@
         <div class="dl-icon">📊</div>
         <div>
           <div class="dl-name">uca_analysis.R</div>
-          <div class="dl-meta">Fully annotated · mice · lm · pool · ggplot2</div>
+          <div class="dl-meta">Fully annotated · mice · lm · pool · suppression · ggplot2</div>
         </div>
         <div class="dl-badge">⬇ R</div>
       </a>
@@ -939,14 +939,14 @@
           <code>src/App.jsx</code> — the interactive course<br>
           <code>public/book.html</code> — the textbook<br>
           <code>public/data.html</code> — data guide<br>
-          <code>public/data/</code> — CSV + R script<br>
+          <code>public/data/</code> — CSV, R script + generator<br>
           <code>public/index.html</code> — this page
         </div>
       </div>
       <div class="git-card">
         <div class="git-card-label">Adapting It</div>
         <div class="git-card-content">
-          Replace the dissertation numbers in <code>App.jsx</code> with your own. Each module's data is at the top of its component. Swap the CSV and update the R script. The colour theme is in CSS variables — one block to change everything.
+          Replace the dissertation numbers in <code>App.jsx</code> with your own. Each module's data is at the top of its component. Regenerate the dataset with <code>make_synthetic.py</code> (swap in your own correlation matrix) and update the R script. The colour theme is in CSS variables — one block to change everything.
         </div>
       </div>
       <div class="git-card">
@@ -978,7 +978,7 @@
           This resource grew out of a practical problem: the statistical methods used in a cyberpsychology dissertation — hierarchical regression, PLS-SEM, multiple imputation — are poorly served by existing introductory texts, which either assume too much mathematical background or too little domain context.
         </p>
         <p>
-          The approach here is different. Every concept is anchored to a real research question: <strong>does AI use predict cyber-aggression, above and beyond moral disengagement?</strong> The answer — a meaningful null — turns out to be a better teaching example than a clean positive result would have been.
+          The approach here is different. Every concept is anchored to a real research question: <strong>do AI factors predict hostile responding online, above and beyond classic drivers like moral disengagement?</strong> The answer — a meaningful null, plus a subtle suppression effect for perceived anonymity — turns out to be a far better teaching example than a clean positive result would have been.
         </p>
         <p>
           The dataset is synthetic but statistically faithful. The R script is annotated to be read, not just run. The course is built to be felt, not just watched. Take what's useful. Improve what isn't. <a href="https://github.com/todd427/stats-course" target="_blank">The repo is open.</a>

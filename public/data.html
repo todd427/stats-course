@@ -444,9 +444,10 @@
     <a href="#load"       class="toc-link"><span class="num">05</span>Load &amp; Explore</a>
     <a href="#imputation" class="toc-link"><span class="num">06</span>Multiple Imputation</a>
     <a href="#regression" class="toc-link"><span class="num">07</span>Hierarchical Regression</a>
-    <a href="#ttest"      class="toc-link"><span class="num">08</span>t-test</a>
-    <a href="#correlation" class="toc-link"><span class="num">09</span>Correlation</a>
-    <a href="#full"       class="toc-link"><span class="num">10</span>Full Script</a>
+    <a href="#suppression" class="toc-link"><span class="num">08</span>Suppression Effect</a>
+    <a href="#ttest"      class="toc-link"><span class="num">09</span>t-test</a>
+    <a href="#correlation" class="toc-link"><span class="num">10</span>Correlation</a>
+    <a href="#full"       class="toc-link"><span class="num">11</span>Full Script</a>
   </div>
 
   <div class="nav-links">
@@ -473,18 +474,18 @@
       <h2>Overview</h2>
     </div>
 
-    <p>The dataset is <strong>synthetic</strong> — it was generated to match the descriptive statistics, correlation structure, and missing data pattern of the original UCA dissertation (Todd McCaffrey, ATU Letterkenny, 2025). It is not the real survey data, but it behaves statistically the same way. Every result you reproduce here will mirror the dissertation findings.</p>
+    <p>The dataset is <strong>synthetic</strong> — it was generated to match the descriptive statistics, correlation structure, and missing-data pattern of the real UCA dissertation sample (Todd McCaffrey, ATU Letterkenny, 2026; N = 164). It is not the real survey data, but it behaves statistically the same way, so every result you reproduce here mirrors the dissertation's findings. The generator that builds it ships alongside the data as <code>make_synthetic.py</code>.</p>
 
     <div class="stat-grid">
-      <div class="stat-box"><div class="stat-label">Participants</div><div class="stat-value">167</div><div class="stat-sub">n = 167</div></div>
-      <div class="stat-box"><div class="stat-label">Variables</div><div class="stat-value">7</div><div class="stat-sub">4 scale + 3 demo</div></div>
-      <div class="stat-box"><div class="stat-label">Missing</div><div class="stat-value">~8%</div><div class="stat-sub">per scale variable</div></div>
-      <div class="stat-box"><div class="stat-label">MD–CA r</div><div class="stat-value">.61</div><div class="stat-sub">key correlation</div></div>
+      <div class="stat-box"><div class="stat-label">Responses</div><div class="stat-value">164</div><div class="stat-sub">screened sample</div></div>
+      <div class="stat-box"><div class="stat-label">Variables</div><div class="stat-value">18</div><div class="stat-sub">14 measures + 4 demo</div></div>
+      <div class="stat-box"><div class="stat-label">Regression n</div><div class="stat-value">139</div><div class="stat-sub">listwise complete</div></div>
+      <div class="stat-box"><div class="stat-label">MD–HRL r</div><div class="stat-value">.38</div><div class="stat-sub">key correlation</div></div>
     </div>
 
     <div class="callout green">
       <div class="callout-label">Key Finding</div>
-      Moral disengagement is the dominant predictor of cyber-aggression (β = .61, p &lt; .001, ΔR² = .34). AI trust and AI use add negligible incremental variance (ΔR² = .01, p = .43). This null finding is theoretically meaningful.
+      The outcome is <strong>Hostile Response Likelihood (HRL)</strong> — how sharply a person says they would respond to an online provocation. Moral disengagement is its dominant predictor (β ≈ .47, p &lt; .001). The AI block — AI trust, AI-mediated disinhibition, AI familiarity — adds negligible incremental variance (ΔR² ≈ .02, p ≈ .27): a theoretically meaningful null. And perceived anonymity is a <strong>suppression effect</strong> — null on its own, but a significant negative predictor once the others are held constant.
     </div>
   </section>
 
@@ -510,51 +511,93 @@
         <tr>
           <td>participant_id</td>
           <td>integer</td>
-          <td>1 – 167</td>
+          <td>1 – 164</td>
           <td>Unique participant identifier</td>
         </tr>
         <tr>
-          <td>age</td>
-          <td>integer</td>
-          <td>17 – 65</td>
-          <td>Participant age in years. Mean ≈ 24.3, SD ≈ 6.1</td>
+          <td>age_group</td>
+          <td>factor</td>
+          <td>18-24 … 45-54</td>
+          <td>Age band. Mostly 18–24 (a student sample)</td>
         </tr>
         <tr>
           <td>gender</td>
-          <td>integer</td>
-          <td>1, 2, 3</td>
-          <td>1 = Female (58%), 2 = Male (39%), 3 = Non-binary / Other (3%)</td>
+          <td>factor</td>
+          <td>Woman / Man / Non-binary</td>
+          <td>Self-described gender</td>
+        </tr>
+        <tr>
+          <td>ai_frequency</td>
+          <td>factor</td>
+          <td>Never … Daily</td>
+          <td>How often the person uses AI tools. <strong>"Never" users skipped the AI / cyber-cognition block</strong> — this is the source of the missing data</td>
+        </tr>
+        <tr>
+          <td>hostile_response</td>
+          <td>numeric</td>
+          <td>1 – 10</td>
+          <td><strong>The outcome (HRL).</strong> Single-item likelihood of a sharp/hostile reply to a provocation vignette. M ≈ 4.5, SD ≈ 2.3</td>
+        </tr>
+        <tr>
+          <td>habitual_use</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Habitual SNS use (4 items, α = .73). M ≈ 3.75</td>
+        </tr>
+        <tr>
+          <td>empathy_deficit</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Online empathy deficit (4 items, α = .75). M ≈ 2.94</td>
+        </tr>
+        <tr>
+          <td>normalization</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Aggression normalisation (4 items, α = .67). M ≈ 3.20</td>
+        </tr>
+        <tr>
+          <td>anonymity</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Perceived online anonymity (4 items, α = .78). M ≈ 3.16. <em>The suppressor</em></td>
         </tr>
         <tr>
           <td>moral_disengagement</td>
           <td>numeric</td>
           <td>1.0 – 5.0</td>
-          <td>Composite scale score. Bandura's Mechanisms of Moral Disengagement Scale (8 items). Higher = greater disengagement. M = 2.81, SD = 0.60</td>
-        </tr>
-        <tr>
-          <td>cyber_aggression</td>
-          <td>numeric</td>
-          <td>1.0 – 5.0</td>
-          <td>Composite scale score. Cyber-Aggression Typology Questionnaire. Higher = greater aggression. M = 3.08, SD = 0.65</td>
+          <td>Moral disengagement (6 items, α = .82). Higher = greater disengagement. M ≈ 2.71</td>
         </tr>
         <tr>
           <td>ai_trust</td>
           <td>numeric</td>
           <td>1.0 – 5.0</td>
-          <td>Composite scale score. AI Trust Scale (5 items). Higher = greater trust in AI systems. M = 3.37, SD = 0.68</td>
+          <td>Trust in AI tools (5 items, α = .84). M ≈ 2.87</td>
         </tr>
         <tr>
-          <td>ai_use</td>
+          <td>ai_disinhibition</td>
           <td>numeric</td>
           <td>1.0 – 5.0</td>
-          <td>Composite scale score. AI Use Frequency Scale (4 items). Higher = more frequent AI use. M = 3.19, SD = 0.71</td>
+          <td>AI-mediated disinhibition (5 items, α = .84). M ≈ 2.77</td>
+        </tr>
+        <tr>
+          <td>ai_familiarity</td>
+          <td>numeric</td>
+          <td>1 – 10</td>
+          <td>Self-rated AI familiarity (single item). M ≈ 6.4</td>
+        </tr>
+        <tr>
+          <td>extraversion …<br>openness</td>
+          <td>numeric</td>
+          <td>1.0 – 5.0</td>
+          <td>Big Five single-item markers: <code>extraversion</code>, <code>conscientiousness</code>, <code>neuroticism</code>, <code>agreeableness</code>, <code>openness</code></td>
         </tr>
       </tbody>
     </table>
 
     <div class="callout amber">
-      <div class="callout-label">Missing Data</div>
-      Approximately 8–10% of values are missing per scale variable, consistent with a Missing At Random (MAR) mechanism. Little's MCAR test on the original data: χ² = 14.3, p = .21 — consistent with MAR. Use multiple imputation, not listwise deletion.
+      <div class="callout-label">Missing Data — a by-design skip, not random dropout</div>
+      The 22 participants who said they <strong>"Never"</strong> use AI tools were routed past the AI and cyber-cognition questions, so all seven multi-item scales (plus <code>ai_familiarity</code>) are blank for them: analytic n = 142, ai_trust n = 140. This is Missing At Random <em>conditional on</em> <code>ai_frequency</code> — so include AI frequency in the imputation model. Listwise-complete cases for the full regression: <strong>n = 139</strong>.
     </div>
   </section>
 
@@ -575,7 +618,7 @@
         <span style="font-size:22px;">📄</span>
         <div>
           <div>uca_synthetic.csv</div>
-          <div style="color:var(--muted);font-size:12px;font-weight:400;">167 rows × 7 columns</div>
+          <div style="color:var(--muted);font-size:12px;font-weight:400;">164 rows × 18 columns</div>
         </div>
       </a>
       <a href="/data/uca_analysis.R" download
@@ -656,7 +699,7 @@ df <span class="r-assign">&lt;-</span> <span class="r-func">read.csv</span>(<spa
 <span class="r-comment"># First look</span>
 <span class="r-func">head</span>(df)          <span class="r-comment"># first 6 rows</span>
 <span class="r-func">str</span>(df)           <span class="r-comment"># structure: variable types</span>
-<span class="r-func">dim</span>(df)           <span class="r-comment"># rows × columns: should be 167 × 7</span></pre>
+<span class="r-func">dim</span>(df)           <span class="r-comment"># rows × columns: should be 164 × 18</span></pre>
     </div>
 
     <h3>Descriptive Statistics</h3>
@@ -667,18 +710,19 @@ df <span class="r-assign">&lt;-</span> <span class="r-func">read.csv</span>(<spa
         <button class="copy-btn" onclick="copyCode(this)">copy</button>
       </div>
       <pre><span class="r-comment"># Full descriptives: mean, SD, median, skew, kurtosis</span>
-<span class="r-func">describe</span>(df[, <span class="r-func">c</span>(<span class="r-string">"moral_disengagement"</span>, <span class="r-string">"cyber_aggression"</span>,
-               <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_use"</span>)])
+<span class="r-comment"># Note the n column: HRL is at 164, the scales at 142 (ai_trust 140)</span>
+<span class="r-func">describe</span>(df[, <span class="r-func">c</span>(<span class="r-string">"hostile_response"</span>, <span class="r-string">"moral_disengagement"</span>,
+               <span class="r-string">"anonymity"</span>, <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_disinhibition"</span>)])
 
-<span class="r-comment"># Check missing values</span>
+<span class="r-comment"># Check missing values — note the 22-row AI/cyber-cognition block</span>
 <span class="r-func">colSums</span>(<span class="r-func">is.na</span>(df))
 
-<span class="r-comment"># Visualise missing data pattern</span>
-<span class="r-func">md.pattern</span>(df[, <span class="r-func">c</span>(<span class="r-string">"moral_disengagement"</span>, <span class="r-string">"cyber_aggression"</span>,
-                  <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_use"</span>)])</pre>
+<span class="r-comment"># Visualise missing data pattern (the 'Never'-AI skip branch)</span>
+<span class="r-func">md.pattern</span>(df[, <span class="r-func">c</span>(<span class="r-string">"hostile_response"</span>, <span class="r-string">"moral_disengagement"</span>,
+                  <span class="r-string">"anonymity"</span>, <span class="r-string">"ai_trust"</span>)])</pre>
     </div>
 
-    <p>You should see means close to: MD = 2.81, CA = 3.08, AIT = 3.37, AIU = 3.19. The missing data pattern will show which combinations of variables have missing values simultaneously.</p>
+    <p>You should see means close to: HRL ≈ 4.5 (1–10), MD ≈ 2.71, anonymity ≈ 3.16, AI trust ≈ 2.87, AI disinhibition ≈ 2.77 (all 1–5). The missing-data pattern shows one large block — the 22 "Never"-AI users with every AI / cyber-cognition scale blank at once.</p>
   </section>
 
   <hr>
@@ -690,7 +734,7 @@ df <span class="r-assign">&lt;-</span> <span class="r-func">read.csv</span>(<spa
       <h2>Multiple Imputation</h2>
     </div>
 
-    <p>Before running any analysis, handle the missing data properly using multiple imputation with the <code>mice</code> package. This creates m = 5 complete datasets and any analysis you run will be pooled across all five using Rubin's Rules.</p>
+    <p>Before running any analysis, handle the missing data properly using multiple imputation with the <code>mice</code> package. Because the missingness is tied to <code>ai_frequency</code> (the "Never" users skipped the block), we include AI frequency in the imputation model so the imputed values respect that structure. This creates m = 20 complete datasets and any analysis you run is pooled across all twenty using Rubin's Rules.</p>
 
     <ol class="steps">
       <li>
@@ -712,13 +756,16 @@ df <span class="r-assign">&lt;-</span> <span class="r-func">read.csv</span>(<spa
         <span class="code-lang">R</span>
         <button class="copy-btn" onclick="copyCode(this)">copy</button>
       </div>
-      <pre><span class="r-comment"># Step 1: Create 5 imputed datasets</span>
+      <pre><span class="r-comment"># Step 1: Create 20 imputed datasets</span>
 <span class="r-func">set.seed</span>(<span class="r-number">42</span>)   <span class="r-comment"># for reproducibility</span>
 
+<span class="r-comment"># Include ai_frequency: the missingness is MAR conditional on it</span>
 imp <span class="r-assign">&lt;-</span> <span class="r-func">mice</span>(
-  df[, <span class="r-func">c</span>(<span class="r-string">"moral_disengagement"</span>, <span class="r-string">"cyber_aggression"</span>,
-         <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_use"</span>, <span class="r-string">"age"</span>, <span class="r-string">"gender"</span>)],
-  m          = <span class="r-number">5</span>,        <span class="r-comment"># number of imputed datasets</span>
+  df[, <span class="r-func">c</span>(<span class="r-string">"hostile_response"</span>, <span class="r-string">"habitual_use"</span>, <span class="r-string">"empathy_deficit"</span>,
+         <span class="r-string">"normalization"</span>, <span class="r-string">"anonymity"</span>, <span class="r-string">"moral_disengagement"</span>,
+         <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_disinhibition"</span>, <span class="r-string">"ai_familiarity"</span>,
+         <span class="r-string">"ai_frequency"</span>)],
+  m          = <span class="r-number">20</span>,       <span class="r-comment"># number of imputed datasets</span>
   method     = <span class="r-string">"pmm"</span>,    <span class="r-comment"># predictive mean matching</span>
   printFlag  = <span class="r-number">FALSE</span>    <span class="r-comment"># suppress iteration output</span>
 )
@@ -745,32 +792,30 @@ df_complete <span class="r-assign">&lt;-</span> <span class="r-func">complete</s
       <h2>Hierarchical Regression</h2>
     </div>
 
-    <p>The key analysis. Three blocks entered sequentially. The critical question is whether Block 3 (AI factors) adds significant incremental variance above Block 2.</p>
+    <p>The key analysis. Five nested blocks predicting <strong>HRL</strong>, entered in order: the "classic" cyber-cognition predictors first, then the AI factors one at a time, then the Big Five. The critical question is whether the AI block adds significant incremental variance above the classic predictors. To keep every ΔR² test valid, all blocks are fit on the <strong>same listwise-complete set (n = 139)</strong>.</p>
 
     <div class="code-block">
       <div class="code-header">
         <span class="code-lang">R</span>
         <button class="copy-btn" onclick="copyCode(this)">copy</button>
       </div>
-      <pre><span class="r-comment"># Run each block on all 5 imputed datasets</span>
+      <pre><span class="r-comment"># Same complete-case set for all blocks -> valid ΔR² tests</span>
+preds <span class="r-assign">&lt;-</span> <span class="r-func">c</span>(<span class="r-string">"habitual_use"</span>, <span class="r-string">"empathy_deficit"</span>, <span class="r-string">"normalization"</span>,
+           <span class="r-string">"anonymity"</span>, <span class="r-string">"moral_disengagement"</span>, <span class="r-string">"ai_trust"</span>,
+           <span class="r-string">"ai_disinhibition"</span>, <span class="r-string">"ai_familiarity"</span>,
+           <span class="r-string">"extraversion"</span>, <span class="r-string">"conscientiousness"</span>, <span class="r-string">"neuroticism"</span>,
+           <span class="r-string">"agreeableness"</span>, <span class="r-string">"openness"</span>)
+cc <span class="r-assign">&lt;-</span> df[<span class="r-func">complete.cases</span>(df[, <span class="r-func">c</span>(<span class="r-string">"hostile_response"</span>, preds)]), ]
+<span class="r-func">nrow</span>(cc)   <span class="r-comment"># 139</span>
 
-<span class="r-comment"># Block 1: Demographics only</span>
-fit1 <span class="r-assign">&lt;-</span> <span class="r-func">with</span>(imp,
-  <span class="r-func">lm</span>(cyber_aggression ~ age + gender))
-
-<span class="r-comment"># Block 2: + Moral Disengagement</span>
-fit2 <span class="r-assign">&lt;-</span> <span class="r-func">with</span>(imp,
-  <span class="r-func">lm</span>(cyber_aggression ~ age + gender + moral_disengagement))
-
-<span class="r-comment"># Block 3: + AI Trust and AI Use</span>
-fit3 <span class="r-assign">&lt;-</span> <span class="r-func">with</span>(imp,
-  <span class="r-func">lm</span>(cyber_aggression ~ age + gender + moral_disengagement +
-       ai_trust + ai_use))
-
-<span class="r-comment"># Pool results using Rubin's Rules</span>
-<span class="r-func">summary</span>(<span class="r-func">pool</span>(fit1))
-<span class="r-func">summary</span>(<span class="r-func">pool</span>(fit2))
-<span class="r-func">summary</span>(<span class="r-func">pool</span>(fit3))</pre>
+<span class="r-comment"># Block 1: Classic predictors</span>
+m1 <span class="r-assign">&lt;-</span> <span class="r-func">lm</span>(hostile_response ~ habitual_use + empathy_deficit +
+          normalization + anonymity + moral_disengagement, data = cc)
+m2 <span class="r-assign">&lt;-</span> <span class="r-func">update</span>(m1, . ~ . + ai_trust)              <span class="r-comment"># + AI Trust</span>
+m3 <span class="r-assign">&lt;-</span> <span class="r-func">update</span>(m2, . ~ . + ai_disinhibition)       <span class="r-comment"># + AI Disinhibition</span>
+m4 <span class="r-assign">&lt;-</span> <span class="r-func">update</span>(m3, . ~ . + ai_familiarity)         <span class="r-comment"># + AI Familiarity</span>
+m5 <span class="r-assign">&lt;-</span> <span class="r-func">update</span>(m4, . ~ . + extraversion + conscientiousness +
+          neuroticism + agreeableness + openness)   <span class="r-comment"># + Big Five</span></pre>
     </div>
 
     <div class="code-block">
@@ -778,29 +823,59 @@ fit3 <span class="r-assign">&lt;-</span> <span class="r-func">with</span>(imp,
         <span class="code-lang">R</span>
         <button class="copy-btn" onclick="copyCode(this)">copy</button>
       </div>
-      <pre><span class="r-comment"># R² and ΔR² using one complete dataset</span>
-m1 <span class="r-assign">&lt;-</span> <span class="r-func">lm</span>(cyber_aggression ~ age + gender,
-        data = df_complete)
-m2 <span class="r-assign">&lt;-</span> <span class="r-func">lm</span>(cyber_aggression ~ age + gender + moral_disengagement,
-        data = df_complete)
-m3 <span class="r-assign">&lt;-</span> <span class="r-func">lm</span>(cyber_aggression ~ age + gender + moral_disengagement +
-           ai_trust + ai_use, data = df_complete)
+      <pre><span class="r-comment"># R² for each block</span>
+<span class="r-func">sapply</span>(<span class="r-func">list</span>(m1, m2, m3, m4, m5),
+       function(m) <span class="r-func">round</span>(<span class="r-func">summary</span>(m)$r.squared, <span class="r-number">3</span>))
+<span class="r-comment"># 0.217  0.217  0.237  0.254  0.290</span>
 
-<span class="r-func">cat</span>(<span class="r-string">"Block 1 R²:"</span>,  <span class="r-func">round</span>(<span class="r-func">summary</span>(m1)$r.squared, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)
-<span class="r-func">cat</span>(<span class="r-string">"Block 2 R²:"</span>,  <span class="r-func">round</span>(<span class="r-func">summary</span>(m2)$r.squared, <span class="r-number">3</span>),
-    <span class="r-string">" ΔR²:"</span>, <span class="r-func">round</span>(<span class="r-func">summary</span>(m2)$r.squared -
-                    <span class="r-func">summary</span>(m1)$r.squared, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)
-<span class="r-func">cat</span>(<span class="r-string">"Block 3 R²:"</span>,  <span class="r-func">round</span>(<span class="r-func">summary</span>(m3)$r.squared, <span class="r-number">3</span>),
-    <span class="r-string">" ΔR²:"</span>, <span class="r-func">round</span>(<span class="r-func">summary</span>(m3)$r.squared -
-                    <span class="r-func">summary</span>(m2)$r.squared, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)
+<span class="r-comment"># Does the AI block (3 predictors) add anything over Classic?</span>
+<span class="r-func">anova</span>(m1, m4)        <span class="r-comment"># omnibus F-test for the AI block</span>
 
-<span class="r-comment"># F-change test: does Block 3 add significantly?</span>
-<span class="r-func">anova</span>(m2, m3)</pre>
+<span class="r-comment"># Pool the full model across the 20 imputations (Rubin's Rules)</span>
+fit_full <span class="r-assign">&lt;-</span> <span class="r-func">with</span>(imp, <span class="r-func">lm</span>(hostile_response ~ habitual_use +
+  empathy_deficit + normalization + anonymity + moral_disengagement +
+  ai_trust + ai_disinhibition + ai_familiarity))
+<span class="r-func">summary</span>(<span class="r-func">pool</span>(fit_full))</pre>
     </div>
 
     <div class="callout green">
       <div class="callout-label">Expected Output</div>
-      Block 1 R² ≈ .04 · Block 2 R² ≈ .38 (ΔR² ≈ .34, p &lt; .001) · Block 3 R² ≈ .39 (ΔR² ≈ .01, p ≈ .43). The F-change for Block 3 will be non-significant — that is the finding.
+      Classic R² ≈ .22 · + AI Trust ΔR² ≈ .00 · + AI Disinhibition ΔR² ≈ .02 · + AI Familiarity ΔR² ≈ .02 · + Big Five ΔR² ≈ .04. The AI block as a whole adds ΔR² ≈ .02–.04, <strong>non-significant</strong> — that is the finding. Moral disengagement carries the model (β ≈ .47, p &lt; .001).
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- SUPPRESSION -->
+  <section class="section" id="suppression">
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,0.12);">🪤</div>
+      <h2>Suppression Effect</h2>
+    </div>
+
+    <p>Here is the subtle one. On its own, <strong>perceived anonymity</strong> barely correlates with hostile responding — a weak, non-significant negative. But put it in the full model alongside the other predictors and it becomes a clear, <em>significant</em> negative predictor. The coefficient gets <strong>bigger</strong> when you add controls. That is a <strong>suppression effect</strong>: the other variables soak up irrelevant variance in anonymity, sharpening the part that actually relates to HRL.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">R</span>
+        <button class="copy-btn" onclick="copyCode(this)">copy</button>
+      </div>
+      <pre><span class="r-comment"># Anonymity alone vs. anonymity adjusted for everything else</span>
+<span class="r-func">summary</span>(<span class="r-func">lm</span>(hostile_response ~ anonymity, data = cc))$coefficients
+<span class="r-comment"># b ≈ -0.30, p ≈ .26   -> non-significant on its own</span>
+
+<span class="r-func">summary</span>(m5)$coefficients[<span class="r-string">"anonymity"</span>, ]
+<span class="r-comment"># b ≈ -0.62, p ≈ .026  -> significant once adjusted</span>
+
+<span class="r-comment"># Standardised betas make the flip easy to read</span>
+zc <span class="r-assign">&lt;-</span> <span class="r-func">as.data.frame</span>(<span class="r-func">scale</span>(cc[, <span class="r-func">c</span>(<span class="r-string">"hostile_response"</span>, preds)]))
+<span class="r-func">round</span>(<span class="r-func">coef</span>(<span class="r-func">lm</span>(hostile_response ~ ., data = zc)), <span class="r-number">3</span>)
+<span class="r-comment"># moral_disengagement ≈ .46 (dominant); anonymity ≈ -.20 (suppressed)</span></pre>
+    </div>
+
+    <div class="callout purple">
+      <div class="callout-label">Why It Matters</div>
+      A naïve "screen for significant zero-order correlations first" workflow would have <strong>thrown anonymity out</strong> before the regression even ran — and missed a real effect. Suppression is the standard cautionary tale for why you model variables together, not one at a time. It is also why the sign of a coefficient can legitimately differ from its raw correlation.
     </div>
   </section>
 
@@ -813,28 +888,29 @@ m3 <span class="r-assign">&lt;-</span> <span class="r-func">lm</span>(cyber_aggr
       <h2>t-test</h2>
     </div>
 
-    <p>Compare two groups on cyber-aggression. Here: male vs. female participants.</p>
+    <p>Compare two groups on Hostile Response Likelihood. Here: women vs. men.</p>
 
     <div class="code-block">
       <div class="code-header">
         <span class="code-lang">R</span>
         <button class="copy-btn" onclick="copyCode(this)">copy</button>
       </div>
-      <pre><span class="r-comment"># Independent samples t-test: gender × cyber-aggression</span>
-<span class="r-comment"># Filter to male (2) and female (1) only</span>
-df_gender <span class="r-assign">&lt;-</span> df_complete[df_complete$gender <span class="r-func">%in%</span> <span class="r-func">c</span>(<span class="r-number">1</span>, <span class="r-number">2</span>), ]
+      <pre><span class="r-comment"># Independent samples t-test: gender × HRL (uses the full N = 164)</span>
+<span class="r-comment"># Filter to Woman and Man only</span>
+df_gender <span class="r-assign">&lt;-</span> df[df$gender <span class="r-func">%in%</span> <span class="r-func">c</span>(<span class="r-string">"Woman"</span>, <span class="r-string">"Man"</span>), ]
 
-t_result <span class="r-assign">&lt;-</span> <span class="r-func">t.test</span>(cyber_aggression ~ gender, data = df_gender)
+t_result <span class="r-assign">&lt;-</span> <span class="r-func">t.test</span>(hostile_response ~ gender, data = df_gender)
 <span class="r-func">print</span>(t_result)
 
 <span class="r-comment"># Cohen's d (effect size)</span>
-male   <span class="r-assign">&lt;-</span> df_gender$cyber_aggression[df_gender$gender == <span class="r-number">2</span>]
-female <span class="r-assign">&lt;-</span> df_gender$cyber_aggression[df_gender$gender == <span class="r-number">1</span>]
+man   <span class="r-assign">&lt;-</span> df_gender$hostile_response[df_gender$gender == <span class="r-string">"Man"</span>]
+woman <span class="r-assign">&lt;-</span> df_gender$hostile_response[df_gender$gender == <span class="r-string">"Woman"</span>]
 
-cohens_d <span class="r-assign">&lt;-</span> (<span class="r-func">mean</span>(male) - <span class="r-func">mean</span>(female)) /
-  <span class="r-func">sqrt</span>((<span class="r-func">sd</span>(male)^<span class="r-number">2</span> + <span class="r-func">sd</span>(female)^<span class="r-number">2</span>) / <span class="r-number">2</span>)
+cohens_d <span class="r-assign">&lt;-</span> (<span class="r-func">mean</span>(man) - <span class="r-func">mean</span>(woman)) /
+  <span class="r-func">sqrt</span>((<span class="r-func">sd</span>(man)^<span class="r-number">2</span> + <span class="r-func">sd</span>(woman)^<span class="r-number">2</span>) / <span class="r-number">2</span>)
 
-<span class="r-func">cat</span>(<span class="r-string">"Cohen's d ="</span>, <span class="r-func">round</span>(cohens_d, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)</pre>
+<span class="r-func">cat</span>(<span class="r-string">"Cohen's d ="</span>, <span class="r-func">round</span>(cohens_d, <span class="r-number">3</span>), <span class="r-string">"\n"</span>)
+<span class="r-comment"># Small and non-significant here (d ≈ -0.12, p ≈ .47)</span></pre>
     </div>
 
     <div class="callout">
@@ -857,24 +933,23 @@ cohens_d <span class="r-assign">&lt;-</span> (<span class="r-func">mean</span>(m
         <span class="code-lang">R</span>
         <button class="copy-btn" onclick="copyCode(this)">copy</button>
       </div>
-      <pre><span class="r-comment"># Correlation matrix with p-values</span>
-<span class="r-func">corr.test</span>(df_complete[, <span class="r-func">c</span>(<span class="r-string">"moral_disengagement"</span>,
-                          <span class="r-string">"cyber_aggression"</span>,
-                          <span class="r-string">"ai_trust"</span>,
-                          <span class="r-string">"ai_use"</span>)])
+      <pre><span class="r-comment"># Zero-order correlations with HRL, with p-values</span>
+<span class="r-func">corr.test</span>(df[, <span class="r-func">c</span>(<span class="r-string">"hostile_response"</span>, <span class="r-string">"moral_disengagement"</span>,
+                 <span class="r-string">"anonymity"</span>, <span class="r-string">"ai_trust"</span>, <span class="r-string">"ai_disinhibition"</span>)],
+          use = <span class="r-string">"pairwise"</span>)
 
-<span class="r-comment"># Scatter plot: MD vs CA with regression line</span>
-<span class="r-func">ggplot</span>(df_complete,
-       <span class="r-func">aes</span>(x = moral_disengagement, y = cyber_aggression)) +
-  <span class="r-func">geom_point</span>(alpha = <span class="r-number">0.5</span>, colour = <span class="r-string">"#0dcfb2"</span>) +
+<span class="r-comment"># Scatter plot: MD vs HRL with regression line</span>
+<span class="r-func">ggplot</span>(df,
+       <span class="r-func">aes</span>(x = moral_disengagement, y = hostile_response)) +
+  <span class="r-func">geom_jitter</span>(alpha = <span class="r-number">0.5</span>, colour = <span class="r-string">"#0dcfb2"</span>, height = <span class="r-number">0.2</span>) +
   <span class="r-func">geom_smooth</span>(method = <span class="r-string">"lm"</span>, colour = <span class="r-string">"#f59e0b"</span>) +
   <span class="r-func">labs</span>(x = <span class="r-string">"Moral Disengagement"</span>,
-       y = <span class="r-string">"Cyber-Aggression"</span>,
-       title = <span class="r-string">"Moral Disengagement → Cyber-Aggression"</span>) +
+       y = <span class="r-string">"Hostile Response Likelihood"</span>,
+       title = <span class="r-string">"Moral Disengagement → HRL"</span>) +
   <span class="r-func">theme_minimal</span>()</pre>
     </div>
 
-    <p>Expected: r(MD, CA) ≈ .61 — a large positive correlation. r(AIT, CA) ≈ .15, r(AIU, CA) ≈ .19 — small, and likely non-significant at n = 167 after accounting for other variables.</p>
+    <p>Expected: r(MD, HRL) ≈ .38 — the strongest zero-order correlate by some margin. AI trust (≈ .01) and AI familiarity (≈ .02) are essentially flat. Watch <strong>anonymity</strong>: its zero-order correlation is only ≈ −.10 (non-significant) — yet it becomes a significant predictor in the full model. That gap is the suppression effect from the previous section.</p>
   </section>
 
   <hr>

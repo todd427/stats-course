@@ -454,6 +454,7 @@
     <a href="#ch4-2" class="toc-sub">4.2 Simple Regression</a>
     <a href="#ch4-3" class="toc-sub">4.3 Multiple Regression</a>
     <a href="#ch4-4" class="toc-sub">4.4 Hierarchical Regression</a>
+    <a href="#ch4-5" class="toc-sub">4.5 Suppression Effects</a>
     <a href="#ch5" class="toc-section"><span class="num">05</span>Cronbach's Alpha</a>
     <a href="#ch6" class="toc-section"><span class="num">06</span>Factor Analysis</a>
     <a href="#ch7" class="toc-section"><span class="num">07</span>PLS-SEM</a>
@@ -502,7 +503,7 @@
 
     <div class="callout">
       <div class="callout-label">The Fundamental Problem</div>
-      You have a <strong>SAMPLE</strong> (the 167 people who filled in your survey). You want to say something about a <strong>POPULATION</strong> (all people who might cyber-aggress). Every statistical technique is answering: <em>how confident can I be that what I found in my sample is actually true in the population?</em>
+      You have a <strong>SAMPLE</strong> (the 164 people who filled in your survey). You want to say something about a <strong>POPULATION</strong> (all people who might respond with hostility online). Every statistical technique is answering: <em>how confident can I be that what I found in my sample is actually true in the population?</em>
     </div>
   </section>
 
@@ -531,7 +532,7 @@
 
     <div class="callout amber">
       <div class="callout-label">Example</div>
-      Cyber-aggression scores of [1, 2, 2, 3, 50]. Mean = 11.6. Median = 2. The outlier (50) makes the mean misleading — the median better represents the group.
+      Hostile-response scores of [1, 2, 2, 3, 50]. Mean = 11.6. Median = 2. The outlier (50) makes the mean misleading — the median better represents the group.
     </div>
 
     <h3 id="ch1-2">1.2 Spread: Standard Deviation and Variance</h3>
@@ -565,7 +566,7 @@
       \(\displaystyle z = \frac{x - \mu}{\sigma} \qquad f(x) = \frac{1}{\sigma\sqrt{2\pi}}\,e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}\)
     </div>
 
-    <p>If moral disengagement has mean 2.8 and SD 0.6, a score of 4.0 is <strong>2 SDs above the mean</strong> — in the top 2.5% of respondents. That's your z-score interpretation.</p>
+    <p>If moral disengagement has mean 2.7 and SD 0.8, a score of 4.3 is <strong>2 SDs above the mean</strong> — in the top 2.5% of respondents. That's your z-score interpretation.</p>
   </section>
 
   <hr class="section-divider">
@@ -579,7 +580,7 @@
 
     <h3 id="ch2-1">2.1 The Sampling Problem</h3>
 
-    <p>Your 167 participants are one possible sample from a vast population. If you ran the study again with 167 different people, you'd get slightly different numbers. The question is: is the pattern you found real, or just noise from this particular sample?</p>
+    <p>Your 164 participants are one possible sample from a vast population. If you ran the study again with 164 different people, you'd get slightly different numbers. The question is: is the pattern you found real, or just noise from this particular sample?</p>
 
     <table class="def-table">
       <tr><td>H₀ (Null)</td><td>There is no effect in the real population. What you observed happened by chance.</td></tr>
@@ -598,7 +599,7 @@
 
     <div class="callout green">
       <div class="callout-label">Your Dissertation</div>
-      p &gt; .05 does not mean 'no effect exists'. It means 'insufficient evidence to reject H₀'. This is exactly why your null finding — AI factors not predicting cyber-aggression — is not a failure. It's a finding. It says: whatever effect exists, it's too small to detect as distinct from noise at n = 167.
+      p &gt; .05 does not mean 'no effect exists'. It means 'insufficient evidence to reject H₀'. This is exactly why your null finding — the AI block not predicting hostile responding above the classic drivers — is not a failure. It's a finding. It says: whatever incremental effect the AI factors have, it's too small to detect as distinct from noise at this sample size (the AI block was tested at n = 139).
     </div>
 
     <h3 id="ch2-2">2.2 Effect Size: The Number That Actually Matters</h3>
@@ -652,9 +653,9 @@
     <h3 id="ch3-2">3.2 Three Flavours</h3>
 
     <table class="def-table">
-      <tr><td>One-sample t</td><td>Is my sample mean different from a known value? 'Is the average cyber-aggression score different from the population average of 2.5?'</td></tr>
-      <tr><td>Independent t</td><td>Are two separate groups different? 'Do high AI-trust scorers have higher cyber-aggression than low AI-trust scorers?'</td></tr>
-      <tr><td>Paired t</td><td>Are the same people different at two time points? 'Did cyber-aggression scores change after an intervention?' Each person is their own control.</td></tr>
+      <tr><td>One-sample t</td><td>Is my sample mean different from a known value? 'Is the average hostile-response score different from the scale midpoint of 5.5?'</td></tr>
+      <tr><td>Independent t</td><td>Are two separate groups different? 'Do high AI-trust scorers report higher hostile-response likelihood than low AI-trust scorers?'</td></tr>
+      <tr><td>Paired t</td><td>Are the same people different at two time points? 'Did hostile-response scores change after an intervention?' Each person is their own control.</td></tr>
     </table>
   </section>
 
@@ -677,7 +678,7 @@
 
     <div class="callout amber">
       <div class="callout-label">Critical Point</div>
-      Correlation is not causation. Moral disengagement and cyber-aggression correlate strongly in your data. That tells you they move together. It does not tell you that disengagement <em>causes</em> aggression — though theory does.
+      Correlation is not causation. Moral disengagement and hostile responding correlate moderately in your data (r ≈ .38). That tells you they move together. It does not tell you that disengagement <em>causes</em> hostility — though theory does.
     </div>
 
     <h3 id="ch4-2">4.2 Simple Linear Regression: Prediction</h3>
@@ -691,7 +692,7 @@
     <table class="def-table">
       <tr><td>a (intercept)</td><td>Predicted Y when X = 0. Often not directly interpretable if X = 0 is outside your data range.</td></tr>
       <tr><td>b (slope)</td><td>How much Y changes for each one-unit increase in X.</td></tr>
-      <tr><td>R²</td><td>Proportion of variance in Y explained by your predictor(s). R² = .40 → 40% of variation in cyber-aggression explained.</td></tr>
+      <tr><td>R²</td><td>Proportion of variance in Y explained by your predictor(s). R² = .22 → 22% of variation in hostile responding explained.</td></tr>
     </table>
 
     <h3 id="ch4-3">4.3 Multiple Regression: Several Predictors</h3>
@@ -704,22 +705,39 @@
 
     <table class="def-table">
       <tr><td>β (beta)</td><td>Standardised coefficient. Same units as a z-score. Directly comparable across predictors on different scales.</td></tr>
-      <tr><td>b (unstandardised)</td><td>Raw slope in original units. 'Each 1-point increase in moral disengagement predicts a 0.79-point increase in cyber-aggression.'</td></tr>
+      <tr><td>b (unstandardised)</td><td>Raw slope in original units. 'Each 1-point increase in moral disengagement (1–5) predicts a ≈1.3-point increase in hostile-response likelihood (1–10).'</td></tr>
     </table>
 
     <h3 id="ch4-4">4.4 Hierarchical Regression: Your Method</h3>
 
-    <p>Hierarchical regression enters predictors in theoretically-motivated blocks. The key statistic is ΔR² — how much additional variance the new block explains above and beyond what came before.</p>
+    <p>Hierarchical regression enters predictors in theoretically-motivated blocks. The key statistic is ΔR² — how much additional variance the new block explains above and beyond what came before. Every block is fit on the same complete-case set (here n = 139) so the ΔR² tests are valid.</p>
 
     <div class="eq-block">
       \(\displaystyle \Delta R^2 = R^2_{\text{step}_k} - R^2_{\text{step}_{k-1}} \qquad F_{\text{change}} = \frac{\Delta R^2 / \Delta df_1}{(1 - R^2_k) / df_2}\)
     </div>
 
     <div class="callout green">
-      <div class="callout-label">Your Dissertation Example</div>
-      <strong>Block 1:</strong> Moral disengagement → R² = .38 (38% of cyber-aggression variance)<br>
-      <strong>Block 2:</strong> + AI trust, AI use → R² = .39 (ΔR² = .01, p = .43)<br><br>
-      Interpretation: AI factors add essentially nothing. Moral disengagement is doing the work. ΔR² ≈ 0 is the finding — a precise partitioning of variance.
+      <div class="callout-label">Your Dissertation Example — Predicting Hostile Response Likelihood</div>
+      <strong>Block 1 — Classic predictors</strong> (habitual use, empathy deficit, aggression normalisation, anonymity, moral disengagement): R² ≈ .22<br>
+      <strong>Block 2 — + AI block</strong> (AI trust, AI disinhibition, AI familiarity): ΔR² ≈ .02, <em>p</em> ≈ .27<br>
+      <strong>Block 3 — + Big Five:</strong> ΔR² ≈ .04, ns<br><br>
+      Interpretation: the AI factors add essentially nothing once the classic drivers are in. Moral disengagement carries the model (β ≈ .47, <em>p</em> &lt; .001). A near-zero ΔR² for the AI block is the finding — a precise partitioning of variance, and a meaningful null.
+    </div>
+
+    <h3 id="ch4-5">4.5 Suppression: When Controls Make an Effect <em>Appear</em></h3>
+
+    <p>Usually, adding control variables <em>shrinks</em> a predictor's coefficient — the controls explain away part of what looked like its effect. Suppression is the opposite, and it surprises people: a predictor that is <strong>null on its own</strong> becomes <strong>significant once you adjust for the others</strong>. The coefficient grows rather than shrinks.</p>
+
+    <p>It happens when a predictor carries two kinds of variance: some that relates to the outcome, and some irrelevant variance it shares with the other predictors. The other predictors "soak up" that irrelevant part, leaving a cleaner signal behind.</p>
+
+    <div class="callout purple">
+      <div class="callout-label">Your Dissertation Example — Perceived Anonymity</div>
+      On its own, perceived anonymity barely relates to hostile responding: <em>r</em> ≈ −.10, non-significant. But in the full model it becomes a clear negative predictor (β ≈ −.21, <em>p</em> ≈ .015) — people who feel <em>more</em> anonymous report <em>less</em> hostile responding, once you hold the other constructs constant. The effect got <strong>stronger</strong> under control. A "screen the correlations first, then model the survivors" workflow would have discarded anonymity before the regression ever ran.
+    </div>
+
+    <div class="callout amber">
+      <div class="callout-label">Why It Matters</div>
+      Suppression is the standard cautionary tale against modelling variables one at a time. It also explains why a coefficient's sign or size can legitimately differ from its raw correlation — the regression answers a different question (<em>unique</em> contribution, holding the rest constant), not the zero-order one.
     </div>
   </section>
 
@@ -805,7 +823,7 @@
 
     <table class="def-table">
       <tr><td>Measurement model</td><td>The CFA part. Confirms that your latent variables are well-measured by their items. Cronbach's α, factor loadings, convergent/discriminant validity.</td></tr>
-      <tr><td>Structural model</td><td>The regression part. Tests the paths between latent constructs. 'Moral disengagement → cyber-aggression.' Estimates β and R².</td></tr>
+      <tr><td>Structural model</td><td>The regression part. Tests the paths between latent constructs. 'Moral disengagement → hostile responding.' Estimates β and R².</td></tr>
     </table>
 
     <h3 id="ch7-2">7.2 CB-SEM vs PLS-SEM</h3>
@@ -862,7 +880,7 @@
 
     <div class="callout purple">
       <div class="callout-label">The GPS Analogy</div>
-      Imagine plotting every participant as a point in 3D space where X = moral disengagement, Y = AI trust, Z = cyber-aggression. K-means finds the K 'towns' in this landscape where most people cluster. It doesn't know what the towns represent — you have to interpret the cluster characteristics after the fact.
+      Imagine plotting every participant as a point in 3D space where X = moral disengagement, Y = AI trust, Z = hostile-response likelihood. K-means finds the K 'towns' in this landscape where most people cluster. It doesn't know what the towns represent — you have to interpret the cluster characteristics after the fact.
     </div>
 
     <h3>Choosing K</h3>
@@ -886,7 +904,7 @@
       <h2>Multiple Imputation</h2>
     </div>
 
-    <p>Your 167 responses had some missing values. How you handle them matters enormously.</p>
+    <p>Your 164 responses had some missing values — concentrated in one place. The 22 people who said they never use AI tools were routed past the entire AI / cyber-cognition block, so those scales are blank for them (analytic n = 142). How you handle that matters enormously.</p>
 
     <table class="def-table">
       <tr><td>Listwise deletion</td><td>Drop any participant with any missing value. Simple but wasteful and potentially biased — what if people who skipped items are systematically different?</td></tr>
@@ -902,7 +920,7 @@
 
     <table class="def-table">
       <tr><td>MCAR</td><td><strong>Missing Completely At Random.</strong> No relationship to any variable. Rare. Listwise deletion is valid here.</td></tr>
-      <tr><td>MAR</td><td><strong>Missing At Random.</strong> Missingness depends on other observed variables but not the missing value itself. MI handles this correctly. <em>Your dissertation scenario.</em></td></tr>
+      <tr><td>MAR</td><td><strong>Missing At Random.</strong> Missingness depends on other observed variables but not the missing value itself. MI handles this correctly. <em>Your dissertation scenario — the gaps depend on <code>ai_frequency</code> (the "Never" skip), which you observed, so include it in the imputation model.</em></td></tr>
       <tr><td>MNAR</td><td><strong>Missing Not At Random.</strong> Missingness depends on the unobserved value (e.g. high aggressors don't disclose aggression). Most dangerous. MI doesn't fully solve this — requires sensitivity analysis.</td></tr>
     </table>
   </section>

@@ -176,7 +176,7 @@ const Mod1 = ({ onPass }) => {
             [String.raw`x_{(k)}`, "Order statistic", "The value at position k in the sorted list. x₍₁₎ is the minimum, x₍ₙ₎ is the maximum."],
             [String.raw`\sum`, "Sum of", "Greek capital sigma — add up everything that follows."],
             [String.raw`x_i`, "Each score", "Subscript i means each individual value in your dataset."],
-            [String.raw`n`, "Sample size", "How many scores you have. Here n=5; your dissertation had n=167."],
+            [String.raw`n`, "Sample size", "How many scores you have. Here n=5; your dissertation had n=164."],
             [String.raw`s`, "Standard deviation", "Average distance of scores from the mean, in the original units."],
             [String.raw`s^2`, "Variance", "SD squared. Penalises large deviations more. Used in many formulas."],
           ]}
@@ -207,7 +207,7 @@ const Mod1 = ({ onPass }) => {
           <span style={{ marginLeft: 8 }}>{Math.abs(m - median) > 3 ? '⚠ Skewed — median tells a more honest story' : '✓ Roughly symmetric'}</span>
         </div>
       </div>
-      <Quiz question="Cyber-aggression scores: [1,1,2,2,3,89]. Which measure best represents the sample?"
+      <Quiz question="Hostile-response scores: [1,1,2,2,3,89]. Which measure best represents the sample?"
         options={["Mean — uses all the data", "Median — robust to that outlier", "Mode — most common value", "Variance — captures the spread"]}
         correct={1} explanation="Median=2. Mean≈16.3, dragged up by 89. For skewed data, report both and justify your choice."
         onPass={onPass} />
@@ -240,9 +240,9 @@ const Mod2 = ({ onPass }) => {
             [String.raw`e`, "Euler's number", "≈ 2.718. A mathematical constant. Software handles this — you never compute it by hand."],
           ]}
           worked={[
-            { text: "Moral disengagement: μ=2.8, σ=0.6. Participant scores 4.0.", eq: null },
-            { text: "Subtract mean.", eq: String.raw`x - \mu = 4.0 - 2.8 = 1.2` },
-            { text: "Divide by SD.", eq: String.raw`z = \frac{1.2}{0.6} = 2.0` },
+            { text: "Moral disengagement: μ=2.7, σ=0.8. Participant scores 4.3.", eq: null },
+            { text: "Subtract mean.", eq: String.raw`x - \mu = 4.3 - 2.7 = 1.6` },
+            { text: "Divide by SD.", eq: String.raw`z = \frac{1.6}{0.8} = 2.0` },
             { text: "Z=2.0: 2 SDs above average. The 68-95-99.7 rule: 95% fall within ±2 SDs, so only ~2.5% scored this high. Genuine outlier.", eq: null },
           ]}
         />
@@ -277,9 +277,9 @@ const Mod2 = ({ onPass }) => {
           Score {score.toFixed(1)} is <strong style={{ color: C.teal }}>{Math.abs(z).toFixed(2)} SDs {z >= 0 ? 'above' : 'below'} the mean</strong>. {pct.toFixed(1)}% of scores fall below it.
         </div>
       </div>
-      <Quiz question="Moral disengagement: μ=2.8, σ=0.6. Participant scores 4.0. Z-score?"
+      <Quiz question="Moral disengagement: μ=2.7, σ=0.8. Participant scores 4.3. Z-score?"
         options={["z = 0.5", "z = 1.4", "z = 2.0", "z = −0.5"]}
-        correct={2} explanation="z = (4.0−2.8)/0.6 = 1.2/0.6 = 2.0. Top ~2.3% of your sample."
+        correct={2} explanation="z = (4.3−2.7)/0.8 = 1.6/0.8 = 2.0. Top ~2.3% of your sample."
         onPass={onPass} />
     </div>
   );
@@ -305,15 +305,15 @@ const Mod3 = ({ onPass }) => {
             [String.raw`p`, "p-value", "Probability of results this extreme if H₀ were true. NOT the probability H₀ is true."],
             [String.raw`T`, "Test statistic", "Your t-value. Signal-to-noise ratio."],
             [String.raw`t_{\text{obs}}`, "Observed t", "The t-value your actual sample produced."],
-            [String.raw`H_0`, "Null hypothesis", "The 'no effect' assumption. 'AI factors do not predict cyber-aggression.'"],
+            [String.raw`H_0`, "Null hypothesis", "The 'no effect' assumption. 'The AI factors add nothing to predicting hostile responding.'"],
             [String.raw`\alpha`, "Alpha", "Your threshold — usually .05. A convention, not a law. Some fields use .01 or .10."],
             [String.raw`|x|`, "Absolute value", "The two-tailed test checks both extremes (very high OR very low), hence the | |."],
           ]}
           worked={[
-            { text: "Your dissertation: AI-related factors block gave ΔR²=.01, F-test p=.43.", eq: null },
-            { text: "The question p=.43 answers: if AI factors truly had zero effect on cyber-aggression, how often would we see ΔR²≥.01 by chance?", eq: String.raw`p = P(\Delta R^2 \geq 0.01 \mid H_0) = .43` },
-            { text: "43% of the time — far above α=.05. Not rare. Retain H₀.", eq: null },
-            { text: "This does NOT mean AI factors have zero effect. It means any effect is too small to distinguish from noise at n=167. That IS your finding.", eq: null },
+            { text: "Your dissertation: the AI block (trust, disinhibition, familiarity) gave ΔR²=.02, F-test p=.27.", eq: null },
+            { text: "The question p=.27 answers: if the AI factors truly added zero variance to hostile responding, how often would we see ΔR²≥.02 by chance?", eq: String.raw`p = P(\Delta R^2 \geq 0.02 \mid H_0) = .27` },
+            { text: "27% of the time — well above α=.05. Not rare. Retain H₀.", eq: null },
+            { text: "This does NOT mean the AI factors have zero effect. It means any increment is too small to distinguish from noise at n=139. That IS your finding.", eq: null },
           ]}
         />
         <ResponsiveContainer width="100%" height={180}>
@@ -341,9 +341,9 @@ const Mod3 = ({ onPass }) => {
           {reject ? `p=${p.toFixed(4)} — unlikely under H₀. Reject it.` : `p=${p.toFixed(4)} — not rare enough. Retain H₀. This does NOT prove H₀ is true.`}
         </div>
       </div>
-      <Quiz question="ΔR²=.01, p=.43 for your AI-trust block. What does p=.43 mean?"
-        options={["43% chance AI trust doesn't matter", "Results this large occur 43% of the time by chance if H₀ is true", "AI trust explains 43% of nothing", "The model is 43% wrong"]}
-        correct={1} explanation="p=.43: assuming no real effect, ΔR²≥.01 happens 43% of the time just from sampling noise. Your null finding is legitimate."
+      <Quiz question="ΔR²=.02, p=.27 for your AI block. What does p=.27 mean?"
+        options={["27% chance the AI factors don't matter", "Results this large occur 27% of the time by chance if H₀ is true", "The AI block explains 27% of nothing", "The model is 27% wrong"]}
+        correct={1} explanation="p=.27: assuming no real increment, ΔR²≥.02 happens 27% of the time just from sampling noise. Your null finding is legitimate."
         onPass={onPass} />
     </div>
   );
@@ -446,26 +446,26 @@ const Mod5 = ({ onPass }) => {
     <div>
       <div style={card}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
-          <strong style={{ color: C.teal }}>Click to add data points.</strong> X=moral disengagement, Y=cyber-aggression. r, R², and the regression line update live.
+          <strong style={{ color: C.teal }}>Click to add data points.</strong> X=moral disengagement, Y=hostile responding. r, R², and the regression line update live.
         </p>
         <div style={{ background: C.bg, borderRadius: 8, padding: '8px 0', marginBottom: 8 }}>
           <Eq block tex={String.raw`\hat{Y} = a + bX \qquad r = \frac{\sum(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum(x_i-\bar{x})^2 \cdot \sum(y_i-\bar{y})^2}} \qquad R^2 = r^2`} />
         </div>
         <Explainer
           symbols={[
-            [String.raw`\hat{Y}`, "Predicted Y", "'Y-hat'. The model's predicted cyber-aggression for a given disengagement score."],
+            [String.raw`\hat{Y}`, "Predicted Y", "'Y-hat'. The model's predicted hostile-response score for a given disengagement score."],
             [String.raw`a`, "Intercept", "Predicted Y when X=0. Often not interpretable if X=0 is outside your data range."],
             [String.raw`b`, "Slope", "How much Y increases per 1-unit increase in X. Your key coefficient."],
             [String.raw`r`, "Pearson's r", "−1 to +1. Strength and direction of the linear relationship."],
-            [String.raw`R^2`, "R-squared", "r². Proportion of Y variance explained by X. R²=.38 → 38% of cyber-aggression variance explained."],
+            [String.raw`R^2`, "R-squared", "r². Proportion of Y variance explained by X. r(MD,HRL)≈.38 → R²≈.14, so ~14% of hostile-response variance is explained by disengagement alone."],
             [String.raw`(x_i-\bar{x})(y_i-\bar{y})`, "Cross-deviation", "For each person: how far they are from the X mean times how far from the Y mean. This captures co-movement."],
           ]}
           worked={[
-            { text: "Your dissertation: moral disengagement (X) predicting cyber-aggression (Y), n=167.", eq: null },
-            { text: "Regression equation from your results:", eq: String.raw`\hat{Y}_{\text{aggression}} = 0.41 + 0.79 \times X_{\text{disengagement}}` },
-            { text: "Each 1-point increase in moral disengagement predicts 0.79-point increase in cyber-aggression.", eq: null },
-            { text: "R²=.38 for the full model:", eq: String.raw`R^2 = .38 \;\Rightarrow\; \text{38\% of variance in cyber-aggression explained}` },
-            { text: "The remaining 62% comes from other variables, personality, measurement error, and random variance.", eq: null },
+            { text: "Your dissertation: moral disengagement (X, 1–5) predicting hostile response likelihood (Y, 1–10), n=164.", eq: null },
+            { text: "Simple regression of HRL on disengagement alone:", eq: String.raw`\hat{Y}_{\text{HRL}} = 1.6 + 1.1 \times X_{\text{disengagement}}` },
+            { text: "Each 1-point increase in moral disengagement predicts a ~1.1-point increase in hostile responding (on the 1–10 scale).", eq: null },
+            { text: "With r≈.38, the simple model explains:", eq: String.raw`R^2 = r^2 \approx .14 \;\Rightarrow\; \text{14\% of variance in hostile responding}` },
+            { text: "The remaining 86% comes from the other predictors, personality, measurement error, and random variance — which is why we build the full hierarchical model.", eq: null },
           ]}
         />
         <div ref={svgRef} onClick={handleClick} style={{ cursor: 'crosshair', userSelect: 'none' }}>
@@ -473,7 +473,7 @@ const Mod5 = ({ onPass }) => {
             <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 0 }}>
               <CartesianGrid stroke={C.border} strokeDasharray="3 3" />
               <XAxis type="number" dataKey="x" domain={[0.5, 5]} tick={{ fill: C.muted, fontSize: 10 }} label={{ value: 'Moral Disengagement', fill: C.muted, fontSize: 11, position: 'insideBottom', dy: 14 }} />
-              <YAxis type="number" dataKey="y" domain={[0.5, 5]} tick={{ fill: C.muted, fontSize: 10 }} label={{ value: 'Cyber-Aggression', fill: C.muted, fontSize: 11, angle: -90, position: 'insideLeft', dx: 10 }} />
+              <YAxis type="number" dataKey="y" domain={[0.5, 5]} tick={{ fill: C.muted, fontSize: 10 }} label={{ value: 'Hostile Responding', fill: C.muted, fontSize: 11, angle: -90, position: 'insideLeft', dx: 10 }} />
               <Scatter data={points} fill={C.teal} opacity={0.8} />
               {reg && <Line data={regLine} type="linear" dataKey="y" stroke={C.amber} strokeWidth={2} dot={false} />}
             </ScatterChart>
@@ -491,8 +491,8 @@ const Mod5 = ({ onPass }) => {
         <button onClick={() => setPoints([])} style={{ marginTop: 10, background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, borderRadius: 6, padding: '4px 12px', cursor: 'pointer', fontSize: 12 }}>Clear</button>
       </div>
       <Quiz question="r=.71, R²=.50, p<.001. What does R²=.50 mean?"
-        options={["50% of participants aggress online", "The model is 50% accurate", "Moral disengagement explains 50% of variance in cyber-aggression", "The slope is 0.50"]}
-        correct={2} explanation="R²=.50: half the variation in cyber-aggression is explained by moral disengagement. Strong R² in social science."
+        options={["50% of participants respond with hostility", "The model is 50% accurate", "The predictor explains 50% of variance in hostile responding", "The slope is 0.50"]}
+        correct={2} explanation="R²=.50: half the variation in hostile responding is explained by the predictor. A strong R² in social science (stronger than this study's actual model)."
         onPass={onPass} />
     </div>
   );
@@ -528,10 +528,10 @@ const Mod6 = ({ onPass }) => {
             [String.raw`1 - \frac{\sum\sigma_i^2}{\sigma_t^2}`, "Shared variance ratio", "If items measure the same thing, total variance >> individual variances. This ratio approaches 1."],
           ]}
           worked={[
-            { text: "Your moral disengagement scale: 8 items, n=167, α=.87 from R output.", eq: null },
-            { text: "Mechanically: the 8 items share a lot of variance. High on one → high on all.", eq: null },
-            { text: "Simplified calculation for 3 items (σ₁²=0.62, σ₂²=0.58, σ₃²=0.71, σₜ²=3.94):", eq: String.raw`\alpha = \frac{3}{2}\!\left(1 - \frac{0.62+0.58+0.71}{3.94}\right) = 1.5 \times 0.515 = .87` },
-            { text: "α=.87 is Good. Above .90 would be Excellent, but can indicate redundancy — items too similar to add distinct information.", eq: null },
+            { text: "Your moral disengagement scale: 6 items, n=142, α=.82 from R output.", eq: null },
+            { text: "Mechanically: the 6 items share a lot of variance. High on one → high on all.", eq: null },
+            { text: "Simplified calculation for 3 items (σ₁²=0.62, σ₂²=0.58, σ₃²=0.71, σₜ²=4.22):", eq: String.raw`\alpha = \frac{3}{2}\!\left(1 - \frac{0.62+0.58+0.71}{4.22}\right) = 1.5 \times 0.547 = .82` },
+            { text: "α=.82 is Good. Above .90 would be Excellent, but can indicate redundancy — items too similar to add distinct information.", eq: null },
             { text: "α=.87 proves internal consistency, NOT construct validity. To establish validity you need Confirmatory Factor Analysis (CFA) — which tests whether items load onto the factor structure your theory predicts — plus convergent validity (AVE ≥ .50) and discriminant validity (HTMT < .85). In your dissertation you did exactly this via the PLS-SEM measurement model — that's the structural equation equivalent of running CFA.", eq: null },
           ]}
         />
@@ -625,7 +625,7 @@ const Mod7 = ({ onPass }) => {
     <div>
       <div style={card}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
-          20 participants: moral disengagement (X), cyber-aggression (Y). Choose K, initialise, step through the algorithm.
+          20 participants: moral disengagement (X), hostile responding (Y). Choose K, initialise, step through the algorithm.
         </p>
         <div style={{ background: C.bg, borderRadius: 8, padding: '8px 0', marginBottom: 8 }}>
           <Eq block tex={String.raw`\underset{S}{\arg\min} \sum_{i=1}^{k} \sum_{x \in S_i} \|x - \mu_i\|^2`} />
@@ -664,7 +664,7 @@ const Mod7 = ({ onPass }) => {
           <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 0 }}>
             <CartesianGrid stroke={C.border} strokeDasharray="3 3" />
             <XAxis type="number" dataKey="x" domain={[0.5,5]} tick={{ fill: C.muted, fontSize: 10 }} label={{ value: 'Moral Disengagement', fill: C.muted, fontSize: 11, position: 'insideBottom', dy: 14 }} />
-            <YAxis type="number" dataKey="y" domain={[0.5,5]} tick={{ fill: C.muted, fontSize: 10 }} label={{ value: 'Cyber-Aggression', fill: C.muted, fontSize: 11, angle: -90, position: 'insideLeft', dx: 10 }} />
+            <YAxis type="number" dataKey="y" domain={[0.5,5]} tick={{ fill: C.muted, fontSize: 10 }} label={{ value: 'Hostile Responding', fill: C.muted, fontSize: 11, angle: -90, position: 'insideLeft', dx: 10 }} />
             {[...Array(K)].map((_,ki) => (
               <Scatter key={ki} data={plotData.filter(p => p.cluster===ki)} fill={COLORS[ki%COLORS.length]} opacity={0.85} />
             ))}
@@ -690,14 +690,14 @@ const Mod7 = ({ onPass }) => {
 
 /* ── MODULE 8: Hierarchical Regression ──────────────────────── */
 const Mod8 = ({ onPass }) => {
-  // Simulated dissertation-style data: 3 blocks
-  // Block 1: demographics (age, gender) → R²=.04
-  // Block 2: + moral disengagement → R²=.38, ΔR²=.34
-  // Block 3: + AI trust, AI use → R²=.39, ΔR²=.01
+  // Dissertation hierarchical model predicting Hostile Response Likelihood (n=139)
+  // Block 1: classic cyber-cognition predictors (incl. moral disengagement) → R²=.22
+  // Block 2: + AI block (trust, disinhibition, familiarity) → R²=.24, ΔR²=.02, ns
+  // Block 3: + Big Five → R²=.25, ΔR²=.01, ns
   const blocks = [
-    { name: "Block 1: Demographics", vars: ["Age", "Gender"], r2: 0.04, f: 3.41, p: 0.036, df1: 2, df2: 164 },
-    { name: "Block 2: + Moral Disengagement", vars: ["Age", "Gender", "Moral Disengagement"], r2: 0.38, f: 33.21, p: 0.000, df1: 1, df2: 163 },
-    { name: "Block 3: + AI Factors", vars: ["Age", "Gender", "Moral Disengagement", "AI Trust", "AI Use"], r2: 0.39, f: 1.34, p: 0.430, df1: 2, df2: 161 },
+    { name: "Block 1: Classic predictors", vars: ["Habitual use", "Empathy deficit", "Aggression normalisation", "Anonymity", "Moral disengagement"], r2: 0.22, f: 7.37, p: 0.000, df1: 5, df2: 133 },
+    { name: "Block 2: + AI factors", vars: ["+ AI Trust", "AI Disinhibition", "AI Familiarity"], r2: 0.24, f: 1.32, p: 0.271, df1: 3, df2: 130 },
+    { name: "Block 3: + Big Five", vars: ["+ Extraversion … Openness"], r2: 0.25, f: 0.32, p: 0.902, df1: 5, df2: 125 },
   ];
   const [activeBlock, setActiveBlock] = useState(0);
   const deltaR2 = activeBlock === 0 ? blocks[0].r2 : blocks[activeBlock].r2 - blocks[activeBlock - 1].r2;
@@ -721,11 +721,11 @@ const Mod8 = ({ onPass }) => {
             [String.raw`df_2`, "Residual df", "n minus total number of predictors minus 1. Leftover degrees of freedom."],
           ]}
           worked={[
-            { text: "Block 1: Demographics only (age, gender). R²=.04 — 4% of variance explained. F(2,164)=3.41, p=.036. Significant but weak.", eq: String.raw`R^2_1 = .04` },
-            { text: "Block 2: Add moral disengagement. R² jumps to .38.", eq: String.raw`\Delta R^2 = .38 - .04 = .34` },
-            { text: "F-change for Block 2:", eq: String.raw`F_{\text{change}}(1, 163) = \frac{.34/1}{(1-.38)/163} = \frac{.34}{.0038} = 89.5,\quad p < .001` },
-            { text: "Block 3: Add AI trust and AI use. R² barely moves.", eq: String.raw`\Delta R^2 = .39 - .38 = .01` },
-            { text: "F-change for Block 3: F(2,161)=1.34, p=.43. Not significant. AI factors add nothing above moral disengagement. This is your null finding — and it's theoretically meaningful.", eq: null },
+            { text: "Block 1: the five classic predictors (habitual use, empathy deficit, aggression normalisation, anonymity, moral disengagement). R²=.22 — 22% of variance in hostile responding. F(5,133)=7.37, p<.001. Moral disengagement carries this block (β≈.47).", eq: String.raw`R^2_1 = .22` },
+            { text: "Block 2: add the AI block (trust, disinhibition, familiarity). R² barely moves.", eq: String.raw`\Delta R^2 = .24 - .22 = .02` },
+            { text: "F-change for the AI block:", eq: String.raw`F_{\text{change}}(3, 130) = \frac{.02/3}{(1-.24)/130} = 1.32,\quad p = .27` },
+            { text: "Block 3: add the Big Five personality markers. Still essentially flat.", eq: String.raw`\Delta R^2 = .25 - .24 = .01,\quad p = .90` },
+            { text: "Neither the AI block nor the Big Five adds significant variance above the classic predictors. The near-zero AI ΔR² is your null finding — and it's theoretically meaningful.", eq: null },
           ]}
         />
         {/* Block selector */}
@@ -753,14 +753,14 @@ const Mod8 = ({ onPass }) => {
             <span style={{ color: C.amber, ...mono, fontWeight: 700 }}>{(b.r2 * 100).toFixed(0)}%</span>
           </div>
           <div style={{ height: 20, background: C.bg, borderRadius: 4, border: `1px solid ${C.border}`, overflow: 'hidden', display: 'flex' }}>
-            <div style={{ width: `${blocks[0].r2 * 100}%`, background: C.muted, transition: 'width 0.4s ease' }} title="Demographics" />
-            {activeBlock >= 1 && <div style={{ width: `${(blocks[1].r2 - blocks[0].r2) * 100}%`, background: C.teal, transition: 'width 0.4s ease' }} title="Moral Disengagement" />}
-            {activeBlock >= 2 && <div style={{ width: `${(blocks[2].r2 - blocks[1].r2) * 100}%`, background: C.amber, transition: 'width 0.4s ease' }} title="AI Factors" />}
+            <div style={{ width: `${blocks[0].r2 * 100}%`, background: C.teal, transition: 'width 0.4s ease' }} title="Classic predictors" />
+            {activeBlock >= 1 && <div style={{ width: `${(blocks[1].r2 - blocks[0].r2) * 100}%`, background: C.amber, transition: 'width 0.4s ease' }} title="AI factors" />}
+            {activeBlock >= 2 && <div style={{ width: `${(blocks[2].r2 - blocks[1].r2) * 100}%`, background: C.purple, transition: 'width 0.4s ease' }} title="Big Five" />}
           </div>
           <div style={{ display: 'flex', gap: 16, marginTop: 6 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.muted, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>Demographics</span></div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.teal, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>Moral Disengagement</span></div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.amber, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>AI Factors</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.teal, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>Classic predictors</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.amber, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>AI factors</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><div style={{ width: 10, height: 10, background: C.purple, borderRadius: 2 }} /><span style={{ color: C.muted, fontSize: 11 }}>Big Five</span></div>
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
@@ -770,20 +770,20 @@ const Mod8 = ({ onPass }) => {
           <StatBox label="p (change)" value={b.p < 0.001 ? '< .001' : b.p} dec={3} color={isSignificant ? C.green : C.red} />
         </div>
         <div style={{ marginTop: 12, padding: '10px 14px', background: C.bg, borderRadius: 8, fontSize: 14, color: C.text, borderLeft: `3px solid ${isSignificant ? C.green : C.amber}` }}>
-          {activeBlock === 0 && "Demographics explain 4% of variance — small but significant baseline."}
-          {activeBlock === 1 && "Moral disengagement adds ΔR²=.34 — a massive, highly significant contribution. This is your headline finding."}
-          {activeBlock === 2 && "AI factors add ΔR²=.01, p=.43 — not significant. The null finding: AI-related variables explain negligible variance above moral disengagement."}
+          {activeBlock === 0 && "The classic predictors explain 22% of variance — moral disengagement (β≈.47) does most of the work. A well-powered block."}
+          {activeBlock === 1 && "The AI factors add ΔR²=.02, p=.27 — not significant. The null finding: AI-related variables explain negligible variance above the classic predictors."}
+          {activeBlock === 2 && "The Big Five add ΔR²=.01, p=.90 — also negligible. Hostile responding is driven by moral cognition, not AI attitudes or broad personality."}
         </div>
       </div>
-      <Quiz question="In your dissertation, Block 3 (AI factors) gave ΔR²=.01, p=.43. What is the correct interpretation?"
+      <Quiz question="In your dissertation, the AI block gave ΔR²=.02, p=.27. What is the correct interpretation?"
         options={[
-          "AI factors are important predictors of cyber-aggression",
-          "The model is only 1% accurate",
-          "AI factors explain negligible additional variance once moral disengagement is controlled — a meaningful null finding",
+          "AI factors are important predictors of hostile responding",
+          "The model is only 2% accurate",
+          "AI factors explain negligible additional variance once the classic predictors are controlled — a meaningful null finding",
           "You need more participants to confirm this result"
         ]}
         correct={2}
-        explanation="ΔR²=.01, p=.43: AI trust and AI use add almost nothing to the model once moral disengagement is included. This IS a finding — it tells you where cyber-aggression comes from (moral psychology) and where it doesn't (AI-related attitudes)."
+        explanation="ΔR²=.02, p=.27: AI trust, disinhibition and familiarity add almost nothing once the classic cyber-cognition predictors are in. This IS a finding — it tells you where hostile responding comes from (moral cognition) and where it doesn't (AI-related attitudes)."
         onPass={onPass} />
     </div>
   );
@@ -794,25 +794,26 @@ const Mod9 = ({ onPass }) => {
   const [view, setView] = useState('measurement');
   // Dissertation measurement model values
   const constructs = [
-    { name: "Moral Disengagement", items: 8, loadings: [.81,.84,.79,.86,.83,.77,.85,.82], ave: .67, cr: .93, abbr: "MD" },
-    { name: "Cyber-Aggression", items: 6, loadings: [.78,.82,.80,.75,.83,.79], ave: .63, cr: .91, abbr: "CA" },
-    { name: "AI Trust", items: 5, loadings: [.76,.80,.74,.78,.77], ave: .59, cr: .88, abbr: "AIT" },
-    { name: "AI Use", items: 4, loadings: [.72,.75,.70,.73], ave: .53, cr: .82, abbr: "AIU" },
+    { name: "Moral Disengagement", items: 6, loadings: [.78,.81,.76,.83,.80,.74], ave: .62, cr: .89, abbr: "MD" },
+    { name: "AI Trust", items: 5, loadings: [.78,.82,.76,.80,.79], ave: .62, cr: .89, abbr: "AIT" },
+    { name: "AI Disinhibition", items: 5, loadings: [.79,.83,.80,.77,.82], ave: .64, cr: .90, abbr: "AID" },
+    { name: "Perceived Anonymity", items: 4, loadings: [.74,.78,.72,.76], ave: .56, cr: .84, abbr: "ANON" },
   ];
-  // Structural model: path coefficients
+  // Structural model: path coefficients onto Hostile Response Likelihood (HRL)
   const paths = [
-    { from: "MD", to: "CA", beta: .61, t: 8.94, p: "<.001", sig: true },
-    { from: "AIT", to: "CA", beta: .08, t: 1.12, p: ".263", sig: false },
-    { from: "AIU", to: "CA", beta: .05, t: 0.79, p: ".431", sig: false },
+    { from: "MD", to: "HRL", beta: .45, t: 5.20, p: "<.001", sig: true },
+    { from: "ANON", to: "HRL", beta: -.21, t: 2.45, p: ".015", sig: true },
+    { from: "AID", to: "HRL", beta: -.18, t: 1.86, p: ".065", sig: false },
+    { from: "AIT", to: "HRL", beta: .02, t: 0.20, p: ".840", sig: false },
   ];
   // HTMT matrix (upper triangle)
   const htmt = [
-    ["—", ".48", ".31", ".29"],
-    ["", "—", ".35", ".33"],
-    ["", "", "—", ".44"],
+    ["—", ".09", ".11", ".26"],
+    ["", "—", ".38", ".01"],
+    ["", "", "—", ".24"],
     ["", "", "", "—"],
   ];
-  const labels = ["MD", "CA", "AIT", "AIU"];
+  const labels = ["MD", "AIT", "AID", "ANON"];
   return (
     <div>
       <div style={card}>
@@ -841,10 +842,10 @@ const Mod9 = ({ onPass }) => {
                 [String.raw`HTMT`, "Heterotrait-Monotrait ratio", "Discriminant validity test. Compares correlations between constructs vs. within constructs. HTMT < .85 means constructs are distinct."],
               ]}
               worked={[
-                { text: "Moral Disengagement: 8 items, loadings ranging .77–.86. Calculate AVE:", eq: String.raw`AVE_{MD} = \frac{.81^2+.84^2+.79^2+.86^2+.83^2+.77^2+.85^2+.82^2}{8} = \frac{5.35}{8} = .67` },
-                { text: "AVE=.67 > .50 ✓ — convergent validity confirmed. The construct captures more than half the variance in its items.", eq: null },
-                { text: "HTMT between MD and CA = .48 < .85 ✓ — discriminant validity confirmed. These are distinct constructs, not measuring the same thing.", eq: null },
-                { text: "All four constructs meet AVE ≥ .50, CR ≥ .80, HTMT < .85. Measurement model is sound — you can trust your structural results.", eq: null },
+                { text: "Moral Disengagement: 6 items, loadings ranging .74–.83. Calculate AVE:", eq: String.raw`AVE_{MD} = \frac{.78^2+.81^2+.76^2+.83^2+.80^2+.74^2}{6} = \frac{3.72}{6} = .62` },
+                { text: "AVE=.62 > .50 ✓ — convergent validity confirmed. The construct captures more than half the variance in its items.", eq: null },
+                { text: "HTMT between MD and AI Trust = .09 < .85 ✓ — discriminant validity confirmed. These are distinct constructs, not measuring the same thing.", eq: null },
+                { text: "All four constructs meet AVE ≥ .50, CR ≥ .80, HTMT < .85. Measurement model is sound — you can trust your structural results. (HRL, the outcome, is a single item, so it has no measurement model of its own.)", eq: null },
               ]}
             />
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
@@ -911,10 +912,10 @@ const Mod9 = ({ onPass }) => {
                 [String.raw`t`, "Bootstrap t-value", "PLS-SEM uses bootstrapping (resampling) rather than assumptions about normal distributions to test significance."],
               ]}
               worked={[
-                { text: "Moral disengagement → cyber-aggression: β=.61, t=8.94, p<.001. Large, significant path.", eq: String.raw`f^2_{MD} = \frac{.39 - .05}{1 - .39} = \frac{.34}{.61} = .56 \text{ — large effect}` },
-                { text: "AI trust → cyber-aggression: β=.08, t=1.12, p=.263. Not significant.", eq: String.raw`f^2_{AIT} = \frac{.39 - .38}{1 - .39} = \frac{.01}{.61} = .016 \text{ — negligible}` },
-                { text: "AI use → cyber-aggression: β=.05, t=0.79, p=.431. Not significant.", eq: null },
-                { text: "R²=.39 for cyber-aggression. Q²=.24 > 0 — model has predictive relevance.", eq: null },
+                { text: "Moral disengagement → HRL: β=.45, t=5.20, p<.001. The dominant path.", eq: String.raw`f^2_{MD} = \frac{.25 - .12}{1 - .25} = \frac{.13}{.75} = .17 \text{ — medium effect}` },
+                { text: "Perceived anonymity → HRL: β=−.21, t=2.45, p=.015. Significant and NEGATIVE — a suppression path (it was near-zero on its own).", eq: null },
+                { text: "AI trust → HRL: β=.02, t=0.20, p=.840. Not significant.", eq: String.raw`f^2_{AIT} \approx .000 \text{ — negligible}` },
+                { text: "R²=.25 for HRL. Q²=.10 > 0 — model has predictive relevance.", eq: null },
               ]}
             />
             <div style={{ marginBottom: 16 }}>
@@ -940,22 +941,22 @@ const Mod9 = ({ onPass }) => {
               ))}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-              <StatBox label="R² (CA)" value={0.39} dec={2} color={C.amber} />
-              <StatBox label="Q²" value={0.24} dec={2} color={C.teal} />
-              <StatBox label="Significant paths" value="1 / 3" dec={0} color={C.green} />
+              <StatBox label="R² (HRL)" value={0.25} dec={2} color={C.amber} />
+              <StatBox label="Q²" value={0.10} dec={2} color={C.teal} />
+              <StatBox label="Significant paths" value="2 / 4" dec={0} color={C.green} />
             </div>
           </>
         )}
       </div>
-      <Quiz question="Your AVE for moral disengagement is .67. What does this tell you?"
+      <Quiz question="Your AVE for moral disengagement is .62. What does this tell you?"
         options={[
-          "67% of participants scored high on moral disengagement",
-          "The construct explains 67% of the variance in its items — convergent validity confirmed",
-          "The scale has 67% reliability",
+          "62% of participants scored high on moral disengagement",
+          "The construct explains 62% of the variance in its items — convergent validity confirmed",
+          "The scale has 62% reliability",
           "You need to remove items until AVE reaches .85"
         ]}
         correct={1}
-        explanation="AVE=.67 means the moral disengagement construct accounts for 67% of the variance in its 8 items on average. Since .67 > .50, convergent validity is confirmed — the items are mostly measuring the construct rather than random error."
+        explanation="AVE=.62 means the moral disengagement construct accounts for 62% of the variance in its 6 items on average. Since .62 > .50, convergent validity is confirmed — the items are mostly measuring the construct rather than random error."
         onPass={onPass} />
     </div>
   );
@@ -982,8 +983,8 @@ const Mod10 = ({ onPass }) => {
   const imputed = { '2-md':3.1, '3-ca':4.3, '3-ai':3.7, '5-ai':3.6, '6-md':2.8, '7-ca':3.0, '9-md':2.5, '9-ai':2.8 };
   const mechDesc = {
     MCAR: { label: "MCAR — Missing Completely At Random", color: C.green, desc: "Missingness has no relationship to any variable in the dataset — it's pure random chance (e.g., a survey glitch). Safe to delete cases, but you lose power. Rare in practice." },
-    MAR: { label: "MAR — Missing At Random", color: C.amber, desc: "Missingness depends on observed variables but not on the missing value itself (e.g., younger participants skip the AI questions). Multiple imputation works well here. This was your dissertation scenario." },
-    MNAR: { label: "MNAR — Missing Not At Random", color: C.red, desc: "Missingness depends on the value that's missing (e.g., high cyber-aggressors refuse to answer cyber-aggression items). The hardest case — imputation may introduce bias. Requires sensitivity analysis." },
+    MAR: { label: "MAR — Missing At Random", color: C.amber, desc: "Missingness depends on observed variables but not on the missing value itself (e.g., people who said they never use AI were routed past the AI questions). Multiple imputation works well here — include the routing variable (ai_frequency) in the model. This was your dissertation scenario." },
+    MNAR: { label: "MNAR — Missing Not At Random", color: C.red, desc: "Missingness depends on the value that's missing (e.g., the most hostile responders refuse to answer the hostility items). The hardest case — imputation may introduce bias. Requires sensitivity analysis." },
   };
   return (
     <div>
@@ -996,7 +997,7 @@ const Mod10 = ({ onPass }) => {
         </div>
         <Explainer
           symbols={[
-            [String.raw`m`, "Number of imputations", "How many complete datasets you create. Your dissertation used m=5. More is better but diminishing returns past m=20."],
+            [String.raw`m`, "Number of imputations", "How many complete datasets you create. Your dissertation used m=20. More is better but diminishing returns past m≈20–40."],
             [String.raw`\bar{Q}`, "Pooled estimate", "The average of the statistic (e.g., regression coefficient) across all m imputed datasets."],
             [String.raw`\hat{Q}_i`, "Estimate from imputation i", "The statistic computed on the i-th imputed dataset."],
             [String.raw`T`, "Total variance", "Combined uncertainty from within-imputation variance (Ū) and between-imputation variance (B)."],
@@ -1004,11 +1005,11 @@ const Mod10 = ({ onPass }) => {
             [String.raw`B`, "Between-imputation variance", "Extra uncertainty due to not knowing the missing values. If B is large relative to Ū, you have a lot of missingness-related uncertainty."],
           ]}
           worked={[
-            { text: "Your dissertation: n=167 responses with ~8% missing data across variables. Little's MCAR test: χ²=14.3, p=.21 — consistent with MAR.", eq: null },
-            { text: "You created m=5 imputed datasets using predictive mean matching (PMM). Each dataset has a slightly different plausible value where data were missing.", eq: null },
-            { text: "You ran your hierarchical regression on all 5 datasets, getting 5 slightly different β coefficients for moral disengagement, e.g.:", eq: String.raw`\hat{\beta}_1=.60,\; \hat{\beta}_2=.62,\; \hat{\beta}_3=.61,\; \hat{\beta}_4=.59,\; \hat{\beta}_5=.63` },
-            { text: "Rubin's Rules pool these into one estimate:", eq: String.raw`\bar{\beta} = \frac{.60+.62+.61+.59+.63}{5} = .61` },
-            { text: "The pooled SE accounts for both sampling error and imputation uncertainty. Your final result: β=.61, p<.001 — robust to the missing data.", eq: null },
+            { text: "Your dissertation: 164 responses, but 22 'Never'-AI users were routed past the AI / cyber-cognition block, leaving those scales blank (analytic n=142). Missingness is MAR conditional on ai_frequency.", eq: null },
+            { text: "You created m=20 imputed datasets using predictive mean matching (PMM), with ai_frequency in the model. Each dataset has a slightly different plausible value where data were missing.", eq: null },
+            { text: "You ran your regression on all 20 datasets, getting slightly different standardised β coefficients for moral disengagement, e.g.:", eq: String.raw`\hat{\beta}_1=.45,\; \hat{\beta}_2=.47,\; \hat{\beta}_3=.46,\; \hat{\beta}_4=.44,\; \hat{\beta}_5=.48,\;\dots` },
+            { text: "Rubin's Rules pool these into one estimate:", eq: String.raw`\bar{\beta} \approx \frac{.45+.47+.46+.44+.48}{5} = .46` },
+            { text: "The pooled SE accounts for both sampling error and imputation uncertainty. Your final result: β≈.46, p<.001 — robust to the missing data.", eq: null },
           ]}
         />
         {/* Missing data mechanism selector */}
@@ -1039,7 +1040,7 @@ const Mod10 = ({ onPass }) => {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                {['ID', 'Age', 'Moral Dis.', 'Cyber-Agg.', 'AI Trust'].map(h => (
+                {['ID', 'Age', 'Moral Dis.', 'Anonymity', 'AI Trust'].map(h => (
                   <th key={h} style={{ color: C.muted, fontSize: 12, padding: '6px 8px', textAlign: 'center', borderBottom: `1px solid ${C.border}` }}>{h}</th>
                 ))}
               </tr>
@@ -1076,15 +1077,15 @@ const Mod10 = ({ onPass }) => {
           </div>
         </div>
       </div>
-      <Quiz question="You have 8% missing data. Little's MCAR test gives p=.21. What does this mean and what should you do?"
+      <Quiz question="The 22 'Never'-AI users are missing every AI / cyber-cognition scale (analytic n=142). The gaps depend on ai_frequency, which you observed. What should you do?"
         options={[
-          "p=.21 proves data is MCAR — delete missing cases",
-          "p=.21 is consistent with MCAR/MAR — use multiple imputation to preserve all 167 cases and account for uncertainty",
-          "p=.21 means MNAR — the data is biased",
-          "8% missing is too much — collect more data"
+          "Delete the 22 cases — they didn't answer those items",
+          "This is MAR conditional on ai_frequency — use multiple imputation (with ai_frequency in the model) to keep all 164 cases and account for uncertainty",
+          "It's MNAR — the data is hopelessly biased",
+          "Replace the gaps with the scale means"
         ]}
         correct={1}
-        explanation="p=.21 on Little's MCAR test: we fail to reject the null of MCAR, which is consistent with MAR. Multiple imputation (m=5) is the principled approach — it preserves all 167 cases, propagates uncertainty through Rubin's Rules, and is far better than listwise deletion which would bias your results."
+        explanation="Because the missingness depends on an observed variable (ai_frequency), it is MAR. Multiple imputation (m=20) that includes ai_frequency is the principled approach — it keeps all 164 cases, propagates uncertainty through Rubin's Rules, and beats listwise deletion (which would drop the 22 non-users and bias the AI estimates)."
         onPass={onPass} />
     </div>
   );
@@ -1094,77 +1095,85 @@ const Mod10 = ({ onPass }) => {
 const Mod11 = ({ onPass }) => {
   const questions = [
     {
-      q: "Your moral disengagement scale: 8 items, α=.87, AVE=.67, CR=.93, all HTMT < .85. A reviewer asks for evidence of construct validity. What do you cite?",
+      q: "Your moral disengagement scale: 6 items, α=.82, AVE=.62, CR=.89, all HTMT < .85. A reviewer asks for evidence of construct validity. What do you cite?",
       options: [
-        "α=.87 alone — that's excellent reliability",
-        "AVE=.67 ≥ .50 (convergent validity) + all HTMT < .85 (discriminant validity) + CR=.93 ≥ .80. α supports internal consistency but isn't validity evidence.",
+        "α=.82 alone — that's good reliability",
+        "AVE=.62 ≥ .50 (convergent validity) + all HTMT < .85 (discriminant validity) + CR=.89 ≥ .80. α supports internal consistency but isn't validity evidence.",
         "The p-values from the structural model",
-        "The sample size of 167"
+        "The sample size of 164"
       ],
       correct: 1,
       explanation: "Construct validity = convergent (AVE ≥ .50) + discriminant (HTMT < .85) + reliable measurement (CR ≥ .80). α is not validity evidence — it's consistency evidence. Different thing."
     },
     {
-      q: "Block 1 R²=.04, Block 2 R²=.38, Block 3 R²=.39. ΔR² for Block 3 = .01, p=.43. Your supervisor says 'AI factors don't matter, drop them.' Is this the right conclusion?",
+      q: "Classic block R²=.22; adding the AI block gives ΔR²=.02, p=.27. Your supervisor says 'AI factors don't matter, drop them.' Is this the right conclusion?",
       options: [
         "Yes — non-significant means irrelevant, remove them",
-        "No — retain them and report the null finding. ΔR²=.01 is a theoretically meaningful result: it tells you cyber-aggression is driven by moral psychology, not AI attitudes.",
+        "No — retain them and report the null finding. ΔR²=.02 is a theoretically meaningful result: it tells you hostile responding is driven by moral cognition, not AI attitudes.",
         "Yes — but only if you run the analysis again with a larger sample",
         "No — increase α to .10 to make the result significant"
       ],
       correct: 1,
-      explanation: "Null findings are findings. ΔR²=.01 answers a real question: do AI-related factors explain cyber-aggression above moral disengagement? Answer: no. That contributes to theory. Dropping them hides the answer."
+      explanation: "Null findings are findings. ΔR²=.02 answers a real question: do AI-related factors explain hostile responding above the classic predictors? Answer: no. That contributes to theory. Dropping them hides the answer."
     },
     {
-      q: "You report: t(163) = 8.94, p < .001, β = .61, f² = .56 for the moral disengagement → cyber-aggression path. What does f² = .56 tell you?",
+      q: "You report: t = 5.20, p < .001, β = .45, f² = .17 for the moral disengagement → hostile responding path. What does f² = .17 tell you?",
       options: [
-        "56% of the sample are cyber-aggressors",
-        "The effect size is large — removing moral disengagement from the model would reduce R² by a substantial amount",
+        "17% of the sample respond with hostility",
+        "The effect size is medium — removing moral disengagement from the model would reduce R² by a meaningful amount",
         "The t-statistic is reliable",
-        "The model explains 56% of variance"
+        "The model explains 17% of variance"
       ],
       correct: 1,
-      explanation: "f² = .56 is a large effect (threshold: small=.02, medium=.15, large=.35). It means moral disengagement is not just statistically significant — its contribution to the model is substantial. If you removed it, R² would drop considerably."
+      explanation: "f² = .17 is a medium effect (thresholds: small=.02, medium=.15, large=.35). It means moral disengagement is not just statistically significant — its unique contribution to the model is substantial. It is by far the strongest predictor in the study."
     },
     {
-      q: "You used multiple imputation with m=5 on 8% missing data. A classmate says 'just delete the incomplete cases — it's only 8%.' What's wrong with this?",
+      q: "You used multiple imputation with m=20 for the AI-block missingness (the 22 'Never' users). A classmate says 'just delete the incomplete cases.' What's wrong with this?",
       options: [
-        "Nothing — 8% listwise deletion is always acceptable",
-        "Listwise deletion assumes MCAR, reduces n, and loses statistical power. MI preserves all 167 cases, produces unbiased estimates under MAR, and correctly propagates uncertainty via Rubin's Rules.",
+        "Nothing — listwise deletion is always acceptable",
+        "Listwise deletion would drop the 22 non-users entirely, biasing the AI estimates and cutting power. MI preserves all 164 cases, is valid under MAR (the gaps depend on ai_frequency), and propagates uncertainty via Rubin's Rules.",
         "You should use mean substitution instead",
-        "8% is below the 10% threshold so either method works"
+        "The missingness is small enough that either method works"
       ],
       correct: 1,
-      explanation: "Listwise deletion: (a) assumes MCAR — which you can't verify, (b) reduces your n below 167, costing power, (c) may introduce bias. MI with m=5 is the principled solution — it uses all available information and Rubin's Rules correctly account for imputation uncertainty in all your standard errors."
+      explanation: "Deleting the 22 non-users would systematically remove the people most relevant to questions about AI use — biasing exactly the estimates you care about, and costing power. MI with m=20 (including ai_frequency) uses all available information and Rubin's Rules correctly account for imputation uncertainty in your standard errors."
     },
     {
-      q: "Moral disengagement: M=2.8, SD=0.6, n=167. A participant scores 4.6. What z-score is this, and what does it mean?",
+      q: "Moral disengagement: M=2.7, SD=0.8, n=164. A participant scores 4.7. What z-score is this, and what does it mean?",
       options: [
         "z=1.6 — above average",
-        "z=3.0 — this participant is 3 SDs above the mean, placing them in the top ~0.1% of your sample. An extreme outlier worth examining.",
+        "z=2.5 — this participant is 2.5 SDs above the mean, placing them in roughly the top ~0.6% of your sample. A notable outlier worth examining.",
         "z=0.6 — slightly above average",
-        "z=2.4 — moderately elevated"
+        "z=3.4 — moderately elevated"
       ],
       correct: 1,
-      explanation: "z = (4.6−2.8)/0.6 = 1.8/0.6 = 3.0. Three SDs above the mean. Under normality, ~99.7% of scores fall within ±3 SDs. This participant is in the extreme tail — worth checking for data entry error or genuine extreme case, and noting in your outlier analysis."
+      explanation: "z = (4.7−2.7)/0.8 = 2.0/0.8 = 2.5. Two-and-a-half SDs above the mean. Under normality, only ~0.6% of scores exceed z=2.5. This participant is in the extreme tail — worth checking for data-entry error or a genuine extreme case, and noting in your outlier analysis."
     },
     {
-      q: "Your PLS-SEM model: R²=.39 for cyber-aggression, Q²=.24. What do these together tell you?",
+      q: "Your PLS-SEM model: R²=.25 for hostile responding, Q²=.10. What do these together tell you?",
       options: [
-        "The model explains 39% of variance and has predictive relevance beyond chance (Q²>0). Both are required for a credible structural model.",
-        "39% is too low — the model needs more predictors",
-        "Q²=.24 means 24% accuracy",
+        "The model explains 25% of variance and has predictive relevance beyond chance (Q²>0). Both are required for a credible structural model.",
+        "25% is too low — the model needs more predictors",
+        "Q²=.10 means 10% accuracy",
         "R² and Q² measure the same thing"
       ],
       correct: 0,
-      explanation: "R²=.39: the model explains 39% of variance in cyber-aggression — good for social science. Q²=.24 > 0: the model has out-of-sample predictive relevance (estimated via blindfolding). You need both: R² shows in-sample fit, Q² shows the model isn't just overfitting."
+      explanation: "R²=.25: the model explains 25% of variance in hostile responding — respectable for social science. Q²=.10 > 0: the model has out-of-sample predictive relevance (estimated via blindfolding). You need both: R² shows in-sample fit, Q² shows the model isn't just overfitting."
     },
   ];
   const [answers, setAnswers] = useState({});
-  const [showResults, setShowResults] = useState(false);
   const allAnswered = Object.keys(answers).length === questions.length;
   const score = Object.entries(answers).filter(([i, a]) => questions[i].correct === a).length;
-  useEffect(() => { if (allAnswered && !showResults) { setShowResults(true); if (score >= 4 && onPass) onPass(); } }, [answers]);
+  const showResults = allAnswered;
+  const answer = (qi, oi) => {
+    if (answers[qi] !== undefined) return;
+    const next = { ...answers, [qi]: oi };
+    setAnswers(next);
+    if (Object.keys(next).length === questions.length) {
+      const sc = Object.entries(next).filter(([i, a]) => questions[i].correct === a).length;
+      if (sc >= 4 && onPass) onPass();
+    }
+  };
   return (
     <div>
       <div style={{ ...card, borderColor: C.amber + '44' }}>
@@ -1192,7 +1201,7 @@ const Mod11 = ({ onPass }) => {
                   else if (oi === answers[qi]) { bg = C.red + '22'; border = C.red; color = C.red; }
                 }
                 return (
-                  <button key={oi} onClick={() => { if (!answered) setAnswers(a => ({...a, [qi]: oi})); }}
+                  <button key={oi} onClick={() => answer(qi, oi)}
                     style={{ background: bg, border: `1px solid ${border}`, borderRadius: 8, padding: '9px 14px', color, textAlign: 'left', cursor: answered ? 'default' : 'pointer', fontSize: 14, transition: 'all 0.2s' }}>
                     {opt}
                   </button>
@@ -1228,6 +1237,77 @@ const Mod11 = ({ onPass }) => {
   );
 };
 
+/* ── MODULE 12: Suppression Effects ──────────────────────────── */
+const Mod12 = ({ onPass }) => {
+  const [adjusted, setAdjusted] = useState(false);
+  const model = adjusted
+    ? { beta: -0.21, p: 0.015, b: -0.62, sig: true }
+    : { beta: -0.10, p: 0.263, b: -0.30, sig: false };
+  return (
+    <div>
+      <div style={card}>
+        <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
+          On its own, <strong style={{ color: C.purple }}>perceived anonymity</strong> barely relates to hostile responding. Add the other predictors and its coefficient <strong style={{ color: C.purple }}>grows</strong> into a significant negative effect — the opposite of what controls usually do. That is a <strong style={{ color: C.purple }}>suppression effect</strong>.
+        </p>
+        <div style={{ background: C.bg, borderRadius: 8, padding: '8px 0', marginBottom: 8 }}>
+          <Eq block tex={String.raw`\underbrace{r_{XY}}_{\text{anonymity alone}} = -.10\ \ (\text{ns}) \quad\xrightarrow{\ \text{control for the others}\ }\quad \underbrace{\beta_{X\cdot Z}}_{\text{adjusted}} = -.21\ \ (p=.015)`} />
+        </div>
+        <Explainer
+          symbols={[
+            [String.raw`r_{XY}`, "Zero-order correlation", "Anonymity ↔ hostile responding with nothing else in the model. Here ≈ −.10, non-significant."],
+            [String.raw`\beta_{X\cdot Z}`, "Adjusted coefficient", "Anonymity's effect holding the other predictors (Z) constant. Here ≈ −.21, significant — bigger than the raw correlation."],
+            [String.raw`Z`, "The other predictors", "Moral disengagement, aggression normalisation, etc. They correlate with anonymity AND with the outcome."],
+            [String.raw`\text{suppressor}`, "Suppressor variable", "A predictor whose inclusion increases another predictor's coefficient by soaking up its irrelevant variance."],
+          ]}
+          worked={[
+            { text: "Anonymity (X) vs HRL (Y): zero-order r = −.10, p = .26. On its own, you'd shrug and move on.", eq: null },
+            { text: "But anonymity shares variance with moral disengagement and aggression normalisation, which DO predict HRL. That shared part is 'noise' in anonymity for predicting hostility.", eq: null },
+            { text: "Enter all predictors together. The controls absorb anonymity's irrelevant variance, leaving the slice uniquely tied to HRL.", eq: null },
+            { text: "Adjusted β = −.21, p = .015. The effect GREW under control. People who feel more anonymous report LESS hostility, once the moral-cognition variables are held constant.", eq: null },
+          ]}
+        />
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+          {[['Anonymity alone', false], ['+ The other predictors', true]].map(([lbl, v]) => (
+            <button key={String(v)} onClick={() => setAdjusted(v)}
+              style={{ flex: 1, padding: '10px 0', borderRadius: 8, border: `1px solid ${adjusted === v ? C.purple : C.border}`, background: adjusted === v ? C.purple + '22' : 'transparent', color: adjusted === v ? C.purple : C.muted, cursor: 'pointer', fontWeight: adjusted === v ? 700 : 400, fontSize: 14 }}>
+              {lbl}
+            </button>
+          ))}
+        </div>
+        <div style={{ marginBottom: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+            <span style={{ color: C.muted, fontSize: 12 }}>|β| for perceived anonymity</span>
+            <span style={{ color: C.purple, ...mono, fontWeight: 700 }}>{Math.abs(model.beta).toFixed(2)}</span>
+          </div>
+          <div style={{ height: 20, background: C.bg, borderRadius: 4, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
+            <div style={{ width: `${Math.abs(model.beta) / 0.30 * 100}%`, height: '100%', background: model.sig ? C.purple : C.muted, transition: 'width 0.4s ease, background 0.4s ease' }} />
+          </div>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+          <StatBox label="β (anonymity)" value={model.beta} dec={2} color={C.purple} />
+          <StatBox label="p-value" value={model.p} dec={3} color={model.sig ? C.green : C.red} />
+          <StatBox label="Verdict" value={model.sig ? 'Significant' : 'n.s.'} dec={0} color={model.sig ? C.green : C.amber} />
+        </div>
+        <div style={{ marginTop: 12, padding: '10px 14px', background: C.bg, borderRadius: 8, fontSize: 14, color: C.text, borderLeft: `3px solid ${model.sig ? C.purple : C.amber}` }}>
+          {adjusted
+            ? "Adjusted for the other predictors, anonymity is a real negative effect (β=−.21, p=.015). A 'screen the correlations first' workflow would have thrown it out before this point."
+            : "Alone, anonymity looks irrelevant (β=−.10, p=.26). Toggle the controls on to see the suppression effect emerge."}
+        </div>
+      </div>
+      <Quiz question="Anonymity correlates r=−.10 (ns) with HRL, yet β=−.21 (p=.015) in the full model. What happened?"
+        options={[
+          "A coding error — a coefficient can never exceed its raw correlation",
+          "Suppression — the other predictors absorbed irrelevant variance in anonymity, revealing its unique effect",
+          "Multicollinearity has made the result meaningless",
+          "The effect is spurious and the variable should be dropped"
+        ]}
+        correct={1}
+        explanation="This is a textbook suppression effect. Coefficients absolutely can be larger than the zero-order correlation: the regression estimates a variable's UNIQUE contribution with the others held constant. Here the controls soak up anonymity's irrelevant shared variance, sharpening its real negative link to hostile responding."
+        onPass={onPass} />
+    </div>
+  );
+};
+
 /* ── MODULES CONFIG ──────────────────────────────────────────── */
 const MODULES = [
   { id: 0,  title: "Descriptive Statistics",   icon: "📊", subtitle: "Mean, median, SD, variance",        Component: Mod1  },
@@ -1238,9 +1318,10 @@ const MODULES = [
   { id: 5,  title: "Cronbach's Alpha",          icon: "🔗", subtitle: "Internal consistency",             Component: Mod6  },
   { id: 6,  title: "K-means Clustering",        icon: "🎯", subtitle: "Finding natural groups",           Component: Mod7  },
   { id: 7,  title: "Hierarchical Regression",   icon: "🧱", subtitle: "Blocks, ΔR², your dissertation",   Component: Mod8  },
-  { id: 8,  title: "PLS-SEM",                   icon: "🕸️", subtitle: "Measurement & structural models", Component: Mod9  },
-  { id: 9,  title: "Multiple Imputation",       icon: "🔧", subtitle: "Handling missing data",            Component: Mod10 },
-  { id: 10, title: "Capstone",                  icon: "🎓", subtitle: "Integrative assessment",           Component: Mod11 },
+  { id: 8,  title: "Suppression Effects",       icon: "🪤", subtitle: "When controls reveal an effect",   Component: Mod12 },
+  { id: 9,  title: "PLS-SEM",                   icon: "🕸️", subtitle: "Measurement & structural models", Component: Mod9  },
+  { id: 10, title: "Multiple Imputation",       icon: "🔧", subtitle: "Handling missing data",            Component: Mod10 },
+  { id: 11, title: "Capstone",                  icon: "🎓", subtitle: "Integrative assessment",           Component: Mod11 },
 ];
 
 /* ── MAIN APP ────────────────────────────────────────────────── */
@@ -1289,7 +1370,7 @@ export default function App() {
             <span style={{ fontSize: 15 }}>⬇</span>
             <div>
               <div style={{ color: C.amber, fontSize: 12, fontWeight: 700 }}>Download Dataset</div>
-              <div style={{ color: C.muted, fontSize: 10 }}>CSV · n=167 · R codebook included</div>
+              <div style={{ color: C.muted, fontSize: 10 }}>CSV · N=164 · R codebook included</div>
             </div>
           </a>
           <div style={{ color: C.muted, fontSize: 11, ...mono }}>stats.ucahub.ie</div>
