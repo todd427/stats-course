@@ -9,18 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:      #060d18;
-    --surface: #0b1726;
-    --s2:      #0f2035;
-    --border:  #1a3050;
+    --bg:      #0d0f14;
+    --surface: #14161d;
+    --s2:      #1b1e27;
+    --border:  #2a2c30;
     --teal:    #0dcfb2;
     --teal2:   #08a08a;
     --amber:   #f59e0b;
     --purple:  #a78bfa;
     --green:   #22c55e;
-    --text:    #c8d8eb;
-    --muted:   #4a6a88;
-    --heading: #e8f4ff;
+    --text:    #e9eef7;
+    --muted:   rgba(233,238,247,.62);
+    --heading: #f4f7fc;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +28,8 @@
   html { scroll-behavior: smooth; }
 
   body {
-    background: var(--bg);
+    background: radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%), radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%), var(--bg);
+    background-attachment: fixed;
     color: var(--text);
     font-family: 'DM Mono', 'Courier New', monospace;
     min-height: 100vh;
@@ -523,7 +524,7 @@
   }
 
   .terminal {
-    background: #020810;
+    background: #0a0c12;
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;

@@ -7,8 +7,8 @@ import katex from "katex";
 import "katex/dist/katex.min.css";
 
 if (typeof document !== 'undefined') {
-  document.body.style.background = '#060d18';
-  document.documentElement.style.background = '#060d18';
+  document.body.style.background = '#0d0f14';
+  document.documentElement.style.background = '#0d0f14';
   document.documentElement.style.height = '100%';
   document.body.style.height = '100%';
   document.body.style.margin = '0';
@@ -46,7 +46,10 @@ const ttest2 = (a, b) => {
 };
 
 /* ── Theme ────────────────────────────────────────────────────── */
-const C = { bg: '#060d18', surface: '#0c1929', border: '#1a3050', teal: '#0dcfb2', tealDim: '#08a08a', amber: '#f59e0b', text: '#c8d8eb', muted: '#4a6a88', green: '#22c55e', red: '#ef4444', heading: '#e8f0fa', purple: '#a78bfa' };
+// Neutrals aligned to ucahub's dark theme; teal/amber/purple/green/red brand accents kept.
+const C = { bg: '#0d0f14', surface: '#14161d', border: '#2a2c30', teal: '#0dcfb2', tealDim: '#08a08a', amber: '#f59e0b', text: '#e9eef7', muted: '#969ba6', green: '#22c55e', red: '#ef4444', heading: '#f4f7fc', purple: '#a78bfa' };
+// ucahub signature radial-gradient backdrop (over C.bg)
+const APP_BG = `radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%), radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%), ${C.bg}`;
 const card = { background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 24px', marginBottom: 16 };
 const mono = { fontFamily: "'Courier New', monospace" };
 const serif = { fontFamily: "Georgia, 'Times New Roman', serif" };
@@ -71,7 +74,7 @@ const Explainer = ({ symbols, worked }) => {
         {open ? 'Hide explanation' : '📖  Unpack this equation'}
       </button>
       {open && (
-        <div style={{ marginTop: 8, background: '#071220', border: `1px solid ${C.teal}33`, borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ marginTop: 8, background: '#0a0c12', border: `1px solid ${C.teal}33`, borderRadius: 10, overflow: 'hidden' }}>
           <div style={{ padding: '14px 18px', borderBottom: `1px solid ${C.border}` }}>
             <div style={{ color: C.teal, fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>What each symbol means</div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -1330,7 +1333,7 @@ export default function App() {
   const [passed, setPassed] = useState(new Set());
   const Mod = MODULES[active];
   return (
-    <div style={{ display: 'flex', height: '100vh', background: C.bg, color: C.text, fontFamily: "system-ui, -apple-system, sans-serif", overflow: 'hidden' }}>
+    <div style={{ display: 'flex', height: '100vh', background: APP_BG, color: C.text, fontFamily: "system-ui, -apple-system, sans-serif", overflow: 'hidden' }}>
       <div style={{ width: 260, background: C.surface, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', flexShrink: 0, overflowY: 'auto', height: '100vh' }}>
         <div style={{ padding: '20px 16px 12px', borderBottom: `1px solid ${C.border}` }}>
           <div style={{ color: C.teal, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 2 }}>Statistics 101</div>
