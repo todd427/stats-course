@@ -1373,6 +1373,24 @@ export default function App() {
               <div style={{ color: C.muted, fontSize: 10 }}>CSV · N=164 · R codebook included</div>
             </div>
           </a>
+          <a href="/data"
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 8, background: C.purple + '14', border: `1px solid ${C.purple}33`, textDecoration: 'none', marginBottom: 8 }}>
+            <span style={{ fontSize: 15 }}>🧬</span>
+            <div>
+              <div style={{ color: C.purple, fontSize: 12, fontWeight: 700 }}>Data Guide</div>
+              <div style={{ color: C.muted, fontSize: 10 }}>Codebook & R walkthrough</div>
+            </div>
+            <span style={{ color: C.purple, fontSize: 12, marginLeft: 'auto' }}>↗</span>
+          </a>
+          <a href="https://ucahub.ie" target="_blank" rel="noopener"
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 10px', borderRadius: 8, background: C.border + '55', border: `1px solid ${C.border}`, textDecoration: 'none', marginBottom: 10 }}>
+            <span style={{ fontSize: 15 }}>↩</span>
+            <div>
+              <div style={{ color: C.text, fontSize: 12, fontWeight: 700 }}>UCAHub</div>
+              <div style={{ color: C.muted, fontSize: 10 }}>Back to the research hub</div>
+            </div>
+            <span style={{ color: C.muted, fontSize: 12, marginLeft: 'auto' }}>↗</span>
+          </a>
           <div style={{ color: C.muted, fontSize: 11, ...mono }}>stats.ucahub.ie</div>
         </div>
       </div>
