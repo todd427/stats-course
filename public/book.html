@@ -35,7 +35,7 @@
 
   html { scroll-behavior: smooth; }
 
-  [data-theme="upbeat"] {
+  [data-theme="bright"] {
     --bg: #f0f7f9; --surface: #ffffff; --surface2: #e7eff1; --s2: #e7eff1;
     --border: #d5dce0; --text: #101522; --muted: #5b6472; --heading: #0a0e18;
     --teal: #0a8f7a; --teal2: #077a68; --teal-dim: #077a68;
@@ -460,7 +460,7 @@
   }
   .theme-toggle-btn:hover { border-color: var(--teal); color: var(--teal); }
 </style>
-<script>try{var _t=localStorage.getItem('ucahub_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+<script>try{var _m=document.cookie.match(/(?:^|;\s*)ucahub_theme=([^;]+)/);var _t=_m?_m[1]:localStorage.getItem('ucahub_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
 <script src="/theme.js" defer></script>
 </head>
 <body>

@@ -44,18 +44,22 @@ const ttest2 = (a, b) => {
 };
 
 /* ── Theme ────────────────────────────────────────────────────── */
-// Three themes mirroring ucahub (dark / upbeat / paper). Neutrals match the
+// Three themes mirroring ucahub (dark / bright / paper). Neutrals match the
 // static pages' tokens; accents darken in the light themes for contrast.
 const PALETTES = {
   dark:   { bg: '#0d0f14', surface: '#14161d', surface2: '#1b1e27', border: '#2a2c30', text: '#e9eef7', muted: '#969ba6', heading: '#f4f7fc', teal: '#0dcfb2', tealDim: '#08a08a', amber: '#f59e0b', purple: '#a78bfa', green: '#22c55e', red: '#ef4444', codeBg: '#0a0c12' },
-  upbeat: { bg: '#f0f7f9', surface: '#ffffff', surface2: '#e7eff1', border: '#d5dce0', text: '#101522', muted: '#5b6472', heading: '#0a0e18', teal: '#0a8f7a', tealDim: '#077a68', amber: '#b45309', purple: '#7c3aed', green: '#15803d', red: '#dc2626', codeBg: '#f3f5f7' },
+  bright: { bg: '#f0f7f9', surface: '#ffffff', surface2: '#e7eff1', border: '#d5dce0', text: '#101522', muted: '#5b6472', heading: '#0a0e18', teal: '#0a8f7a', tealDim: '#077a68', amber: '#b45309', purple: '#7c3aed', green: '#15803d', red: '#dc2626', codeBg: '#f3f5f7' },
   paper:  { bg: '#ffffff', surface: '#ffffff', surface2: '#f5f6f8', border: '#e2e4e8', text: '#14161b', muted: '#515963', heading: '#0a0a0a', teal: '#0a8f7a', tealDim: '#077a68', amber: '#b45309', purple: '#7c3aed', green: '#15803d', red: '#dc2626', codeBg: '#f6f8fa' },
 };
-const THEME_ORDER = ['dark', 'upbeat', 'paper'];
-const THEME_LABELS = { dark: 'Dark', upbeat: 'Upbeat', paper: 'Paper' };
+const THEME_ORDER = ['dark', 'bright', 'paper'];
+const THEME_LABELS = { dark: 'Dark', bright: 'Upbeat', paper: 'Paper' };
+// Cross-site sync: prefer the .ucahub.ie cookie (shared with ucahub.ie),
+// fall back to same-origin localStorage.
 function readTheme() {
-  try { const t = localStorage.getItem('ucahub_theme'); return PALETTES[t] ? t : 'dark'; }
-  catch (e) { return 'dark'; }
+  let t = null;
+  try { const m = document.cookie.match(/(?:^|;\s*)ucahub_theme=([^;]+)/); t = m ? m[1] : null; } catch (e) {}
+  if (!PALETTES[t]) { try { t = localStorage.getItem('ucahub_theme'); } catch (e) {} }
+  return PALETTES[t] ? t : 'dark';
 }
 // Mutable module-level palette: every component reads `C` at render time, so a
 // state-driven re-render in App() after applyTheme() repaints the whole tree.
@@ -63,7 +67,7 @@ let THEME = readTheme();
 let C = PALETTES[THEME];
 function appBg() {
   if (THEME === 'paper') return C.bg;
-  if (THEME === 'upbeat')
+  if (THEME === 'bright')
     return `radial-gradient(900px 650px at 12% 10%, rgba(43,108,255,.16), transparent 55%), radial-gradient(900px 650px at 88% 16%, rgba(255,80,80,.08), transparent 60%), radial-gradient(1100px 800px at 50% 95%, rgba(13,207,178,.16), transparent 55%), ${C.bg}`;
   return `radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%), radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%), ${C.bg}`;
 }
@@ -71,6 +75,7 @@ function applyTheme(t) {
   THEME = t;
   C = PALETTES[t];
   try { localStorage.setItem('ucahub_theme', t); } catch (e) {}
+  try { document.cookie = 'ucahub_theme=' + t + ';domain=.ucahub.ie;path=/;max-age=31536000;SameSite=Lax;Secure'; } catch (e) {}
   if (typeof document !== 'undefined') {
     document.documentElement.setAttribute('data-theme', t);
     document.body.style.background = C.bg;
