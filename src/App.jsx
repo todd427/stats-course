@@ -1387,8 +1387,8 @@ export default function App() {
   const fcBtn = { width: 28, height: 28, borderRadius: 8, border: `1px solid ${C.border}`, background: 'transparent', color: C.muted, fontSize: 12, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: 0 };
   const Mod = MODULES[active];
   return (
-    <div style={{ display: 'flex', height: '100vh', background: appBg(), color: C.text, fontFamily: "system-ui, -apple-system, sans-serif", overflow: 'hidden' }}>
-      <div style={{ width: 260, background: C.surface, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', flexShrink: 0, overflowY: 'auto', height: '100vh' }}>
+    <div style={{ display: 'flex', zoom: fontScale, width: `${100 / fontScale}%`, height: `${100 / fontScale}vh`, background: appBg(), color: C.text, fontFamily: "system-ui, -apple-system, sans-serif", overflow: 'hidden' }}>
+      <div style={{ width: 260, background: C.surface, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', flexShrink: 0, overflowY: 'auto', height: '100%' }}>
         <div style={{ padding: '20px 16px 12px', borderBottom: `1px solid ${C.border}` }}>
           <div style={{ color: C.teal, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 2 }}>Statistics 101</div>
           <div style={{ color: C.muted, fontSize: 12, marginBottom: 8 }}>for Cyberpsychologists</div>
@@ -1462,7 +1462,7 @@ export default function App() {
         </div>
       </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px 32px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ zoom: fontScale, maxWidth: 1100 / fontScale, margin: '0 auto', width: `${100 / fontScale}%`, flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div style={{ marginBottom: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
               <span style={{ fontSize: 24 }}>{Mod.icon}</span>
