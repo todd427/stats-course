@@ -10,6 +10,12 @@
 <style>
   :root {
     --bg:       #0d0f14;
+    --app-bg:
+      radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%),
+      radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%),
+      var(--bg);
+    --code-bg: #0a0c12;
+    --row-hover: rgba(255,255,255,0.025);
     --surface:  #14161d;
     --surface2: #1b1e27;
     --border:   #2a2c30;
@@ -29,8 +35,29 @@
 
   html { scroll-behavior: smooth; }
 
+  [data-theme="upbeat"] {
+    --bg: #f0f7f9; --surface: #ffffff; --surface2: #e7eff1; --s2: #e7eff1;
+    --border: #d5dce0; --text: #101522; --muted: #5b6472; --heading: #0a0e18;
+    --teal: #0a8f7a; --teal2: #077a68; --teal-dim: #077a68;
+    --amber: #b45309; --purple: #7c3aed; --green: #15803d; --red: #dc2626;
+    --code-bg: #f3f5f7; --row-hover: rgba(16,21,34,0.05);
+    --app-bg:
+      radial-gradient(900px 650px at 12% 10%, rgba(43,108,255,.16), transparent 55%),
+      radial-gradient(900px 650px at 88% 16%, rgba(255,80,80,.08), transparent 60%),
+      radial-gradient(1100px 800px at 50% 95%, rgba(13,207,178,.16), transparent 55%),
+      var(--bg);
+  }
+  [data-theme="paper"] {
+    --bg: #ffffff; --surface: #ffffff; --surface2: #f5f6f8; --s2: #f5f6f8;
+    --border: #e2e4e8; --text: #14161b; --muted: #515963; --heading: #0a0a0a;
+    --teal: #0a8f7a; --teal2: #077a68; --teal-dim: #077a68;
+    --amber: #b45309; --purple: #7c3aed; --green: #15803d; --red: #dc2626;
+    --code-bg: #f6f8fa; --row-hover: rgba(0,0,0,0.04);
+    --app-bg: var(--bg);
+  }
+
   body {
-    background: radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%), radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%), var(--bg);
+    background: var(--app-bg);
     background-attachment: fixed;
     color: var(--text);
     font-family: 'Georgia', 'Times New Roman', serif;
@@ -306,7 +333,7 @@
   }
 
   .def-table tr:last-child td { border-bottom: none; }
-  .def-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .def-table tr:hover td { background: var(--row-hover); }
 
   /* ── REFERENCE TABLE ── */
   .ref-table {
@@ -338,7 +365,7 @@
   }
 
   .ref-table tr:last-child td { border-bottom: none; }
-  .ref-table tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  .ref-table tr:nth-child(even) td { background: var(--row-hover); }
 
   /* ── INLINE CODE ── */
   code {
@@ -424,7 +451,17 @@
   }
 
   .final-word p:last-child { margin-bottom: 0; }
+  .theme-toggle-btn {
+    font-family: system-ui, -apple-system, sans-serif; font-size: 12px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+    border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text);
+    transition: border-color .15s, color .15s;
+  }
+  .theme-toggle-btn:hover { border-color: var(--teal); color: var(--teal); }
 </style>
+<script>try{var _t=localStorage.getItem('ucahub_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+<script src="/theme.js" defer></script>
 </head>
 <body>
 
@@ -436,6 +473,7 @@
     <div class="sidebar-label">Textbook</div>
     <div class="sidebar-title">Statistics 101</div>
     <div class="sidebar-sub">for Cyberpsychologists</div>
+    <button class="theme-toggle-btn" data-theme-toggle type="button" aria-label="Switch colour theme" style="margin-top:12px;">◐ <span data-theme-label>Dark</span></button>
   </div>
   <div id="toc">
     <a href="#intro" class="toc-section"><span class="num">00</span>What Statistics Actually Is</a>
@@ -484,13 +522,13 @@
     <a href="/data" style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;margin-left:10px;padding:10px 18px;background:rgba(13,207,178,0.12);border:1px solid rgba(13,207,178,0.3);border-radius:8px;text-decoration:none;color:var(--teal);font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
       <span>🧬</span> Data Guide
     </a>
-    <a href="/data/uca_synthetic.csv" download style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;margin-left:10px;padding:10px 18px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:8px;text-decoration:none;color:#f59e0b;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
+    <a href="/data/uca_synthetic.csv" download style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;margin-left:10px;padding:10px 18px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);border-radius:8px;text-decoration:none;color:var(--amber);font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
       <span>⬇</span> Download Dataset (CSV)
     </a>
-    <a href="/data/uca_analysis.R" download style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;margin-left:10px;padding:10px 18px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);border-radius:8px;text-decoration:none;color:#a78bfa;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
+    <a href="/data/uca_analysis.R" download style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;margin-left:10px;padding:10px 18px;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.3);border-radius:8px;text-decoration:none;color:var(--purple);font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
       <span>R</span> R Analysis Script
     </a>
-    <a href="https://ucahub.ie" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;margin-left:10px;padding:10px 18px;background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);border-radius:8px;text-decoration:none;color:#94a3b8;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
+    <a href="https://ucahub.ie" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;margin-top:10px;margin-left:10px;padding:10px 18px;background:rgba(148,163,184,0.12);border:1px solid rgba(148,163,184,0.3);border-radius:8px;text-decoration:none;color:var(--muted);font-family:system-ui,sans-serif;font-size:14px;font-weight:600;">
       <span>↩</span> UCAHub
     </a>
   </div>
@@ -769,19 +807,19 @@
 
     <div style="margin: 20px 0;">
       <div class="alpha-band" style="background: rgba(239,68,68,0.08);">
-        <span class="badge" style="background:rgba(239,68,68,0.2);color:#ef4444;">α &lt; .60</span>
+        <span class="badge" style="background:rgba(239,68,68,0.2);color:var(--red);">α &lt; .60</span>
         <span style="font-family:system-ui;font-size:14px;color:var(--text);">Poor reliability. Items are not measuring the same construct. Revise before use.</span>
       </div>
       <div class="alpha-band" style="background: rgba(245,158,11,0.06);">
-        <span class="badge" style="background:rgba(245,158,11,0.2);color:#f59e0b;">α .60–.70</span>
+        <span class="badge" style="background:rgba(245,158,11,0.2);color:var(--amber);">α .60–.70</span>
         <span style="font-family:system-ui;font-size:14px;color:var(--text);">Acceptable for exploratory research. Treat with caution.</span>
       </div>
       <div class="alpha-band" style="background: rgba(34,197,94,0.06);">
-        <span class="badge" style="background:rgba(34,197,94,0.2);color:#22c55e;">α .70–.90</span>
+        <span class="badge" style="background:rgba(34,197,94,0.2);color:var(--green);">α .70–.90</span>
         <span style="font-family:system-ui;font-size:14px;color:var(--text);">Good ✓ — target range for most psychometric scales.</span>
       </div>
       <div class="alpha-band" style="background: rgba(13,207,178,0.06);">
-        <span class="badge" style="background:rgba(13,207,178,0.2);color:#0dcfb2;">α &gt; .90</span>
+        <span class="badge" style="background:rgba(13,207,178,0.2);color:var(--teal);">α &gt; .90</span>
         <span style="font-family:system-ui;font-size:14px;color:var(--text);">Excellent — but potentially item redundancy. Items may be near-identical.</span>
       </div>
     </div>

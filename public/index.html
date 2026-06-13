@@ -10,6 +10,13 @@
 <style>
   :root {
     --bg:      #0d0f14;
+    --app-bg:
+      radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%),
+      radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%),
+      var(--bg);
+    --code-bg: #0a0c12;
+    --row-hover: rgba(255,255,255,0.025);
+    --on-teal: #062019;
     --surface: #14161d;
     --s2:      #1b1e27;
     --border:  #2a2c30;
@@ -27,8 +34,29 @@
 
   html { scroll-behavior: smooth; }
 
+  [data-theme="upbeat"] {
+    --bg: #f0f7f9; --surface: #ffffff; --surface2: #e7eff1; --s2: #e7eff1;
+    --border: #d5dce0; --text: #101522; --muted: #5b6472; --heading: #0a0e18;
+    --teal: #0a8f7a; --teal2: #077a68; --teal-dim: #077a68;
+    --amber: #b45309; --purple: #7c3aed; --green: #15803d; --red: #dc2626;
+    --code-bg: #f3f5f7; --row-hover: rgba(16,21,34,0.05); --on-teal: #ffffff;
+    --app-bg:
+      radial-gradient(900px 650px at 12% 10%, rgba(43,108,255,.16), transparent 55%),
+      radial-gradient(900px 650px at 88% 16%, rgba(255,80,80,.08), transparent 60%),
+      radial-gradient(1100px 800px at 50% 95%, rgba(13,207,178,.16), transparent 55%),
+      var(--bg);
+  }
+  [data-theme="paper"] {
+    --bg: #ffffff; --surface: #ffffff; --surface2: #f5f6f8; --s2: #f5f6f8;
+    --border: #e2e4e8; --text: #14161b; --muted: #515963; --heading: #0a0a0a;
+    --teal: #0a8f7a; --teal2: #077a68; --teal-dim: #077a68;
+    --amber: #b45309; --purple: #7c3aed; --green: #15803d; --red: #dc2626;
+    --code-bg: #f6f8fa; --row-hover: rgba(0,0,0,0.04); --on-teal: #ffffff;
+    --app-bg: var(--bg);
+  }
+
   body {
-    background: radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%), radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%), var(--bg);
+    background: var(--app-bg);
     background-attachment: fixed;
     color: var(--text);
     font-family: 'DM Mono', 'Courier New', monospace;
@@ -102,8 +130,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(26,48,80,0.6);
+    border-bottom: 1px solid var(--border);
   }
+  .nav-right { display: flex; align-items: center; gap: 14px; }
 
   .nav-brand {
     display: flex;
@@ -218,7 +247,7 @@
     gap: 8px;
     padding: 13px 24px;
     background: var(--teal);
-    color: #050e1a;
+    color: var(--on-teal);
     border-radius: 8px;
     text-decoration: none;
     font-size: 13px;
@@ -228,7 +257,7 @@
   }
 
   .btn-primary:hover {
-    background: #14ffe0;
+    background: var(--teal2);
     transform: translateY(-1px);
     box-shadow: 0 8px 24px rgba(13,207,178,0.25);
   }
@@ -377,7 +406,7 @@
 
   .card:hover {
     transform: translateY(-3px);
-    border-color: rgba(255,255,255,0.1);
+    border-color: var(--teal);
   }
 
   .card:hover::before { opacity: 1; }
@@ -483,7 +512,7 @@
   }
 
   .dl-card:hover {
-    border-color: rgba(255,255,255,0.1);
+    border-color: var(--teal);
     transform: translateY(-2px);
   }
 
@@ -524,7 +553,7 @@
   }
 
   .terminal {
-    background: #0a0c12;
+    background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
@@ -572,6 +601,7 @@
   .term-copy.copied { color: var(--green); border-color: var(--green); }
 
   .terminal pre {
+    color: var(--text);
     padding: 24px 28px;
     font-family: 'DM Mono', 'Courier New', monospace;
     font-size: 13px;
@@ -740,7 +770,17 @@
     h1 { font-size: 32px; }
     .hero-sub { font-size: 18px; }
   }
+  .theme-toggle-btn {
+    font-family: system-ui, -apple-system, sans-serif; font-size: 12px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+    border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text);
+    transition: border-color .15s, color .15s;
+  }
+  .theme-toggle-btn:hover { border-color: var(--teal); color: var(--teal); }
 </style>
+<script>try{var _t=localStorage.getItem('ucahub_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+<script src="/theme.js" defer></script>
 </head>
 <body>
 
@@ -755,7 +795,10 @@
       <div class="nav-dot"></div>
       <span class="nav-name">stats.ucahub.ie</span>
     </a>
-    <span class="nav-tag">Open Educational Resource</span>
+    <span class="nav-right">
+      <span class="nav-tag">Open Educational Resource</span>
+      <button class="theme-toggle-btn" data-theme-toggle type="button" aria-label="Switch colour theme">◐ <span data-theme-label>Dark</span></button>
+    </span>
   </nav>
 
   <!-- HERO -->

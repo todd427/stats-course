@@ -10,6 +10,12 @@
 <style>
   :root {
     --bg:       #0d0f14;
+    --app-bg:
+      radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%),
+      radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%),
+      var(--bg);
+    --code-bg: #0a0c12;
+    --row-hover: rgba(255,255,255,0.025);
     --surface:  #14161d;
     --surface2: #1b1e27;
     --border:   #2a2c30;
@@ -28,8 +34,29 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
+  [data-theme="upbeat"] {
+    --bg: #f0f7f9; --surface: #ffffff; --surface2: #e7eff1; --s2: #e7eff1;
+    --border: #d5dce0; --text: #101522; --muted: #5b6472; --heading: #0a0e18;
+    --teal: #0a8f7a; --teal2: #077a68; --teal-dim: #077a68;
+    --amber: #b45309; --purple: #7c3aed; --green: #15803d; --red: #dc2626;
+    --code-bg: #f3f5f7; --row-hover: rgba(16,21,34,0.05);
+    --app-bg:
+      radial-gradient(900px 650px at 12% 10%, rgba(43,108,255,.16), transparent 55%),
+      radial-gradient(900px 650px at 88% 16%, rgba(255,80,80,.08), transparent 60%),
+      radial-gradient(1100px 800px at 50% 95%, rgba(13,207,178,.16), transparent 55%),
+      var(--bg);
+  }
+  [data-theme="paper"] {
+    --bg: #ffffff; --surface: #ffffff; --surface2: #f5f6f8; --s2: #f5f6f8;
+    --border: #e2e4e8; --text: #14161b; --muted: #515963; --heading: #0a0a0a;
+    --teal: #0a8f7a; --teal2: #077a68; --teal-dim: #077a68;
+    --amber: #b45309; --purple: #7c3aed; --green: #15803d; --red: #dc2626;
+    --code-bg: #f6f8fa; --row-hover: rgba(0,0,0,0.04);
+    --app-bg: var(--bg);
+  }
+
   body {
-    background: radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%), radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%), var(--bg);
+    background: var(--app-bg);
     background-attachment: fixed;
     color: var(--text);
     font-family: system-ui, -apple-system, sans-serif;
@@ -207,7 +234,7 @@
 
   /* ── CODE BLOCKS ── */
   .code-block {
-    background: #0a0c12;
+    background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: 10px;
     overflow: hidden;
@@ -303,7 +330,7 @@
   }
 
   .var-table tr:last-child td { border-bottom: none; }
-  .var-table tr:hover td { background: rgba(255,255,255,0.015); }
+  .var-table tr:hover td { background: var(--row-hover); }
 
   /* ── CALLOUT ── */
   .callout {
@@ -423,7 +450,17 @@
     .stat-grid { grid-template-columns: repeat(2, 1fr); }
     .reading-bar { left: 0; }
   }
+  .theme-toggle-btn {
+    font-family: system-ui, -apple-system, sans-serif; font-size: 12px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+    border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text);
+    transition: border-color .15s, color .15s;
+  }
+  .theme-toggle-btn:hover { border-color: var(--teal); color: var(--teal); }
 </style>
+<script>try{var _t=localStorage.getItem('ucahub_theme');if(_t)document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
+<script src="/theme.js" defer></script>
 </head>
 <body>
 
@@ -435,6 +472,7 @@
     <div class="sidebar-label">Data Guide</div>
     <div class="sidebar-title">UCA Dataset</div>
     <div class="sidebar-sub">stats.ucahub.ie</div>
+    <button class="theme-toggle-btn" data-theme-toggle type="button" aria-label="Switch colour theme" style="margin-top:12px;">◐ <span data-theme-label>Dark</span></button>
   </div>
 
   <div style="padding: 10px 0; flex: 1;">

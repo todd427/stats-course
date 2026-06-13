@@ -7,8 +7,6 @@ import katex from "katex";
 import "katex/dist/katex.min.css";
 
 if (typeof document !== 'undefined') {
-  document.body.style.background = '#0d0f14';
-  document.documentElement.style.background = '#0d0f14';
   document.documentElement.style.height = '100%';
   document.body.style.height = '100%';
   document.body.style.margin = '0';
@@ -46,11 +44,40 @@ const ttest2 = (a, b) => {
 };
 
 /* ── Theme ────────────────────────────────────────────────────── */
-// Neutrals aligned to ucahub's dark theme; teal/amber/purple/green/red brand accents kept.
-const C = { bg: '#0d0f14', surface: '#14161d', border: '#2a2c30', teal: '#0dcfb2', tealDim: '#08a08a', amber: '#f59e0b', text: '#e9eef7', muted: '#969ba6', green: '#22c55e', red: '#ef4444', heading: '#f4f7fc', purple: '#a78bfa' };
-// ucahub signature radial-gradient backdrop (over C.bg)
-const APP_BG = `radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%), radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%), ${C.bg}`;
-const card = { background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 24px', marginBottom: 16 };
+// Three themes mirroring ucahub (dark / upbeat / paper). Neutrals match the
+// static pages' tokens; accents darken in the light themes for contrast.
+const PALETTES = {
+  dark:   { bg: '#0d0f14', surface: '#14161d', surface2: '#1b1e27', border: '#2a2c30', text: '#e9eef7', muted: '#969ba6', heading: '#f4f7fc', teal: '#0dcfb2', tealDim: '#08a08a', amber: '#f59e0b', purple: '#a78bfa', green: '#22c55e', red: '#ef4444', codeBg: '#0a0c12' },
+  upbeat: { bg: '#f0f7f9', surface: '#ffffff', surface2: '#e7eff1', border: '#d5dce0', text: '#101522', muted: '#5b6472', heading: '#0a0e18', teal: '#0a8f7a', tealDim: '#077a68', amber: '#b45309', purple: '#7c3aed', green: '#15803d', red: '#dc2626', codeBg: '#f3f5f7' },
+  paper:  { bg: '#ffffff', surface: '#ffffff', surface2: '#f5f6f8', border: '#e2e4e8', text: '#14161b', muted: '#515963', heading: '#0a0a0a', teal: '#0a8f7a', tealDim: '#077a68', amber: '#b45309', purple: '#7c3aed', green: '#15803d', red: '#dc2626', codeBg: '#f6f8fa' },
+};
+const THEME_ORDER = ['dark', 'upbeat', 'paper'];
+const THEME_LABELS = { dark: 'Dark', upbeat: 'Upbeat', paper: 'Paper' };
+function readTheme() {
+  try { const t = localStorage.getItem('ucahub_theme'); return PALETTES[t] ? t : 'dark'; }
+  catch (e) { return 'dark'; }
+}
+// Mutable module-level palette: every component reads `C` at render time, so a
+// state-driven re-render in App() after applyTheme() repaints the whole tree.
+let THEME = readTheme();
+let C = PALETTES[THEME];
+function appBg() {
+  if (THEME === 'paper') return C.bg;
+  if (THEME === 'upbeat')
+    return `radial-gradient(900px 650px at 12% 10%, rgba(43,108,255,.16), transparent 55%), radial-gradient(900px 650px at 88% 16%, rgba(255,80,80,.08), transparent 60%), radial-gradient(1100px 800px at 50% 95%, rgba(13,207,178,.16), transparent 55%), ${C.bg}`;
+  return `radial-gradient(1200px 800px at 15% 10%, rgba(122,162,255,.18), transparent 55%), radial-gradient(1000px 700px at 85% 15%, rgba(151,237,195,.10), transparent 60%), ${C.bg}`;
+}
+function applyTheme(t) {
+  THEME = t;
+  C = PALETTES[t];
+  try { localStorage.setItem('ucahub_theme', t); } catch (e) {}
+  if (typeof document !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', t);
+    document.body.style.background = C.bg;
+  }
+}
+if (typeof document !== 'undefined') applyTheme(THEME);
+const card = () => ({ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 24px', marginBottom: 16 });
 const mono = { fontFamily: "'Courier New', monospace" };
 const serif = { fontFamily: "Georgia, 'Times New Roman', serif" };
 
@@ -74,7 +101,7 @@ const Explainer = ({ symbols, worked }) => {
         {open ? 'Hide explanation' : '📖  Unpack this equation'}
       </button>
       {open && (
-        <div style={{ marginTop: 8, background: '#0a0c12', border: `1px solid ${C.teal}33`, borderRadius: 10, overflow: 'hidden' }}>
+        <div style={{ marginTop: 8, background: C.codeBg, border: `1px solid ${C.teal}33`, borderRadius: 10, overflow: 'hidden' }}>
           <div style={{ padding: '14px 18px', borderBottom: `1px solid ${C.border}` }}>
             <div style={{ color: C.teal, fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>What each symbol means</div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -133,7 +160,7 @@ const Quiz = ({ question, options, correct, explanation, onPass }) => {
   const [sel, setSel] = useState(null);
   const answered = sel !== null;
   return (
-    <div style={{ ...card, borderColor: C.tealDim + '88', background: '#0a1f2e' }}>
+    <div style={{ ...card(), borderColor: C.tealDim + '88', background: C.surface }}>
       <div style={{ color: C.amber, fontSize: 12, fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>⚡ Check Your Understanding</div>
       <div style={{ color: C.heading, marginBottom: 16, fontSize: 16 }}>{question}</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -164,7 +191,7 @@ const Mod1 = ({ onPass }) => {
   const median = sorted.length % 2 ? sorted[Math.floor(sorted.length / 2)] : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2;
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           Adjust the five scores. Watch how the <strong style={{ color: C.amber }}>outlier</strong> drags the mean while the median stays put.
         </p>
@@ -226,7 +253,7 @@ const Mod2 = ({ onPass }) => {
   const pts = Array.from({ length: 80 }, (_, i) => { const x = mu - 4 * sigma + i * sigma * 8 / 79; return { x: +x.toFixed(3), y: normalPDF(x, mu, sigma) }; });
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           Adjust μ and σ to reshape the curve. Move the score line to read off z-score and percentile.
         </p>
@@ -296,7 +323,7 @@ const Mod3 = ({ onPass }) => {
   const reject = p < 0.05;
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           Drag the t-value. The tails show P(result this extreme | H₀ true) — that probability <em>is</em> the p-value.
         </p>
@@ -363,7 +390,7 @@ const Mod4 = ({ onPass }) => {
   const dLabel = res ? (Math.abs(res.d) < 0.2 ? 'negligible' : Math.abs(res.d) < 0.5 ? 'small' : Math.abs(res.d) < 0.8 ? 'medium' : 'large') : '';
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           Low vs. high moral disengagement groups. Edit comma-separated scores to explore.
         </p>
@@ -447,7 +474,7 @@ const Mod5 = ({ onPass }) => {
   }, []);
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           <strong style={{ color: C.teal }}>Click to add data points.</strong> X=moral disengagement, Y=hostile responding. r, R², and the regression line update live.
         </p>
@@ -514,7 +541,7 @@ const Mod6 = ({ onPass }) => {
   const alphaLabel = alpha < 0.6 ? 'Poor — revise scale' : alpha < 0.7 ? 'Acceptable' : alpha < 0.9 ? 'Good ✓' : 'Excellent';
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           4 items, 5 participants. Edit cells. Make rows consistent — same person scores high or low on all — and watch α climb.
         </p>
@@ -626,7 +653,7 @@ const Mod7 = ({ onPass }) => {
   const plotData = assignments ? initPts.map((p,i) => ({...p, cluster:assignments[i]})) : initPts.map(p => ({...p, cluster:-1}));
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           20 participants: moral disengagement (X), hostile responding (Y). Choose K, initialise, step through the algorithm.
         </p>
@@ -708,7 +735,7 @@ const Mod8 = ({ onPass }) => {
   const isSignificant = b.p < 0.05;
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           Hierarchical regression adds predictors in theory-driven <strong style={{ color: C.teal }}>blocks</strong>. Each block's ΔR² tells you how much additional variance it explains beyond everything already in the model.
         </p>
@@ -819,7 +846,7 @@ const Mod9 = ({ onPass }) => {
   const labels = ["MD", "AIT", "AID", "ANON"];
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           PLS-SEM (Partial Least Squares Structural Equation Modelling) has two parts: the <strong style={{ color: C.teal }}>measurement model</strong> (are your scales valid?) and the <strong style={{ color: C.amber }}>structural model</strong> (do the constructs predict each other?).
         </p>
@@ -991,7 +1018,7 @@ const Mod10 = ({ onPass }) => {
   };
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           Real datasets have missing values. How you handle them matters. <strong style={{ color: C.teal }}>Multiple imputation</strong> creates several plausible complete datasets, analyses each, then combines results using Rubin's Rules.
         </p>
@@ -1179,7 +1206,7 @@ const Mod11 = ({ onPass }) => {
   };
   return (
     <div>
-      <div style={{ ...card, borderColor: C.amber + '44' }}>
+      <div style={{ ...card(), borderColor: C.amber + '44' }}>
         <div style={{ color: C.amber, fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>🎓 Capstone Assessment</div>
         <p style={{ color: C.text, fontSize: 16, margin: 0 }}>
           Six integrative questions using your actual dissertation data. These cross module boundaries — the goal is to connect the concepts, not just recall them. Pass mark: 4/6.
@@ -1189,7 +1216,7 @@ const Mod11 = ({ onPass }) => {
         const answered = answers[qi] !== undefined;
         const isCorrect = answered && answers[qi] === q.correct;
         return (
-          <div key={qi} style={{ ...card, borderColor: answered ? (isCorrect ? C.green + '44' : C.red + '44') : C.border }}>
+          <div key={qi} style={{ ...card(), borderColor: answered ? (isCorrect ? C.green + '44' : C.red + '44') : C.border }}>
             <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: answered ? (isCorrect ? C.green + '33' : C.red + '33') : C.border + '55', border: `1px solid ${answered ? (isCorrect ? C.green : C.red) : C.border}`, color: answered ? (isCorrect ? C.green : C.red) : C.muted, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 13, flexShrink: 0 }}>
                 {answered ? (isCorrect ? '✓' : '✗') : qi + 1}
@@ -1220,7 +1247,7 @@ const Mod11 = ({ onPass }) => {
         );
       })}
       {showResults && (
-        <div style={{ ...card, borderColor: score >= 4 ? C.green + '66' : C.amber + '66', background: score >= 4 ? C.green + '0a' : C.amber + '0a' }}>
+        <div style={{ ...card(), borderColor: score >= 4 ? C.green + '66' : C.amber + '66', background: score >= 4 ? C.green + '0a' : C.amber + '0a' }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 48, marginBottom: 8 }}>{score >= 5 ? '🏆' : score >= 4 ? '✅' : '📖'}</div>
             <div style={{ color: score >= 4 ? C.green : C.amber, fontSize: 28, fontWeight: 800, ...mono, marginBottom: 4 }}>{score} / {questions.length}</div>
@@ -1248,7 +1275,7 @@ const Mod12 = ({ onPass }) => {
     : { beta: -0.10, p: 0.263, b: -0.30, sig: false };
   return (
     <div>
-      <div style={card}>
+      <div style={card()}>
         <p style={{ color: C.text, fontSize: 16, marginBottom: 12 }}>
           On its own, <strong style={{ color: C.purple }}>perceived anonymity</strong> barely relates to hostile responding. Add the other predictors and its coefficient <strong style={{ color: C.purple }}>grows</strong> into a significant negative effect — the opposite of what controls usually do. That is a <strong style={{ color: C.purple }}>suppression effect</strong>.
         </p>
@@ -1331,9 +1358,15 @@ const MODULES = [
 export default function App() {
   const [active, setActive] = useState(0);
   const [passed, setPassed] = useState(new Set());
+  const [theme, setThemeState] = useState(THEME);
+  const cycleTheme = () => {
+    const next = THEME_ORDER[(THEME_ORDER.indexOf(THEME) + 1) % THEME_ORDER.length];
+    applyTheme(next);
+    setThemeState(next);
+  };
   const Mod = MODULES[active];
   return (
-    <div style={{ display: 'flex', height: '100vh', background: APP_BG, color: C.text, fontFamily: "system-ui, -apple-system, sans-serif", overflow: 'hidden' }}>
+    <div style={{ display: 'flex', height: '100vh', background: appBg(), color: C.text, fontFamily: "system-ui, -apple-system, sans-serif", overflow: 'hidden' }}>
       <div style={{ width: 260, background: C.surface, borderRight: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', flexShrink: 0, overflowY: 'auto', height: '100vh' }}>
         <div style={{ padding: '20px 16px 12px', borderBottom: `1px solid ${C.border}` }}>
           <div style={{ color: C.teal, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, marginBottom: 2 }}>Statistics 101</div>
@@ -1342,6 +1375,10 @@ export default function App() {
           <div style={{ marginTop: 8, height: 3, background: C.border, borderRadius: 2 }}>
             <div style={{ height: '100%', width: `${(passed.size/MODULES.length)*100}%`, background: C.teal, borderRadius: 2, transition: 'width 0.4s ease' }} />
           </div>
+          <button onClick={cycleTheme} type="button" aria-label="Switch colour theme"
+            style={{ marginTop: 12, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, borderRadius: 8, padding: '6px 10px', fontSize: 12, cursor: 'pointer' }}>
+            ◐ {THEME_LABELS[theme]}
+          </button>
         </div>
         <nav style={{ padding: '8px 0', flex: 1 }}>
           {MODULES.map(m => (
