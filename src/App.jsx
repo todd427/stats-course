@@ -82,6 +82,19 @@ function applyTheme(t) {
   }
 }
 if (typeof document !== 'undefined') applyTheme(THEME);
+// Text-size scale (mirrors ucahub: 0.90–1.25, step 0.06), synced cross-site via cookie.
+const FONT_MIN = 0.90, FONT_MAX = 1.25, FONT_STEP = 0.06;
+function clampFont(s) { return Math.min(FONT_MAX, Math.max(FONT_MIN, s)); }
+function readFont() {
+  let s = NaN;
+  try { const m = document.cookie.match(/(?:^|;\s*)ucahub_font=([^;]+)/); if (m) s = parseFloat(m[1]); } catch (e) {}
+  if (!isFinite(s)) { try { s = parseFloat(localStorage.getItem('ucahub_font_scale')); } catch (e) {} }
+  return isFinite(s) ? clampFont(s) : 1;
+}
+function persistFont(s) {
+  try { localStorage.setItem('ucahub_font_scale', String(s)); } catch (e) {}
+  try { document.cookie = 'ucahub_font=' + s + ';domain=.ucahub.ie;path=/;max-age=31536000;SameSite=Lax;Secure'; } catch (e) {}
+}
 const card = () => ({ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 24px', marginBottom: 16 });
 const mono = { fontFamily: "'Courier New', monospace" };
 const serif = { fontFamily: "Georgia, 'Times New Roman', serif" };
@@ -1369,6 +1382,9 @@ export default function App() {
     applyTheme(next);
     setThemeState(next);
   };
+  const [fontScale, setFontScaleState] = useState(readFont);
+  const setFont = (s) => { s = clampFont(s); persistFont(s); setFontScaleState(s); };
+  const fcBtn = { width: 28, height: 28, borderRadius: 8, border: `1px solid ${C.border}`, background: 'transparent', color: C.muted, fontSize: 12, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: 0 };
   const Mod = MODULES[active];
   return (
     <div style={{ display: 'flex', height: '100vh', background: appBg(), color: C.text, fontFamily: "system-ui, -apple-system, sans-serif", overflow: 'hidden' }}>
@@ -1384,6 +1400,12 @@ export default function App() {
             style={{ marginTop: 12, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: 'transparent', border: `1px solid ${C.border}`, color: C.muted, borderRadius: 8, padding: '6px 10px', fontSize: 12, cursor: 'pointer' }}>
             ◐ {THEME_LABELS[theme]}
           </button>
+          <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }} aria-label="Text size">
+            <button onClick={() => setFont(fontScale - FONT_STEP)} type="button" aria-label="Smaller text" style={fcBtn}>A−</button>
+            <button onClick={() => setFont(1)} type="button" aria-label="Reset text size" style={fcBtn}>A</button>
+            <button onClick={() => setFont(fontScale + FONT_STEP)} type="button" aria-label="Larger text" style={fcBtn}>A+</button>
+            <span style={{ fontSize: 11, color: C.muted, minWidth: 32, textAlign: 'center' }}>{Math.round(fontScale * 100)}%</span>
+          </div>
         </div>
         <nav style={{ padding: '8px 0', flex: 1 }}>
           {MODULES.map(m => (
@@ -1440,7 +1462,7 @@ export default function App() {
         </div>
       </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px 32px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ zoom: fontScale, maxWidth: 1100 / fontScale, margin: '0 auto', width: `${100 / fontScale}%`, flex: 1, display: 'flex', flexDirection: 'column' }}>
           <div style={{ marginBottom: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
               <span style={{ fontSize: 24 }}>{Mod.icon}</span>
